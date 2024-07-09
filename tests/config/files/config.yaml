@@ -1,0 +1,99 @@
+---
+runtime_environment:
+  id: doadi
+  provider: aws
+  service: glue
+  region: eu-west-1
+  
+source_system:
+  id: spa
+  env: prd
+  database_type: mssql
+  database_instance: PRD
+  authentication_type: ntlm
+  hostname: pmichlausql276.pmintl.net
+  domain: PMINTL.NET
+  port: 49600
+
+integration:
+  engine: spark
+  connector: jdbc
+  fetchsize: 1000
+  chunksize: 1000000
+
+credentials:
+  provider: hashicorp vault
+  workspace: doadi
+  mount_point: static-secret
+  path: data/spa
+
+metadata:
+  sink_type: dynamodb
+  table_name: el-doadi-flexible-ingestion-spa-ing-ingestion-status-prd
+
+sinks:
+  - id: doadi raw bucket
+    target: s3
+    file_format: parquet
+    path: el-doadi-flexible-ingestion-spa-raw-bucket-prd
+
+  - id: enterprise landing raw bucket
+    target: s3
+    file_format: parquet
+    path: enterprise-landing-raw-prd
+
+  - id: enterprise landing schema bucket
+    target: s3
+    file_format: json
+    path: enterprise-landing-schema-raw-prd
+
+data_assets:
+  - id: group_1
+    assets:
+      - asset_name: tbl_lines
+        asset_type: table
+        database_name: SPA_reporting
+        database_schema: dbo
+        query_type: standard
+        reload: false
+        record_creation_columns: []
+        record_update_columns: []
+        columns_to_anonymize: []
+        custom_query: null
+        custom_schema: {}
+        cast_timestamp_columns_to_string: false
+
+      - asset_name: tbl_functionallocationrelation
+        asset_type: table
+        database_name: SPA_reporting
+        database_schema: dbo
+        query_type: standard
+        reload: false
+        record_creation_columns: []
+        record_update_columns: []
+        columns_to_anonymize: []
+        custom_query: null
+        custom_schema: {}
+        cast_timestamp_columns_to_string: false
+
+  - id: group_2
+    assets:
+      - asset_name: tbl_fl_speed_pershiftpo
+        asset_type: table
+        database_name: SPA_reporting
+        database_schema: dbo
+        query_type: standard
+        reload: false
+        record_creation_columns: []
+        record_update_columns: []
+        columns_to_anonymize: []
+        custom_query: null
+        custom_schema: {}
+        cast_timestamp_columns_to_string: false
+
+
+        
+
+
+
+
