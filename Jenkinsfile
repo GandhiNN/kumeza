@@ -16,9 +16,9 @@ if (env.BRANCH_NAME == "master") {
     ARTIFACTORY_ENV = 'qa'
     STAGE = 'qa'
 }   else if (BRANCH_NAME.startsWith("feature/") || (BRANCH_NAME == "dev")) {
-    awsAccount0 = "dev"
-    awsAccount1 = "dev"
-    awsAccountId = "291751643970"
+    DEEP_ENVIRONMENT = 'dev'
+    ARTIFACTORY_ENV = 'dev'
+    STAGE = 'dev'
 } else {
     error("This branch is not allowed")
     currentBuild.result = "ABORTED"
