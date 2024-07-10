@@ -141,3 +141,6 @@ tmp/
 config/*.ipynb
 config/*/*.jsons
 templates/eventbridge.template
+
+# Skip makefiles file
+*.stamp
