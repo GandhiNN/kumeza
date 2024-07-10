@@ -1,5 +1,4 @@
 import typing as t
-
 from dataclasses import dataclass
 
 
@@ -32,9 +31,7 @@ class Assets:
             columns_to_anonymize=obj["columns_to_anonymize"],
             custom_query=obj["custom_query"],
             custom_schema=obj["custom_schema"],
-            cast_timestamp_columns_to_string=obj[
-                "cast_timestamp_columns_to_string"
-            ],
+            cast_timestamp_columns_to_string=obj["cast_timestamp_columns_to_string"],
         )
 
 

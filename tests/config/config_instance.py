@@ -1,17 +1,17 @@
-from kumeza.config.source_system.source_system_config import SourceSystemConfig
-from kumeza.config.integration.integration_config import IntegrationConfig
 from kumeza.config.credentials.credentials_config import CredentialsConfig
-from kumeza.config.metadata.metadata_config import MetadataConfig
-from kumeza.config.runtime_environment.runtime_environment_config import (
-    RuntimeEnvironmentConfig,
-)
-from kumeza.config.sinks.sinks_config import Sinks, SinksConfig
 from kumeza.config.data_assets.data_assets_config import (
     Assets,
     AssetsId,
     DataAssetsConfig,
 )
 from kumeza.config.ingestor_config import IngestionConfig
+from kumeza.config.integration.integration_config import IntegrationConfig
+from kumeza.config.metadata.metadata_config import MetadataConfig
+from kumeza.config.runtime_environment.runtime_environment_config import (
+    RuntimeEnvironmentConfig,
+)
+from kumeza.config.sinks.sinks_config import Sinks, SinksConfig
+from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
 
 class TestConfigInstance:

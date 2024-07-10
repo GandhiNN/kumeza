@@ -1,7 +1,8 @@
 import json
-import yaml
 import pathlib
 import typing as t
+
+import yaml
 
 
 class ConfigLoader:
@@ -15,4 +16,3 @@ class ConfigLoader:
             else:
                 input_file = yaml.safe_load(f)
         return input_file
-

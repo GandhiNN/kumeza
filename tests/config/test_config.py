@@ -1,20 +1,20 @@
 import os
 import unittest
 
-from kumeza.config.loader import ConfigLoader
-from kumeza.config.source_system.source_system_config import SourceSystemConfig
-from kumeza.config.integration.integration_config import IntegrationConfig
 from kumeza.config.credentials.credentials_config import CredentialsConfig
+from kumeza.config.data_assets.data_assets_config import DataAssetsConfig
+from kumeza.config.ingestor_config import IngestionConfig
+from kumeza.config.integration.integration_config import IntegrationConfig
+from kumeza.config.loader import ConfigLoader
 from kumeza.config.metadata.metadata_config import MetadataConfig
 from kumeza.config.runtime_environment.runtime_environment_config import (
     RuntimeEnvironmentConfig,
 )
 from kumeza.config.sinks.sinks_config import SinksConfig
-from kumeza.config.data_assets.data_assets_config import DataAssetsConfig
-from kumeza.config.ingestor_config import IngestionConfig
-from kumeza.config.ingestor_config import IngestionConfig
+from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
 from .config_instance import TestConfigInstance
+
 
 # Config files to be referenced
 abs_path = os.path.dirname(__file__)
@@ -37,15 +37,11 @@ class TestRuntimeEnvironmentConfig(unittest.TestCase, TestSetUp):
     def test(self):
         expected = config_instance.runtime_environment
         self.assertEqual(
-            RuntimeEnvironmentConfig.marshal(
-                self.yml_config["runtime_environment"]
-            ),
+            RuntimeEnvironmentConfig.marshal(self.yml_config["runtime_environment"]),
             expected,
         )
         self.assertEqual(
-            RuntimeEnvironmentConfig.marshal(
-                self.json_config["runtime_environment"]
-            ),
+            RuntimeEnvironmentConfig.marshal(self.json_config["runtime_environment"]),
             expected,
         )
 
@@ -104,12 +100,8 @@ class TestMetadataConfig(unittest.TestCase, TestSetUp):
 
     def test(self):
         expected = config_instance.metadata
-        self.assertEqual(
-            MetadataConfig.marshal(self.yml_config["metadata"]), expected
-        )
-        self.assertEqual(
-            MetadataConfig.marshal(self.json_config["metadata"]), expected
-        )
+        self.assertEqual(MetadataConfig.marshal(self.yml_config["metadata"]), expected)
+        self.assertEqual(MetadataConfig.marshal(self.json_config["metadata"]), expected)
 
 
 class TestSinksConfig(unittest.TestCase, TestSetUp):
@@ -119,12 +111,8 @@ class TestSinksConfig(unittest.TestCase, TestSetUp):
 
     def test(self):
         expected = config_instance.sinks
-        self.assertEqual(
-            SinksConfig.marshal(self.yml_config["sinks"]), expected
-        )
-        self.assertEqual(
-            SinksConfig.marshal(self.json_config["sinks"]), expected
-        )
+        self.assertEqual(SinksConfig.marshal(self.yml_config["sinks"]), expected)
+        self.assertEqual(SinksConfig.marshal(self.json_config["sinks"]), expected)
 
 
 class TestDataAssetsConfig(unittest.TestCase, TestSetUp):

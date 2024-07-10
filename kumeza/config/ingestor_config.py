@@ -1,16 +1,15 @@
 import typing as t
-
 from dataclasses import dataclass
 
+from kumeza.config.credentials.credentials_config import CredentialsConfig
+from kumeza.config.data_assets.data_assets_config import DataAssetsConfig
+from kumeza.config.integration.integration_config import IntegrationConfig
+from kumeza.config.metadata.metadata_config import MetadataConfig
 from kumeza.config.runtime_environment.runtime_environment_config import (
     RuntimeEnvironmentConfig,
 )
-from kumeza.config.source_system.source_system_config import SourceSystemConfig
-from kumeza.config.integration.integration_config import IntegrationConfig
-from kumeza.config.credentials.credentials_config import CredentialsConfig
-from kumeza.config.metadata.metadata_config import MetadataConfig
 from kumeza.config.sinks.sinks_config import SinksConfig
-from kumeza.config.data_assets.data_assets_config import DataAssetsConfig
+from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
 
 @dataclass
