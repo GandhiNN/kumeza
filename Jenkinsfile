@@ -45,6 +45,7 @@ def discoverAccountID() {
 
 def setup() {
     sh(script: """
+    yum install -y zip jq
     curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
     /etc/poetry/bin/poetry --version
     """)
@@ -71,7 +72,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/python:3.8.15
+                      image: art.pmideep.com/dockerhub/amazon/aws-sam-cli-build-image-python3.8
                       resources:
                         requests:
                             cpu: 1
