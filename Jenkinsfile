@@ -71,8 +71,8 @@ pipeline {
                       command:
                       - cat 
                       tty: true
-                    - name: sam-build-python
-                      image: art.pmideep.com:8080/dockerhub-cache/amazon/aws-sam-cli-build-image-python3.8:latest
+                    - name: python
+                      image: art.pmideep.com/dockerhub/python:3.8.15
                       resources:
                         requests:
                             cpu: 1
@@ -122,7 +122,7 @@ pipeline {
         }
         stage('Poetry Configuration') {
             steps {
-                container("sam-build-python") {
+                container("python") {
                     script {
                         setup()
                     }
