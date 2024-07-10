@@ -45,7 +45,7 @@ def discoverAccountID() {
 
 def setup() {
     sh(script: """
-    yum install -y zip jq python3.8-dev python3.8-venv
+    apt install -y zip jq python3.8-dev python3.8-venv
     curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
     /etc/poetry/bin/poetry --version
     """)
