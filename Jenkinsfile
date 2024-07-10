@@ -28,7 +28,7 @@ if (env.BRANCH_NAME == "master") {
 S3_BUCKET_NAME = "${STREAM}-s3-library-${DEEP_ENVIRONMENT}"
 
 // Set service account
-SERVICE_ACCOUNT = "${PROJECT_NAME}-${STAGE}-aws"
+SERVICE_ACCOUNT = "${BB_PROJECT_NAME}-${STAGE}-aws"
 
 // Information discovered on runtime
 repoVersion = ''
