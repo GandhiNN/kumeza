@@ -19,10 +19,7 @@ help:
 .PHONY: init
 init:
 		python -m pip install --upgrade pip
-		pip install flake8
-		pip install bandit
-		pip install isort
-		pip install pytest
+		pip install -r requirements.txt
 
 install: $(INSTALL_STAMP)
 $(INSTALL_STAMP): pyproject.toml poetry.lock
