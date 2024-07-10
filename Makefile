@@ -21,6 +21,7 @@ init:
 		python -m pip install --upgrade pip
 		pip install -r requirements.txt
 
+.PHONY: install
 install: $(INSTALL_STAMP)
 $(INSTALL_STAMP): pyproject.toml poetry.lock
 		@if [ -z $(POETRY) ]; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
