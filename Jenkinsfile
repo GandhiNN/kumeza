@@ -72,7 +72,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/amazon/aws-sam-cli-build-image-python3.9
+                      image: art.pmideep.com/dockerhub/amazon/aws-sam-cli-build-image-python3.10
                       resources:
                         requests:
                             cpu: 1
