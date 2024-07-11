@@ -72,7 +72,7 @@ def buildWheel() {
 def copyWheelToS3Bucket() {
     sh(script: """
     echo 'Transferring wheel file to S3'
-    aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/ --recursive --exclude \"*.gz\"
+    aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/python/ --recursive --exclude \"*.gz\"
     """)
 }
 
