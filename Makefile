@@ -25,13 +25,14 @@ init:
 .PHONY: install-poetry
 install-poetry:
 		@echo "Installing poetry..."
-		# @curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
-		@curl -sSL https://install.python-poetry.org | python3 -
-		$(POETRY) --version
+		@curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
+		PATH=/etc/poetry/bin:$(PATH)
+		${POETRY} --version
 
 .PHONY: install
 install: $(INSTALL_STAMP)
 $(INSTALL_STAMP): pyproject.toml poetry.lock
+		PATH=/etc/poetry/bin:$(PATH)
 		@if [ -z $(POETRY) ]; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
 		$(POETRY) install
 		touch $(INSTALL_STAMP)
