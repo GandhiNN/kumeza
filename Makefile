@@ -2,7 +2,7 @@ NAME := kumeza
 INSTALL_STAMP := .install.stamp
 # POETRY := $(shell command -v poetry 2> /dev/null)
 PATH := $(PATH):$(PWD)/bin:/etc/poetry/bin
-POETRY := $(shell command -v poetry 2> /dev/null)
+POETRY := /etc/poetry/bin/poetry
 
 .DEFAULT_GOAL := help
 
