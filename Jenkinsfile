@@ -5,6 +5,7 @@ ZIP_NAME = 'kumeza'
 AWS_REGION = 'eu-west-1'
 BB_PROJECT_NAME = 'daa1'
 STREAM = 'daas'
+DEEP_PRODUCT_NAME = 'icloud'
 
 // Conditional switch for environment
 if (env.BRANCH_NAME == "master") {
@@ -28,7 +29,7 @@ if (env.BRANCH_NAME == "master") {
 S3_BUCKET_NAME = "${STREAM}-s3-library-${DEEP_ENVIRONMENT}"
 
 // Set service account
-SERVICE_ACCOUNT = "icloud-${STAGE}-aws"
+SERVICE_ACCOUNT = "${DEEP_PRODUCT_NAME}-${STAGE}-aws"
 
 // Information discovered on runtime
 repoVersion = ''
