@@ -56,3 +56,6 @@ format: $(INSTALL_STAMP)
 .PHONY: test
 test: $(INSTALL_STAMP)
 		@poetry run pytest ./tests/ --cov-report term-missing --cov-fail-under 100 --cov $(NAME)
+
+build: $(INSTALL_STAMP)
+		@poetry build

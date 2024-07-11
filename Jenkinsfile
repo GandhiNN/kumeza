@@ -65,6 +65,10 @@ def unitTest() {
     sh(script: "make test")
 }
 
+def buildWheel() {
+    sh(script: "make build")
+}
+
 pipeline {
     agent {
         kubernetes {
@@ -147,6 +151,15 @@ pipeline {
                 container("python") {
                     script {
                         unitTest()
+                    }
+                }
+            }
+        }
+        stage('Build Wheel') {
+            steps {
+                container("python") {
+                    script {
+                        buildWheel()
                     }
                 }
             }
