@@ -31,9 +31,8 @@ install-poetry:
 .PHONY: install
 install: $(INSTALL_STAMP)
 $(INSTALL_STAMP): pyproject.toml poetry.lock
-		@export PATH="/etc/poetry/bin:$$PATH"
-		@if [ -z $(POETRY) ]; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
-		$(POETRY) install
+		@if ! command -v poetry &> /dev/null ; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
+		@poetry install
 		touch $(INSTALL_STAMP)
 
 .PHONY: clean
@@ -43,17 +42,17 @@ clean:
 
 .PHONY: lint
 lint: $(INSTALL_STAMP)
-		$(POETRY) run isort --profile=black --lines-after-imports=2 --check-only ./tests/ $(NAME)
-		$(POETRY) run black --check ./tests/ $(NAME) --diff
-		$(POETRY) run flake8 --ignore=W503,E501 ./tests/ $(NAME)
-		$(POETRY) run mypy ./tests/ $(NAME) --ignore-missing-imports
-		$(POETRY) run bandit -r $(NAME) -s B608
+		@poetry run isort --profile=black --lines-after-imports=2 --check-only ./tests/ $(NAME)
+		@poetry run black --check ./tests/ $(NAME) --diff
+		@poetry run flake8 --ignore=W503,E501 ./tests/ $(NAME)
+		@poetry run mypy ./tests/ $(NAME) --ignore-missing-imports
+		@poetry run bandit -r $(NAME) -s B608
 
 .PHONY: format
 format: $(INSTALL_STAMP)
-		$(POETRY) run isort --profile=black --lines-after-imports=2 ./tests/ $(NAME)
-		$(POETRY) run black ./tests/ $(NAME)
+		@poetry run isort --profile=black --lines-after-imports=2 ./tests/ $(NAME)
+		@poetry run black ./tests/ $(NAME)
 
 .PHONY: test
 test: $(INSTALL_STAMP)
-		$(POETRY) run pytest ./tests/ --cov-report term-missing --cov-fail-under 100 --cov $(NAME)
+		@poetry run pytest ./tests/ --cov-report term-missing --cov-fail-under 100 --cov $(NAME)
