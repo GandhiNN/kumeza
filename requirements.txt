@@ -3,3 +3,4 @@ bandit==1.7.9
 isort==5.13.2
 pytest==7.4.0
 pytest-cov==3.0.0
+black==22.12.0
