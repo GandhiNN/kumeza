@@ -69,6 +69,13 @@ def buildWheel() {
     sh(script: "make build")
 }
 
+def copyWheelToS3Bucket() {
+    sh(script: """
+    echo 'Transferring wheel file to S3'
+    aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/ --recursive --exclude \"*.gz\"
+    """)
+}
+
 pipeline {
     agent {
         kubernetes {
@@ -155,11 +162,20 @@ pipeline {
                 }
             }
         }
-        stage('Build Wheel') {
+        stage('Build Wheel File') {
             steps {
                 container("python") {
                     script {
                         buildWheel()
+                    }
+                }
+            }
+        }
+        stage('Sync Wheel File') {
+            steps {
+                container("python") {
+                    script {
+                        copyWheelToS3Bucket()
                     }
                 }
             }
