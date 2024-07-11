@@ -102,25 +102,7 @@ pipeline {
         AWS_ACCOUNT_ID = "${awsAccountId}"
     }
     stages {
-        // stage("Prepare and check") {
-        //     steps {
-        //         container("awscli") {
-        //             sh '''
-        //                 SESSION_NAME=$(echo ${BRANCH_NAME}-${BUILD_NUMBER} | sed 's,/,-,g')
-        //                 printf "AWS_ACCESS_KEY_ID=%s\nAWS_SECRET_ACCESS_KEY=%s\nAWS_SESSION_TOKEN=%s" \
-        //                 $(aws sts assume-role-with-web-identity \
-        //                 --role-arn arn:aws:iam::${AWS_ACCOUNT_ID}:role/DAAS-Jenkins \
-        //                 --role-session-name ${SESSION_NAME} \
-        //                 --web-identity-token file://${AWS_WEB_IDENTITY_TOKEN_FILE} \
-        //                 --duration-seconds 3600 \
-        //                 --query "Credentials.[AccessKeyId,SecretAccessKey,SessionToken]" \
-        //                 --output text) | tee credential.txt \
-        //                 cat credential.txt
-        //             '''
-        //         }
-        //     }
-        // }
-        stage('Initial setup') {
+        stage('Initial Setup') {
             steps {
                 container('python') {
                     script {
@@ -137,6 +119,15 @@ pipeline {
                 container("python") {
                     script {
                         setup()
+                    }
+                }
+            }
+        }
+        stage('Unit Test') {
+            steps {
+                container("python") {
+                    script {
+                        unitTest()
                     }
                 }
             }
