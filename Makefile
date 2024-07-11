@@ -1,6 +1,4 @@
 NAME := kumeza
-INSTALL_STAMP := .install.stamp
-POETRY := $(shell command -v poetry 2> /dev/null)
 
 .DEFAULT_GOAL := help
 
@@ -29,19 +27,17 @@ install-poetry:
 		@poetry --version
 
 .PHONY: install
-install: $(INSTALL_STAMP)
-$(INSTALL_STAMP): pyproject.toml poetry.lock
+install:
 		@if ! command -v poetry &> /dev/null ; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
 		@poetry install
-		touch $(INSTALL_STAMP)
 
 .PHONY: clean
 clean:
 		find . -type d -name "__pycache__" | xargs rm -rf {};
-		rm -rf $(INSTALL_STAMP) .coverage .mypy_cache .pytest_cache ./dist
+		rm -rf .coverage .mypy_cache .pytest_cache ./dist
 
 .PHONY: lint
-lint: $(INSTALL_STAMP)
+lint: 
 		@poetry run isort --profile=black --lines-after-imports=2 --check-only ./tests/ $(NAME)
 		@poetry run black --check ./tests/ $(NAME) --diff
 		@poetry run flake8 --ignore=W503,E501 ./tests/ $(NAME)
@@ -49,13 +45,13 @@ lint: $(INSTALL_STAMP)
 		@poetry run bandit -r $(NAME) -s B608
 
 .PHONY: format
-format: $(INSTALL_STAMP)
+format: 
 		@poetry run isort --profile=black --lines-after-imports=2 ./tests/ $(NAME)
 		@poetry run black ./tests/ $(NAME)
 
 .PHONY: test
-test: $(INSTALL_STAMP)
+test: 
 		@poetry run pytest ./tests/ --cov-report term-missing --cov-fail-under 100 --cov $(NAME)
 
-build: $(INSTALL_STAMP)
+build:
 		@poetry build
