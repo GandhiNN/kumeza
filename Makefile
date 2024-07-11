@@ -26,7 +26,7 @@ init:
 install-poetry:
 		@echo "Installing poetry..."
 		pip install poetry
-		${POETRY} --version
+		@poetry --version
 
 .PHONY: install
 install: $(INSTALL_STAMP)
