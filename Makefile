@@ -1,6 +1,6 @@
 NAME := kumeza
 INSTALL_STAMP := .install.stamp
-POETRY := $(shell command -v poetry 2> /dev/null)
+# POETRY := $(shell command -v poetry 2> /dev/null)
 
 .DEFAULT_GOAL := help
 
@@ -18,8 +18,16 @@ help:
 
 .PHONY: init
 init:
+		yum install -y zip jq
 		python -m pip install --upgrade pip
 		pip install -r requirements.txt
+		
+.PHONY: install-poetry
+install-poetry:
+		@echo "Installing poetry..."
+		@curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
+		@$(eval include ${HOME}/.poetry/env)
+		@poetry --version
 
 .PHONY: install
 install: $(INSTALL_STAMP)
