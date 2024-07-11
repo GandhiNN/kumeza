@@ -56,7 +56,10 @@ def initSetup() {
 }
 
 def poetrySetup() {
-    sh(script: "make install-poetry")
+    sh(script: """
+    make install-poetry
+    make install
+    """)
 }
 
 def unitTest() {
@@ -134,7 +137,7 @@ pipeline {
                 }
             }
         }
-        stage('Poetry Setup') {
+        stage('Install and Setup Poetry') {
             steps {
                 container("python") {
                     script {
