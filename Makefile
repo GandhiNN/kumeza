@@ -25,7 +25,8 @@ init:
 .PHONY: install-poetry
 install-poetry:
 		@echo "Installing poetry..."
-		@curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
+		# @curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
+		@curl -sSL https://install.python-poetry.org | python3 -
 		$(POETRY) --version
 
 .PHONY: install
