@@ -1,4 +1,5 @@
 NAME := kumeza
+POETRY := $(shell command -v poetry 2> /dev/null)
 
 .DEFAULT_GOAL := help
 
@@ -24,12 +25,12 @@ init:
 install-poetry:
 		@echo "Installing poetry..."
 		pip install poetry
-		@poetry --version
+		$(POETRY) --version
 
 .PHONY: install
 install:
-		@if ! command -v poetry &> /dev/null ; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
-		@poetry install
+		@if [ -z $(POETRY) ]; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi
+		$(POETRY) install
 
 .PHONY: clean
 clean:
@@ -38,20 +39,20 @@ clean:
 
 .PHONY: lint
 lint: 
-		@poetry run isort --profile=black --lines-after-imports=2 --check-only ./tests/ $(NAME)
-		@poetry run black --check ./tests/ $(NAME) --diff
-		@poetry run flake8 --ignore=W503,E501 ./tests/ $(NAME)
-		@poetry run mypy ./tests/ $(NAME) --ignore-missing-imports
-		@poetry run bandit -r $(NAME) -s B608
+		$(POETRY) run isort --profile=black --lines-after-imports=2 --check-only ./tests/ $(NAME)
+		$(POETRY) run black --check ./tests/ $(NAME) --diff
+		$(POETRY) run flake8 --ignore=W503,E501 ./tests/ $(NAME)
+		$(POETRY) run mypy ./tests/ $(NAME) --ignore-missing-imports
+		$(POETRY) run bandit -r $(NAME) -s B608
 
 .PHONY: format
 format: 
-		@poetry run isort --profile=black --lines-after-imports=2 ./tests/ $(NAME)
-		@poetry run black ./tests/ $(NAME)
+		$(POETRY) run isort --profile=black --lines-after-imports=2 ./tests/ $(NAME)
+		$(POETRY) run black ./tests/ $(NAME)
 
 .PHONY: test
 test: 
-		@poetry run pytest ./tests/ --cov-report term-missing --cov-fail-under 100 --cov $(NAME)
+		$(POETRY) run pytest ./tests/ --cov-report term-missing --cov-fail-under 100 --cov $(NAME)
 
 build:
-		@poetry build
+		$(POETRY) build
