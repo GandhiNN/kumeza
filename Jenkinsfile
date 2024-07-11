@@ -43,12 +43,20 @@ def discoverAccountID() {
     return sh(returnStdout: true, script: "aws sts get-caller-identity | jq -r \".Account\"").trim()
 }
 
-def setup() {
-    sh(script: """
-    yum install -y zip jq
-    curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
-    /etc/poetry/bin/poetry --version
-    """)
+// def setup() {
+//     sh(script: """
+//     yum install -y zip jq
+//     curl -sSL https://install.python-poetry.org | POETRY_HOME=/etc/poetry python3 -
+//     /etc/poetry/bin/poetry --version
+//     """)
+// }
+
+def initSetup() {
+    sh(script: "make init")
+}
+
+def poetrySetup() {
+    sh(script: "make install-poetry")
 }
 
 def unitTest() {
@@ -102,23 +110,35 @@ pipeline {
         AWS_ACCOUNT_ID = "${awsAccountId}"
     }
     stages {
+        // stage('Initial Setup') {
+        //     steps {
+        //         container('python') {
+        //             script {
+        //                 echo "Using DEEP environment: ${DEEP_ENVIRONMENT}"
+        //                 echo "Using Service Account: ${SERVICE_ACCOUNT}"
+        //                 setup()
+        //                 accountId = discoverAccountID()
+        //             }
+        //         }
+        //     }
+        // }
         stage('Initial Setup') {
             steps {
                 container('python') {
                     script {
                         echo "Using DEEP environment: ${DEEP_ENVIRONMENT}"
                         echo "Using Service Account: ${SERVICE_ACCOUNT}"
-                        setup()
+                        initSetup()
                         accountId = discoverAccountID()
                     }
                 }
             }
         }
-        stage('Poetry Configuration') {
+        stage('Poetry Setup') {
             steps {
                 container("python") {
                     script {
-                        setup()
+                        poetrySetup()
                     }
                 }
             }
