@@ -56,9 +56,9 @@
             "id": "group_1",
             "assets": [
                 {
-                    "asset_name": "tbl_lines",
+                    "asset_name": "ACTION_FLAG_TYPE",
                     "asset_type": "table",
-                    "database_name": "SPA_reporting",
+                    "database_name": "Apriso",
                     "database_schema": "dbo",
                     "query_type": "standard",
                     "reload": false,
@@ -70,9 +70,9 @@
                     "cast_timestamp_columns_to_string": false
                 },
                 {
-                    "asset_name": "tbl_functionallocationrelation",
+                    "asset_name": "ACTION_SCRIPT",
                     "asset_type": "table",
-                    "database_name": "SPA_reporting",
+                    "database_name": "Apriso",
                     "database_schema": "dbo",
                     "query_type": "standard",
                     "reload": false,
@@ -89,9 +89,9 @@
             "id": "group_2",
             "assets": [
                 {
-                    "asset_name": "tbl_fl_speed_pershiftpo",
+                    "asset_name": "WIP_ORDER",
                     "asset_type": "table",
-                    "database_name": "SPA_reporting",
+                    "database_name": "Apriso",
                     "database_schema": "dbo",
                     "query_type": "standard",
                     "reload": false,

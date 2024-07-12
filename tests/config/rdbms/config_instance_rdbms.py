@@ -70,9 +70,9 @@ class TestConfigInstanceRdbms:
                     id="group_1",
                     assets=[
                         Assets(
-                            asset_name="tbl_lines",
+                            asset_name="ACTION_FLAG_TYPE",
                             asset_type="table",
-                            database_name="SPA_reporting",
+                            database_name="Apriso",
                             database_schema="dbo",
                             query_type="standard",
                             reload=False,
@@ -84,9 +84,9 @@ class TestConfigInstanceRdbms:
                             cast_timestamp_columns_to_string=False,
                         ),
                         Assets(
-                            asset_name="tbl_functionallocationrelation",
+                            asset_name="ACTION_SCRIPT",
                             asset_type="table",
-                            database_name="SPA_reporting",
+                            database_name="Apriso",
                             database_schema="dbo",
                             query_type="standard",
                             reload=False,
@@ -103,9 +103,9 @@ class TestConfigInstanceRdbms:
                     id="group_2",
                     assets=[
                         Assets(
-                            asset_name="tbl_fl_speed_pershiftpo",
+                            asset_name="WIP_ORDER",
                             asset_type="table",
-                            database_name="SPA_reporting",
+                            database_name="Apriso",
                             database_schema="dbo",
                             query_type="standard",
                             reload=False,
