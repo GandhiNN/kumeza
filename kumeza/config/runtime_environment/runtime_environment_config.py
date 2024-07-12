@@ -17,5 +17,5 @@ class RuntimeEnvironmentConfig:
             provider=obj["provider"],
             service=obj["service"],
             region=obj["region"],
-            env=obj["env"]
+            env=obj["env"],
         )

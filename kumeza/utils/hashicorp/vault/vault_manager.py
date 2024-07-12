@@ -1,7 +1,9 @@
+from typing import Any
+
 import hvac
 
-from typing import Any
 from kumeza.config.ingestor_config import IngestionConfig
+
 
 class VaultManager:
 
@@ -14,9 +16,5 @@ class VaultManager:
 
     def setup_client(self):
         self.client = hvac.Client(
-            url = self.vault_url,
-            namespace=self.namespace,
-            verify=self.verify_ssl
+            url=self.vault_url, namespace=self.namespace, verify=self.verify_ssl
         )
-
-    
