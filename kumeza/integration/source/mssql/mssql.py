@@ -1,7 +1,7 @@
 from kumeza.config.ingestor_config import IngestionConfig
 
-class MSSQL:
 
+class MSSQL:
     def __init__(self):
         self.authentication_type = None
         self.database_instance = None
@@ -18,4 +18,4 @@ class MSSQL:
         self.username = config.credentials.username
         self.password = config.credentials or "placeholder"
         self.port = config.source_system.port
-        self.driver = config.integration.driver or 'ODBC Driver 18 for SQL Server'
+        self.driver = config.integration.driver or "ODBC Driver 18 for SQL Server"

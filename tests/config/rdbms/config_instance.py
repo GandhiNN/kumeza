@@ -30,10 +30,10 @@ class TestConfigInstanceRdbms:
             port=1433,
         )
         self.integration = IntegrationConfig(
-            engine="spark", connector="jdbc", fetchsize=1000, chunksize=1000000
+            driver="spark", connector="jdbc", fetchsize=1000, chunksize=1000000
         )
         self.credentials = CredentialsConfig(
-            username="s-imel-opsdaas-qas01"
+            username="s-imel-opsdaas-qas01",
             provider="hashicorp_vault",
             workspace="icloud",
             mount_point="static-secret",
