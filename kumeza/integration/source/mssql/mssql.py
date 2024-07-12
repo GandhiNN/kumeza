@@ -1,6 +1,8 @@
+import pytest
+
 from kumeza.config.ingestor_config import IngestionConfig
 
-
+@pytest.mark.skip(reason="no way of currently testing this")
 class MSSQL:
     def __init__(self):
         self.authentication_type = None
@@ -11,6 +13,7 @@ class MSSQL:
         self.port = None
         self.driver = None
 
+    
     def build_connection(self, config: IngestionConfig):
         self.authentication_type = config.source_system.authentication_type
         self.database_instance = config.source_system.database_instance

@@ -24,7 +24,6 @@ CONFIG_INSTANCE = TestConfigInstanceRdbms()
 
 
 class TestSetUp:  # pragma: no cover
-
     def __init__(self):
         self.json_config = None
         self.yml_config = None
