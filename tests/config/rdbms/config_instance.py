@@ -30,7 +30,7 @@ class TestConfigInstanceRdbms:
             port=1433,
         )
         self.integration = IntegrationConfig(
-            driver="spark", connector="jdbc", fetchsize=1000, chunksize=1000000
+            engine="spark", driver="jdbc", fetchsize=1000, chunksize=1000000
         )
         self.credentials = CredentialsConfig(
             username="s-imel-opsdaas-qas01",
