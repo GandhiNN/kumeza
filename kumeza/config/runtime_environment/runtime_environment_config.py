@@ -8,6 +8,7 @@ class RuntimeEnvironmentConfig:
     provider: str
     service: str
     region: str
+    env: str
 
     @classmethod
     def marshal(cls: t.Type["RuntimeEnvironmentConfig"], obj: dict):
@@ -16,4 +17,5 @@ class RuntimeEnvironmentConfig:
             provider=obj["provider"],
             service=obj["service"],
             region=obj["region"],
+            env=obj["env"]
         )
