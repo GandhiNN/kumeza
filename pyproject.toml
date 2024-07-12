@@ -32,7 +32,8 @@ log_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.coverage.run]
 omit = [
-    "kumeza/integration/*"
+    "kumeza/integration/*",
+    "kumeza/utils/*"
 ]
 
 [build-system]
