@@ -19,7 +19,6 @@ help:
 init:
 		yum install -y zip jq
 		python -m pip install --upgrade pip
-		pip install -r requirements.txt
 		
 .PHONY: install-poetry
 install-poetry:
