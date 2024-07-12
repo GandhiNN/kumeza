@@ -5,7 +5,6 @@ from dataclasses import dataclass
 @dataclass
 class SourceSystemConfig:
     id: str
-    env: str
     database_type: str
     database_instance: str
     authentication_type: str
@@ -17,7 +16,6 @@ class SourceSystemConfig:
     def marshal(cls: t.Type["SourceSystemConfig"], obj: dict):
         return cls(
             id=obj["id"],
-            env=obj["env"],
             database_type=obj["database_type"],
             database_instance=obj["database_instance"],
             authentication_type=obj["authentication_type"],
