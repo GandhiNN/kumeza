@@ -17,11 +17,10 @@ from kumeza.config.source_system.source_system_config import SourceSystemConfig
 class TestConfigInstanceRdbms:
     def __init__(self):
         self.runtime_environment = RuntimeEnvironmentConfig(
-            id="icloud", provider="aws", service="glue", region="eu-west-1"
+            id="icloud", provider="aws", service="glue", region="eu-west-1", env="dev"
         )
         self.source_system = SourceSystemConfig(
             id="imel",
-            env="dev",
             database_type="mssql",
             database_instance="dev",
             authentication_type="ntlm",
@@ -35,7 +34,9 @@ class TestConfigInstanceRdbms:
         self.credentials = CredentialsConfig(
             username="s-imel-opsdaas-qas01",
             provider="hashicorp_vault",
-            workspace="icloud",
+            url="https://vault.vault-dev-dev.shared-services.eu-west-1.aws.pmicloud.biz:8200",
+            verify_ssl=False,
+            namespace="icloud",
             mount_point="static-secret",
             path="data/imel",
         )
