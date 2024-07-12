@@ -11,9 +11,9 @@ source_system:
   database_type: mssql
   database_instance: dev
   authentication_type: ntlm
-  hostname: pmichlausql276.pmintl.net
+  hostname: sqlqa_qimel_pmhboz.dbiaas.sdi.pmi
   domain: pmintl.net
-  port: 49600
+  port: 1433
 
 integration:
   engine: spark
@@ -23,13 +23,13 @@ integration:
 
 credentials:
   provider: hashicorp_vault
-  workspace: doadi
+  workspace: icloud
   mount_point: static-secret
-  path: data/spa
+  path: data/imel
 
 metadata:
   sink_type: dynamodb
-  table_name: el-doadi-flexible-ingestion-spa-ing-ingestion-status-prd
+  table_name: daas-imel-ingestion-status-dev
 
 sinks:
   - id: daas_raw_bucket

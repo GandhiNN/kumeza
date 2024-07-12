@@ -17,50 +17,50 @@ from kumeza.config.source_system.source_system_config import SourceSystemConfig
 class TestConfigInstanceRdbms:
     def __init__(self):
         self.runtime_environment = RuntimeEnvironmentConfig(
-            id="doadi", provider="aws", service="glue", region="eu-west-1"
+            id="icloud", provider="aws", service="glue", region="eu-west-1"
         )
         self.source_system = SourceSystemConfig(
-            id="spa",
-            env="prd",
+            id="imel",
+            env="dev",
             database_type="mssql",
-            database_instance="PRD",
+            database_instance="dev",
             authentication_type="ntlm",
-            hostname="pmichlausql276.pmintl.net",
-            domain="PMINTL.NET",
-            port=49600,
+            hostname="sqlqa_qimel_pmhboz.dbiaas.sdi.pmi",
+            domain="pmintl.net",
+            port=1433,
         )
         self.integration = IntegrationConfig(
             engine="spark", connector="jdbc", fetchsize=1000, chunksize=1000000
         )
         self.credentials = CredentialsConfig(
-            provider="hashicorp vault",
-            workspace="doadi",
+            provider="hashicorp_vault",
+            workspace="icloud",
             mount_point="static-secret",
-            path="data/spa",
+            path="data/imel",
         )
         self.metadata = MetadataConfig(
             sink_type="dynamodb",
-            table_name="el-doadi-flexible-ingestion-spa-ing-ingestion-status-prd",
+            table_name="daas-imel-ingestion-status-dev",
         )
         self.sinks = SinksConfig(
             [
                 Sinks(
-                    id="doadi raw bucket",
+                    id="daas_raw_bucket",
                     target="s3",
                     file_format="parquet",
-                    path="el-doadi-flexible-ingestion-spa-raw-bucket-prd",
+                    path="daas-s3-raw-dev",
                 ),
                 Sinks(
-                    id="enterprise landing raw bucket",
+                    id="enterprise_landing_raw_bucket",
                     target="s3",
                     file_format="parquet",
-                    path="enterprise-landing-raw-prd",
+                    path="enterprise-landing-raw-dev",
                 ),
                 Sinks(
-                    id="enterprise landing schema bucket",
+                    id="enterprise_landing_schema_bucket",
                     target="s3",
                     file_format="json",
-                    path="enterprise-landing-schema-raw-prd",
+                    path="enterprise-landing-schema-raw-dev",
                 ),
             ]
         )
