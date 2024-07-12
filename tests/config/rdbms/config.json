@@ -9,11 +9,11 @@
         "id": "imel",
         "env": "dev",
         "database_type": "mssql",
-        "database_instance": "prd",
+        "database_instance": "dev",
         "authentication_type": "ntlm",
         "hostname": "sqlqa_qimel_pmhboz.dbiaas.sdi.pmi",
         "domain": "pmintl.net",
-        "port": 49600
+        "port": 1433
     },
     "integration": {
         "engine": "spark",
@@ -29,26 +29,26 @@
     },
     "metadata": {
         "sink_type": "dynamodb",
-        "table_name": "daas-imel-ingestion-status-prd"
+        "table_name": "daas-imel-ingestion-status-dev"
     },
     "sinks": [
         {
-            "id": "icloud_raw_bucket",
+            "id": "daas_raw_bucket",
             "target": "s3",
             "file_format": "parquet",
-            "path": "el-doadi-flexible-ingestion-spa-raw-bucket-prd"
+            "path": "daas-s3-raw-dev"
         },
         {
             "id": "enterprise_landing_raw_bucket",
             "target": "s3",
             "file_format": "parquet",
-            "path": "enterprise-landing-raw-prd"
+            "path": "enterprise-landing-raw-dev"
         },
         {
             "id": "enterprise_landing_schema_bucket",
             "target": "s3",
             "file_format": "json",
-            "path": "enterprise-landing-schema-raw-prd"
+            "path": "enterprise-landing-schema-raw-dev"
         }
     ],
     "data_assets": [

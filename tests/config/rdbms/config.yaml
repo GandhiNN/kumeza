@@ -7,9 +7,9 @@ runtime_environment:
   
 source_system:
   id: imel
-  env: prd
+  env: dev
   database_type: mssql
-  database_instance: prd
+  database_instance: dev
   authentication_type: ntlm
   hostname: pmichlausql276.pmintl.net
   domain: pmintl.net
@@ -32,20 +32,20 @@ metadata:
   table_name: el-doadi-flexible-ingestion-spa-ing-ingestion-status-prd
 
 sinks:
-  - id: doadi_raw_bucket
+  - id: daas_raw_bucket
     target: s3
     file_format: parquet
-    path: el-doadi-flexible-ingestion-spa-raw-bucket-prd
+    path: daas-s3-raw-dev
 
   - id: enterprise_landing_raw_bucket
     target: s3
     file_format: parquet
-    path: enterprise-landing-raw-prd
+    path: enterprise-landing-raw-dev
 
   - id: enterprise_landing_schema_bucket
     target: s3
     file_format: json
-    path: enterprise-landing-schema-raw-prd
+    path: enterprise-landing-schema-raw-dev
 
 data_assets:
   - id: group_1
