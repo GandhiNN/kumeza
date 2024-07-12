@@ -13,7 +13,7 @@ from kumeza.config.runtime_environment.runtime_environment_config import (
 from kumeza.config.sinks.sinks_config import SinksConfig
 from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
-from .config_instance_rdbms import TestConfigInstanceRdbms
+from .config_instance import TestConfigInstanceRdbms
 
 
 # Config files to be referenced
