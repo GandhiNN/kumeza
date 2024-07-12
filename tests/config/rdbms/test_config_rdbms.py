@@ -13,18 +13,22 @@ from kumeza.config.runtime_environment.runtime_environment_config import (
 from kumeza.config.sinks.sinks_config import SinksConfig
 from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
-from .config_instance import TestConfigInstance
+from .config_instance_rdbms import TestConfigInstanceRdbms
 
 
 # Config files to be referenced
-abs_path = os.path.dirname(__file__)
-cfg_path = "files"
-JSON_CONFIG = os.path.join(abs_path, cfg_path, "config.json")
-YAML_CONFIG = os.path.join(abs_path, cfg_path, "config.yaml")
-config_instance = TestConfigInstance()
+ABS_PATH = os.path.dirname(__file__)
+JSON_CONFIG = os.path.join(ABS_PATH, "config.json")
+YAML_CONFIG = os.path.join(ABS_PATH, "config.yaml")
+CONFIG_INSTANCE = TestConfigInstanceRdbms()
 
 
 class TestSetUp:  # pragma: no cover
+
+    def __init__(self):
+        self.json_config = None
+        self.yml_config = None
+
     def setup(self) -> None:
         self.json_config = ConfigLoader.load(JSON_CONFIG)
         self.yml_config = ConfigLoader.load(YAML_CONFIG)
@@ -35,7 +39,7 @@ class TestRuntimeEnvironmentConfig(unittest.TestCase, TestSetUp):
         self.setup()
 
     def test(self):
-        expected = config_instance.runtime_environment
+        expected = CONFIG_INSTANCE.runtime_environment
         self.assertEqual(
             RuntimeEnvironmentConfig.marshal(self.yml_config["runtime_environment"]),
             expected,
@@ -51,7 +55,7 @@ class TestSourceSystemConfig(unittest.TestCase, TestSetUp):
         self.setup()
 
     def test(self):
-        expected = config_instance.source_system
+        expected = CONFIG_INSTANCE.source_system
         self.assertEqual(
             SourceSystemConfig.marshal(self.yml_config["source_system"]),
             expected,
@@ -67,7 +71,7 @@ class TestIntegrationConfig(unittest.TestCase, TestSetUp):
         self.setup()
 
     def test(self):
-        expected = config_instance.integration
+        expected = CONFIG_INSTANCE.integration
         self.assertEqual(
             IntegrationConfig.marshal(self.yml_config["integration"]),
             expected,
@@ -83,7 +87,7 @@ class TestCredentialsConfig(unittest.TestCase, TestSetUp):
         self.setup()
 
     def test(self):
-        expected = config_instance.credentials
+        expected = CONFIG_INSTANCE.credentials
         self.assertEqual(
             CredentialsConfig.marshal(self.yml_config["credentials"]),
             expected,
@@ -99,7 +103,7 @@ class TestMetadataConfig(unittest.TestCase, TestSetUp):
         self.setup()
 
     def test(self):
-        expected = config_instance.metadata
+        expected = CONFIG_INSTANCE.metadata
         self.assertEqual(MetadataConfig.marshal(self.yml_config["metadata"]), expected)
         self.assertEqual(MetadataConfig.marshal(self.json_config["metadata"]), expected)
 
@@ -110,7 +114,7 @@ class TestSinksConfig(unittest.TestCase, TestSetUp):
         self.yml_config = ConfigLoader.load(YAML_CONFIG)
 
     def test(self):
-        expected = config_instance.sinks
+        expected = CONFIG_INSTANCE.sinks
         self.assertEqual(SinksConfig.marshal(self.yml_config["sinks"]), expected)
         self.assertEqual(SinksConfig.marshal(self.json_config["sinks"]), expected)
 
@@ -121,7 +125,7 @@ class TestDataAssetsConfig(unittest.TestCase, TestSetUp):
         self.yml_config = ConfigLoader.load(YAML_CONFIG)
 
     def test(self):
-        expected = config_instance.data_assets
+        expected = CONFIG_INSTANCE.data_assets
         self.assertEqual(
             DataAssetsConfig.marshal(self.yml_config["data_assets"]),
             expected,
@@ -138,7 +142,7 @@ class TestFullConfig(unittest.TestCase, TestSetUp):
         self.yml_config = ConfigLoader.load(YAML_CONFIG)
 
     def test(self):
-        expected = config_instance.full_config
+        expected = CONFIG_INSTANCE.full_config
         self.assertEqual(IngestionConfig.marshal(self.yml_config), expected)
         self.assertEqual(IngestionConfig.marshal(self.json_config), expected)
 

@@ -14,7 +14,7 @@ from kumeza.config.sinks.sinks_config import Sinks, SinksConfig
 from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
 
-class TestConfigInstance:
+class TestConfigInstanceRdbms:
     def __init__(self):
         self.runtime_environment = RuntimeEnvironmentConfig(
             id="doadi", provider="aws", service="glue", region="eu-west-1"

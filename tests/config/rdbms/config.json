@@ -1,18 +1,18 @@
 {
     "runtime_environment": {
-        "id": "doadi",
+        "id": "icloud",
         "provider": "aws",
         "service": "glue",
         "region": "eu-west-1"
     },
     "source_system": {
-        "id": "spa",
-        "env": "prd",
+        "id": "imel",
+        "env": "dev",
         "database_type": "mssql",
-        "database_instance": "PRD",
+        "database_instance": "prd",
         "authentication_type": "ntlm",
-        "hostname": "pmichlausql276.pmintl.net",
-        "domain": "PMINTL.NET",
+        "hostname": "sqlqa_qimel_pmhboz.dbiaas.sdi.pmi",
+        "domain": "pmintl.net",
         "port": 49600
     },
     "integration": {
@@ -22,30 +22,30 @@
         "chunksize": 1000000
     },
     "credentials": {
-        "provider": "hashicorp vault",
-        "workspace": "doadi",
+        "provider": "hashicorp_vault",
+        "workspace": "icloud",
         "mount_point": "static-secret",
-        "path": "data/spa"
+        "path": "data/imel"
     },
     "metadata": {
         "sink_type": "dynamodb",
-        "table_name": "el-doadi-flexible-ingestion-spa-ing-ingestion-status-prd"
+        "table_name": "daas-imel-ingestion-status-prd"
     },
     "sinks": [
         {
-            "id": "doadi raw bucket",
+            "id": "icloud_raw_bucket",
             "target": "s3",
             "file_format": "parquet",
             "path": "el-doadi-flexible-ingestion-spa-raw-bucket-prd"
         },
         {
-            "id": "enterprise landing raw bucket",
+            "id": "enterprise_landing_raw_bucket",
             "target": "s3",
             "file_format": "parquet",
             "path": "enterprise-landing-raw-prd"
         },
         {
-            "id": "enterprise landing schema bucket",
+            "id": "enterprise_landing_schema_bucket",
             "target": "s3",
             "file_format": "json",
             "path": "enterprise-landing-schema-raw-prd"
