@@ -6,7 +6,9 @@ from dataclasses import dataclass
 class CredentialsConfig:
     username: str
     provider: str
-    workspace: str
+    url: str
+    verify_ssl: bool
+    namespace: str
     mount_point: str
     path: str
 
@@ -15,7 +17,9 @@ class CredentialsConfig:
         return cls(
             username=obj["username"],
             provider=obj["provider"],
-            workspace=obj["workspace"],
+            url=obj["url"],
+            verify_ssl=obj["verify_ssl"],
+            namespace=obj["namespace"],
             mount_point=obj["mount_point"],
             path=obj["path"],
         )
