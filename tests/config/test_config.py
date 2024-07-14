@@ -33,7 +33,7 @@ class TestConfigInstance:
         self.source_system = SourceSystemConfig(
             id="imel",
             database_type="mssql",
-            database_instance="prd",
+            database_instance="dev",
             authentication_type="ntlm",
             hostname="sqlqa_qimel_pmhboz.dbiaas.sdi.pmi",
             domain="pmintl.net",
@@ -44,36 +44,36 @@ class TestConfigInstance:
         )
         self.credentials = CredentialsConfig(
             username="s-imel-opsdaas-qas01",
-            provider="hashicorp vault",
+            provider="hashicorp_vault",
             url="https://vault.vault-dev-dev.shared-services.eu-west-1.aws.pmicloud.biz:8200",
             verify_ssl=False,
-            namespace="doadi",
+            namespace="icloud",
             mount_point="static-secret",
-            path="data/spa",
+            path="data/imel",
         )
         self.metadata = MetadataConfig(
             sink_type="dynamodb",
-            table_name="el-doadi-flexible-ingestion-spa-ing-ingestion-status-prd",
+            table_name="daas-imel-ingestion-status-dev",
         )
         self.sinks = SinksConfig(
             [
                 Sinks(
-                    id="doadi raw bucket",
+                    id="daas_raw_bucket",
                     target="s3",
                     file_format="parquet",
-                    path="el-doadi-flexible-ingestion-spa-raw-bucket-prd",
+                    path="daas-s3-raw-dev",
                 ),
                 Sinks(
-                    id="enterprise landing raw bucket",
+                    id="enterprise_landing_raw_bucket",
                     target="s3",
                     file_format="parquet",
-                    path="enterprise-landing-raw-prd",
+                    path="enterprise-landing-raw-dev",
                 ),
                 Sinks(
-                    id="enterprise landing schema bucket",
+                    id="enterprise_landing_schema_bucket",
                     target="s3",
                     file_format="json",
-                    path="enterprise-landing-schema-raw-prd",
+                    path="enterprise-landing-schema-raw-dev",
                 ),
             ]
         )
@@ -83,9 +83,9 @@ class TestConfigInstance:
                     id="group_1",
                     assets=[
                         Assets(
-                            asset_name="tbl_lines",
+                            asset_name="ACTION_FLAG_TYPE",
                             asset_type="table",
-                            database_name="SPA_reporting",
+                            database_name="Apriso",
                             database_schema="dbo",
                             query_type="standard",
                             reload=False,
@@ -97,9 +97,9 @@ class TestConfigInstance:
                             cast_timestamp_columns_to_string=False,
                         ),
                         Assets(
-                            asset_name="tbl_functionallocationrelation",
+                            asset_name="ACTION_SCRIPT",
                             asset_type="table",
-                            database_name="SPA_reporting",
+                            database_name="Apriso",
                             database_schema="dbo",
                             query_type="standard",
                             reload=False,
@@ -116,9 +116,9 @@ class TestConfigInstance:
                     id="group_2",
                     assets=[
                         Assets(
-                            asset_name="tbl_fl_speed_pershiftpo",
+                            asset_name="WIP_ORDER",
                             asset_type="table",
-                            database_name="SPA_reporting",
+                            database_name="Apriso",
                             database_schema="dbo",
                             query_type="standard",
                             reload=False,
