@@ -32,7 +32,8 @@ log_date_format = "%Y-%m-%d %H:%M:%S"
 
 [tool.coverage.run]
 omit = [
-    "kumeza/integration/*",
+    "kumeza/config/ingestor_config.py",
+    "kumeza/kumeza_integration/*",
     "kumeza/utils/*"
 ]
 
