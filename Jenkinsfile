@@ -118,12 +118,12 @@ pipeline {
             """
         }
     }
-    environment {
-        AWS_ACCOUNT_0 = "${awsAccount0}"
-        AWS_ACCOUNT_1 = "${awsAccount1}"
-        AWS_ACCOUNT_ID = "${awsAccountId}"
-    }
     stages {
+        stage('Checkout') {
+            steps {
+                scmSkip(deleteBuild: true, skipPattern:'.*\\[ci skip\\].*')
+            }
+        }
         stage('Initial Setup') {
             steps {
                 container('python') {
