@@ -34,32 +34,27 @@ class CredentialsConfigTest(unittest.TestCase, SetUp):
     def test(self):
         # Set base config object
         base_config = ConfigInstanceCredentials()
-        base_config_members_yaml = [
-            (k, v) for k, v in base_config.credentials_plain_yaml.items()
-        ]
-        base_config_members_json = [
-            (k, v) for k, v in base_config.credentials_plain_json.items()
-        ]
+        keys_yaml = list(base_config.credentials_plain_yaml.keys())
+        keys_json = list(base_config.credentials_plain_json.keys())
 
-        # Field sameness assertion
+        # Keys sameness assertion
         self.assertEqual(
-            CredentialsConfig.marshal(self.yml_config["credentials"]).get_members(),
-            base_config_members_yaml,
+            CredentialsConfig.marshal(self.yml_config["credentials"]).get_field_name(),
+            keys_yaml,
         )
-
         self.assertEqual(
-            CredentialsConfig.marshal(self.json_config["credentials"]).get_members(),
-            base_config_members_json,
+            CredentialsConfig.marshal(self.json_config["credentials"]).get_field_name(),
+            keys_json,
         )
 
         # Object length assertion
         self.assertEqual(
             CredentialsConfig.marshal(self.yml_config["credentials"]).get_length(),
-            len(base_config_members_yaml),
+            len(keys_yaml),
         )
         self.assertEqual(
             CredentialsConfig.marshal(self.json_config["credentials"]).get_length(),
-            len(base_config_members_json),
+            len(keys_json),
         )
 
 
