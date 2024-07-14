@@ -1,9 +1,11 @@
 import typing as t
 from dataclasses import dataclass
 
+from kumeza.config import BaseConfig
+
 
 @dataclass
-class IntegrationConfig:
+class IntegrationConfig(BaseConfig):
     engine: str
     driver: str
     fetchsize: int

@@ -1,9 +1,11 @@
 import typing as t
 from dataclasses import dataclass
 
+from kumeza.config import BaseConfig
+
 
 @dataclass
-class RuntimeEnvironmentConfig:
+class RuntimeEnvironmentConfig(BaseConfig):
     id: str
     provider: str
     service: str

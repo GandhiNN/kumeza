@@ -1,6 +1,7 @@
 import typing as t
 from dataclasses import dataclass
 
+from kumeza.config import BaseConfig
 from kumeza.config.credentials.credentials_config import CredentialsConfig
 from kumeza.config.data_assets.data_assets_config import DataAssetsConfig
 from kumeza.config.integration.integration_config import IntegrationConfig
@@ -13,7 +14,7 @@ from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
 
 @dataclass
-class IngestionConfig:
+class IngestionConfig(BaseConfig):
     runtime_environment: RuntimeEnvironmentConfig
     source_system: SourceSystemConfig
     integration: IntegrationConfig

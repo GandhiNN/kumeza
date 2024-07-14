@@ -1,9 +1,11 @@
 import typing as t
 from dataclasses import dataclass
 
+from kumeza.config import BaseConfig
+
 
 @dataclass
-class Assets:
+class Assets(BaseConfig):
     asset_name: str
     asset_type: str
     database_name: str

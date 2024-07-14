@@ -1,9 +1,11 @@
 import typing as t
 from dataclasses import dataclass
 
+from kumeza.config import BaseConfig
+
 
 @dataclass
-class MetadataConfig:
+class MetadataConfig(BaseConfig):
     sink_type: str
     table_name: str
 

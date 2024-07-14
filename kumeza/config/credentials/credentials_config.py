@@ -1,9 +1,11 @@
 import typing as t
 from dataclasses import dataclass
 
+from kumeza.config import BaseConfig
+
 
 @dataclass
-class CredentialsConfig:
+class CredentialsConfig(BaseConfig):
     username: str
     provider: str
     url: str
