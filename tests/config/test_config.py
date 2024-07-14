@@ -28,16 +28,16 @@ YAML_CONFIG = os.path.join(abs_path, cfg_path, "config.yaml")
 class TestConfigInstance:
     def __init__(self):
         self.runtime_environment = RuntimeEnvironmentConfig(
-            id="doadi", provider="aws", service="glue", region="eu-west-1", env="dev"
+            id="icloud", provider="aws", service="glue", region="eu-west-1", env="dev"
         )
         self.source_system = SourceSystemConfig(
-            id="spa",
+            id="imel",
             database_type="mssql",
-            database_instance="PRD",
+            database_instance="prd",
             authentication_type="ntlm",
-            hostname="pmichlausql276.pmintl.net",
-            domain="PMINTL.NET",
-            port=49600,
+            hostname="sqlqa_qimel_pmhboz.dbiaas.sdi.pmi",
+            domain="pmintl.net",
+            port=1433,
         )
         self.integration = IntegrationConfig(
             engine="spark", driver="jdbc", fetchsize=1000, chunksize=1000000
