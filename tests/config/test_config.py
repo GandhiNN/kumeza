@@ -19,13 +19,13 @@ from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
 
 # Config files to be referenced
-abs_path = os.path.dirname(__file__)
-cfg_path = "files"
-JSON_CONFIG = os.path.join(abs_path, cfg_path, "config.json")
-YAML_CONFIG = os.path.join(abs_path, cfg_path, "config.yaml")
+ABS_PATH = os.path.dirname(__file__)
+CFG_PATH = "files"
+JSON_CONFIG = os.path.join(ABS_PATH, CFG_PATH, "config.json")
+YAML_CONFIG = os.path.join(ABS_PATH, CFG_PATH, "config.yaml")
 
 
-class TestConfigInstance:
+class ConfigInstance:
     def __init__(self):
         self.runtime_environment = RuntimeEnvironmentConfig(
             id="icloud", provider="aws", service="glue", region="eu-west-1", env="dev"
@@ -144,11 +144,11 @@ class TestConfigInstance:
         )
 
 
-class TestFullConfig(unittest.TestCase):
+class FullConfigTest(unittest.TestCase):
     def setUp(self) -> None:
         self.json_config = ConfigLoader.load(JSON_CONFIG)
         self.yml_config = ConfigLoader.load(YAML_CONFIG)
-        self.config_instance = TestConfigInstance()
+        self.config_instance = ConfigInstance()
 
     def test(self):
         expected = self.config_instance.full_config
@@ -156,14 +156,14 @@ class TestFullConfig(unittest.TestCase):
         self.assertEqual(IngestionConfig.marshal(self.json_config), expected)
 
 
-def testSuite():  # pragma: no cover
+def testSuite():
     suite = unittest.TestSuite()
     suite.addTests(
         unittest.TestLoader().loadTestsFromTestCase(
-            TestFullConfig,
+            FullConfigTest,
         )
-    )  # pragma: no cover
+    )
 
 
 if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=2).run(testSuite())  # pragma: no cover
+    unittest.TextTestRunner(verbosity=2).run(testSuite())
