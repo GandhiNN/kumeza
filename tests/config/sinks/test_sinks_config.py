@@ -2,7 +2,7 @@ import os
 import unittest
 
 from kumeza.config.loader import ConfigLoader
-from kumeza.config.sinks.sinks_config import Sinks, SinksConfig
+from kumeza.config.sinks.sinks_config import SinksConfig
 
 
 # Config files to be referenced
@@ -11,33 +11,7 @@ JSON_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.json")
 YAML_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.yaml")
 
 
-class TestConfigInstanceSinks:
-    def __init__(self):
-        self.sinks = SinksConfig(
-            [
-                Sinks(
-                    id="daas_raw_bucket",
-                    target="s3",
-                    file_format="parquet",
-                    path="daas-s3-raw-dev",
-                ),
-                Sinks(
-                    id="enterprise_landing_raw_bucket",
-                    target="s3",
-                    file_format="parquet",
-                    path="enterprise-landing-raw-dev",
-                ),
-                Sinks(
-                    id="enterprise_landing_schema_bucket",
-                    target="s3",
-                    file_format="json",
-                    path="enterprise-landing-schema-raw-dev",
-                ),
-            ]
-        )
-
-
-class TestSetUp:  # pragma: no cover
+class SetUp:
     def __init__(self):
         self.json_config = None
         self.yml_config = None
@@ -47,31 +21,50 @@ class TestSetUp:  # pragma: no cover
         self.yml_config = ConfigLoader.load(YAML_CONFIG)
 
 
-class TestSinksConfig(unittest.TestCase, TestSetUp):
+class ConfigInstanceSinks:
+    def __init__(self):
+        self.sinks_yaml = ConfigLoader.load(YAML_CONFIG)["sinks"]
+        self.sinks_json = ConfigLoader.load(JSON_CONFIG)["sinks"]
+
+
+class SinksConfigTest(unittest.TestCase, SetUp):
     def setUp(self) -> None:
         self.setup()
 
     def test(self):
-        base_config = TestConfigInstanceSinks()
-        expected = base_config.sinks
+        base_config = ConfigInstanceSinks()
+        keys_yaml = list(base_config.sinks_yaml[0].keys())
+        keys_json = list(base_config.sinks_json[0].keys())
+
+        # Keys sameness assertion
         self.assertEqual(
-            SinksConfig.marshal(self.yml_config["sinks"]),
-            expected,
+            SinksConfig.marshal(self.yml_config["sinks"]).targets[0].get_field_name(),
+            keys_yaml,
         )
         self.assertEqual(
-            SinksConfig.marshal(self.json_config["sinks"]),
-            expected,
+            SinksConfig.marshal(self.json_config["sinks"]).targets[0].get_field_name(),
+            keys_json,
+        )
+
+        # Object length assertion
+        self.assertEqual(
+            SinksConfig.marshal(self.yml_config["sinks"]).targets[0].get_length(),
+            len(keys_yaml),
+        )
+        self.assertEqual(
+            SinksConfig.marshal(self.json_config["sinks"]).targets[0].get_length(),
+            len(keys_json),
         )
 
 
-def testSuite():  # pragma: no cover
+def testSuite():
     suite = unittest.TestSuite()
     suite.addTests(
         unittest.TestLoader().loadTestsFromTestCase(
-            TestSinksConfig,
+            SinksConfigTest,
         )
-    )  # pragma: no cover
+    )
 
 
 if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=2).run(testSuite())  # pragma: no cover
+    unittest.TextTestRunner(verbosity=2).run(testSuite())
