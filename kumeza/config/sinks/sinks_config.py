@@ -5,7 +5,7 @@ from kumeza.config import BaseConfig
 
 
 @dataclass
-class Sinks:
+class Sinks(BaseConfig):
     id: str
     target: str
     file_format: str
