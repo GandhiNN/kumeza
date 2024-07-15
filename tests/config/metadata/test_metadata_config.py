@@ -23,10 +23,6 @@ class SetUp:
 
 class ConfigInstanceMetadata:
     def __init__(self):
-        # self.metadata = MetadataConfig(
-        #     sink_type="dynamodb",
-        #     table_name="daas-imel-ingestion-status-dev",
-        # )
         self.metadata_yaml = ConfigLoader.load(YAML_CONFIG)["metadata"]
         self.metadata_json = ConfigLoader.load(JSON_CONFIG)["metadata"]
 

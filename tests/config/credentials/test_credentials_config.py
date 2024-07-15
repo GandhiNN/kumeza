@@ -68,4 +68,4 @@ def testSuite():
 
 
 if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=2).run(testSuite())  # pragma: no cover
+    unittest.TextTestRunner(verbosity=2).run(testSuite())
