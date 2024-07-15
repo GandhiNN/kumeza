@@ -33,7 +33,6 @@ class MetadataConfigTest(unittest.TestCase, SetUp):
 
     def test(self):
         base_config = ConfigInstanceMetadata()
-        # expected = base_config.metadata
         keys_yaml = list(base_config.metadata_yaml.keys())
         keys_json = list(base_config.metadata_json.keys())
 
