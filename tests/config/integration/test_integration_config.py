@@ -11,14 +11,7 @@ JSON_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.json")
 YAML_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.yaml")
 
 
-class TestConfigInstanceIntegration:
-    def __init__(self):
-        self.integration = IntegrationConfig(
-            engine="spark", driver="jdbc", fetchsize=1000, chunksize=1000000
-        )
-
-
-class TestSetUp:  # pragma: no cover
+class SetUp:  # pragma: no cover
     def __init__(self):
         self.json_config = None
         self.yml_config = None
@@ -28,20 +21,39 @@ class TestSetUp:  # pragma: no cover
         self.yml_config = ConfigLoader.load(YAML_CONFIG)
 
 
-class TestIntegrationConfig(unittest.TestCase, TestSetUp):
+class ConfigInstanceIntegration:
+    def __init__(self):
+        self.integration_yaml = ConfigLoader.load(YAML_CONFIG)["integration"]
+        self.integration_json = ConfigLoader.load(JSON_CONFIG)["integration"]
+
+
+class IntegrationConfigTest(unittest.TestCase, SetUp):
     def setUp(self) -> None:
         self.setup()
 
     def test(self):
-        base_config = TestConfigInstanceIntegration()
-        expected = base_config.integration
+        base_config = ConfigInstanceIntegration()
+        keys_yaml = list(base_config.integration_yaml.keys())
+        keys_json = list(base_config.integration_json.keys())
+
+        # Keys sameness assertion
         self.assertEqual(
-            IntegrationConfig.marshal(self.yml_config["integration"]),
-            expected,
+            IntegrationConfig.marshal(self.yml_config["integration"]).get_field_name(),
+            keys_yaml,
         )
         self.assertEqual(
-            IntegrationConfig.marshal(self.json_config["integration"]),
-            expected,
+            IntegrationConfig.marshal(self.json_config["integration"]).get_field_name(),
+            keys_json,
+        )
+
+        # Object length assertion
+        self.assertEqual(
+            IntegrationConfig.marshal(self.yml_config["integration"]).get_length(),
+            len(keys_yaml),
+        )
+        self.assertEqual(
+            IntegrationConfig.marshal(self.json_config["integration"]).get_length(),
+            len(keys_json),
         )
 
 
@@ -49,7 +61,7 @@ def testSuite():  # pragma: no cover
     suite = unittest.TestSuite()
     suite.addTests(
         unittest.TestLoader().loadTestsFromTestCase(
-            TestIntegrationConfig,
+            IntegrationConfigTest,
         )
     )  # pragma: no cover
 
