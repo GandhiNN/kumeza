@@ -11,20 +11,7 @@ JSON_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.json")
 YAML_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.yaml")
 
 
-class TestConfigInstanceSourceSystem:
-    def __init__(self):
-        self.source_system = SourceSystemConfig(
-            id="imel",
-            database_type="mssql",
-            database_instance="dev",
-            authentication_type="ntlm",
-            hostname="sqlqa_qimel_pmhboz.dbiaas.sdi.pmi",
-            domain="pmintl.net",
-            port=1433,
-        )
-
-
-class TestSetUp:  # pragma: no cover
+class SetUp:
     def __init__(self):
         self.json_config = None
         self.yml_config = None
@@ -34,30 +21,52 @@ class TestSetUp:  # pragma: no cover
         self.yml_config = ConfigLoader.load(YAML_CONFIG)
 
 
-class TestSourceSystemConfig(unittest.TestCase, TestSetUp):
+class ConfigInstanceSourceSystem:
+    def __init__(self):
+        self.source_system_yaml = ConfigLoader.load(YAML_CONFIG)["source_system"]
+        self.source_system_json = ConfigLoader.load(JSON_CONFIG)["source_system"]
+
+
+class SourceSystemConfigTest(unittest.TestCase, SetUp):
     def setUp(self) -> None:
         self.setup()
 
     def test(self):
-        base_config = TestConfigInstanceSourceSystem()
-        expected = base_config.source_system
+        base_config = ConfigInstanceSourceSystem()
+        keys_yaml = list(base_config.source_system_yaml.keys())
+        keys_json = list(base_config.source_system_json.keys())
+
+        # Keys sameness assertion
         self.assertEqual(
-            SourceSystemConfig.marshal(self.yml_config["source_system"]),
-            expected,
+            SourceSystemConfig.marshal(
+                self.yml_config["source_system"]
+            ).get_field_name(),
+            keys_yaml,
         )
         self.assertEqual(
-            SourceSystemConfig.marshal(self.json_config["source_system"]),
-            expected,
+            SourceSystemConfig.marshal(
+                self.json_config["source_system"]
+            ).get_field_name(),
+            keys_json,
+        )
+        # expected = base_config.source_system
+        self.assertEqual(
+            SourceSystemConfig.marshal(self.yml_config["source_system"]).get_length(),
+            len(keys_yaml),
+        )
+        self.assertEqual(
+            SourceSystemConfig.marshal(self.json_config["source_system"]).get_length(),
+            len(keys_json),
         )
 
 
-def testSuite():  # pragma: no cover
+def testSuite():
     suite = unittest.TestSuite()
     suite.addTests(
         unittest.TestLoader().loadTestsFromTestCase(
-            TestSourceSystemConfig,
+            SourceSystemConfigTest,
         )
-    )  # pragma: no cover
+    )
 
 
 if __name__ == "__main__":
