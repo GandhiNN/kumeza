@@ -13,14 +13,7 @@ JSON_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.json")
 YAML_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.yaml")
 
 
-class TestConfigInstanceRuntimeEnvironment:
-    def __init__(self):
-        self.runtime_environment = RuntimeEnvironmentConfig(
-            id="icloud", provider="aws", service="glue", region="eu-west-1", env="dev"
-        )
-
-
-class TestSetUp:  # pragma: no cover
+class SetUp:
     def __init__(self):
         self.json_config = None
         self.yml_config = None
@@ -30,30 +23,61 @@ class TestSetUp:  # pragma: no cover
         self.yml_config = ConfigLoader.load(YAML_CONFIG)
 
 
-class TestRuntimeEnvironmentConfig(unittest.TestCase, TestSetUp):
+class ConfigInstanceRuntimeEnvironment:
+    def __init__(self):
+        self.runtime_environment_yaml = ConfigLoader.load(YAML_CONFIG)[
+            "runtime_environment"
+        ]
+        self.runtime_environment_json = ConfigLoader.load(JSON_CONFIG)[
+            "runtime_environment"
+        ]
+
+
+class RuntimeEnvironmentConfigTest(unittest.TestCase, SetUp):
     def setUp(self) -> None:
         self.setup()
 
     def test(self):
-        base_config = TestConfigInstanceRuntimeEnvironment()
-        expected = base_config.runtime_environment
+        base_config = ConfigInstanceRuntimeEnvironment()
+        keys_yaml = list(base_config.runtime_environment_yaml.keys())
+        keys_json = list(base_config.runtime_environment_json.keys())
+
+        # Keys sameness assertion
         self.assertEqual(
-            RuntimeEnvironmentConfig.marshal(self.yml_config["runtime_environment"]),
-            expected,
+            RuntimeEnvironmentConfig.marshal(
+                self.yml_config["runtime_environment"]
+            ).get_field_name(),
+            keys_yaml,
         )
         self.assertEqual(
-            RuntimeEnvironmentConfig.marshal(self.json_config["runtime_environment"]),
-            expected,
+            RuntimeEnvironmentConfig.marshal(
+                self.json_config["runtime_environment"]
+            ).get_field_name(),
+            keys_json,
+        )
+
+        # Object length assertion
+        self.assertEqual(
+            RuntimeEnvironmentConfig.marshal(
+                self.yml_config["runtime_environment"]
+            ).get_length(),
+            len(keys_yaml),
+        )
+        self.assertEqual(
+            RuntimeEnvironmentConfig.marshal(
+                self.json_config["runtime_environment"]
+            ).get_length(),
+            len(keys_json),
         )
 
 
-def testSuite():  # pragma: no cover
+def testSuite():
     suite = unittest.TestSuite()
     suite.addTests(
         unittest.TestLoader().loadTestsFromTestCase(
-            TestRuntimeEnvironmentConfig,
+            RuntimeEnvironmentConfigTest,
         )
-    )  # pragma: no cover
+    )
 
 
 if __name__ == "__main__":
