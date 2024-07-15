@@ -1,9 +1,11 @@
 import typing as t
 from dataclasses import dataclass
 
+from kumeza.config import BaseConfig
+
 
 @dataclass
-class SourceSystemConfig:
+class SourceSystemConfig(BaseConfig):
     id: str
     database_type: str
     database_instance: str
