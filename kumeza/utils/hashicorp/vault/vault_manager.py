@@ -1,5 +1,3 @@
-from typing import Any
-
 import hvac
 
 from kumeza.config.ingestor_config import IngestionConfig
