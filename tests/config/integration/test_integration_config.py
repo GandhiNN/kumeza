@@ -11,7 +11,7 @@ JSON_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.json")
 YAML_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.yaml")
 
 
-class SetUp:  # pragma: no cover
+class SetUp:
     def __init__(self):
         self.json_config = None
         self.yml_config = None
@@ -57,14 +57,14 @@ class IntegrationConfigTest(unittest.TestCase, SetUp):
         )
 
 
-def testSuite():  # pragma: no cover
+def testSuite():
     suite = unittest.TestSuite()
     suite.addTests(
         unittest.TestLoader().loadTestsFromTestCase(
             IntegrationConfigTest,
         )
-    )  # pragma: no cover
+    )
 
 
 if __name__ == "__main__":
-    unittest.TextTestRunner(verbosity=2).run(testSuite())  # pragma: no cover
+    unittest.TextTestRunner(verbosity=2).run(testSuite())
