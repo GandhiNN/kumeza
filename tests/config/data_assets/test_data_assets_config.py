@@ -67,12 +67,61 @@ class DataAssetsConfigTest(unittest.TestCase, SetUp):
         )
 
 
+class AssetsConfigTest(unittest.TestCase, SetUp):
+    def setUp(self) -> None:
+        self.setup()
+
+    def test(self):
+        # Set base config object
+        base_config = ConfigInstanceDataAssets()
+        outer_keys_yaml = list(
+            base_config.data_assets_plain_yaml[0]["assets"][0].keys()
+        )
+        outer_keys_json = list(
+            base_config.data_assets_plain_json[0]["assets"][0].keys()
+        )
+
+        # Keys sameness assertion
+        self.assertEqual(
+            DataAssetsConfig.marshal(self.yml_config["data_assets"])
+            .id[0]
+            .assets[0]
+            .get_field_name(),  # Test against AssetsId dataclass
+            outer_keys_yaml,
+        )
+
+        self.assertEqual(
+            DataAssetsConfig.marshal(self.json_config["data_assets"])
+            .id[0]
+            .assets[0]
+            .get_field_name(),  # Test against AssetsId dataclass
+            outer_keys_json,
+        )
+
+        # Object length assertion
+        self.assertEqual(
+            DataAssetsConfig.marshal(self.yml_config["data_assets"])
+            .id[0]
+            .assets[0]
+            .get_length(),  # Test against AssetsId dataclass
+            len(outer_keys_yaml),
+        )
+        self.assertEqual(
+            DataAssetsConfig.marshal(self.json_config["data_assets"])
+            .id[0]
+            .assets[0]
+            .get_length(),  # Test against AssetsId dataclass
+            len(outer_keys_json),
+        )
+
+
 def testSuite():  # pragma: no cover
     suite = unittest.TestSuite()
     suite.addTests(
-        unittest.TestLoader().loadTestsFromTestCase(
-            DataAssetsConfigTest,
-        )
+        [
+            unittest.TestLoader().loadTestsFromTestCase(DataAssetsConfigTest),
+            unittest.TestLoader().loadTestsFromTestCase(AssetsConfigTest),
+        ]
     )  # pragma: no cover
 
 
