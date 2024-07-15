@@ -8,7 +8,7 @@ from botocore.exceptions import ClientError
 log = logging.getLogger(__name__)
 
 
-class SSM:
+class SecretsManager:
     def __init__(self):
         self.session = None
         self.client = None
