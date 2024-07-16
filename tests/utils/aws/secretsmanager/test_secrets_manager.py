@@ -5,6 +5,9 @@ from moto import mock_aws
 from kumeza.utils.aws.secretsmanager.secretsmanager import SecretsManager
 
 
+SECRET_NAME = "mock_secret"
+
+
 @pytest.fixture
 def create_mocked_secret_manager_connection():
     with mock_aws():
@@ -33,8 +36,9 @@ def test_retrieve_secret_string(
         get_mocked_secret_manager,
     )
 
-    credentials_client = SecretsManager("mock_secret")
+    # credentials_client = SecretsManager("mock_secret")
+    credentials_client = SecretsManager()
 
-    assert credentials_client.get_secret_value() == {
+    assert credentials_client.get_secret_value(SECRET_NAME) == {
         "mock_secret_key": "mock_secret_value"
     }
