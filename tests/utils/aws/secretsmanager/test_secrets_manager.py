@@ -39,6 +39,7 @@ def test_retrieve_secret_string(
     # )
 
     ## Syntax 2: use class instantation syntax
+    # (ClassName, ClassMethod, MockedOutput)
     monkeypatch.setattr(
         SecretsManager, "_create_boto_client", get_mocked_secret_manager
     )
