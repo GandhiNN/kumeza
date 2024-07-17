@@ -10,8 +10,8 @@ from kumeza.utils.aws.sts.sts import STS
 
 
 ACCOUNT_ID = "icloud"
-SESSION_NAME = "session-name"
-
+ROLE_NAME = "test_role"
+ROLE_ARN = f"arn:aws:iam::{ACCOUNT_ID}:role/{ROLE_NAME}"
 
 @pytest.fixture
 def create_mocked_iam_connection():
@@ -31,18 +31,6 @@ def create_mocked_sts_connection():
 
 @pytest.fixture
 def create_mocked_iam_policy(create_mocked_iam_connection):
-    policy = json.dumps(
-        {
-            "Statement": [
-                {
-                    "Sid": "Stmt13690092345534",
-                    "Action": ["S3:ListBucket"],
-                    "Effect": "Allow",
-                    "Resource": ["arn:aws:s3:::foobar-tester"],
-                }
-            ]
-        }
-    )
     trust_policy_document = {
         "Version": "2012-10-17",
         "Statement": {
@@ -51,9 +39,8 @@ def create_mocked_iam_policy(create_mocked_iam_connection):
             "Action": "sts:AssumeRole",
         },
     }
-    role_name = "test-role"
     create_mocked_iam_connection.create_role(
-        RoleName=role_name, AssumeRolePolicyDocument=json.dumps(trust_policy_document)
+        RoleName=ROLE_ARN, AssumeRolePolicyDocument=json.dumps(trust_policy_document)
     )
 
 
@@ -66,5 +53,9 @@ def test_retrieve_assume_role(
     monkeypatch.setattr(STS, "_create_boto_client", get_mocked_sts_assume_role)
 
     sts_client = STS()
+    resp = sts_client.assume_role(assume_role_arn=ROLE_ARN)
+    credentials = resp["Credentials"]
 
-    print(sts_client.assume_role)
+    assert credentials["AccessKeyId"].startswith("ASIA")
+    assert len(credentials["SessionToken"]) == 356
+    assert resp["AssumedRoleUser"]["Arn"].endswith(f"/{ROLE_NAME}/assume-role-session")
