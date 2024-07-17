@@ -22,6 +22,7 @@ class BaseAwsUtil:
             service_name=self.service_name, region_name=self.region_name
         )
 
+
 def boto_error_handler(logger):
     def decorator(func):
         @wraps(func)
@@ -40,9 +41,7 @@ def boto_error_handler(logger):
                     logger.exception("An error occured on the server side.")
                     raise e
                 elif error_code == "InvalidParameterException":
-                    logger.exception(
-                        "You provided an invalid value for a parameter."
-                    )
+                    logger.exception("You provided an invalid value for a parameter.")
                     raise e
                 elif error_code == "InvalidRequestException":
                     logger.exception(
@@ -53,5 +52,7 @@ def boto_error_handler(logger):
                 elif error_code == "ResourceNotFoundException":
                     logger.info("We can't find the resource that you asked for.")
                     raise e
+
         return wrapper
+
     return decorator
