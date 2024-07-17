@@ -13,6 +13,7 @@ ACCOUNT_ID = "icloud"
 ROLE_NAME = "test_role"
 ROLE_ARN = f"arn:aws:iam::{ACCOUNT_ID}:role/{ROLE_NAME}"
 
+
 @pytest.fixture
 def create_mocked_iam_connection():
     with mock_aws():
