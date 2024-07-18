@@ -82,5 +82,36 @@ def test_upload_file(monkeypatch, create_mocked_s3_connection, create_mocked_s3_
         assert localfile.read() == contents
 
 
-def test_download_file():
-    pass
+def test_download_file(
+    monkeypatch, create_mocked_s3_connection, create_mocked_s3_bucket
+):
+
+    def get_mocked_s3_connection(*args, **kwargs):
+        return create_mocked_s3_connection
+
+    monkeypatch.setattr(S3, "_create_boto_client", get_mocked_s3_connection)
+
+    # Read local file content into memory
+    local_file = os.path.join(os.path.dirname(__file__), "test.txt")
+    with open(local_file, "r", encoding="utf8") as localfile:
+
+        # Upload file to the mocked bukcet
+        s3_client = S3()
+        s3_client.upload_file(local_file, BUCKET_NAME, "test.txt")
+
+        # Delete local file
+        os.remove(local_file)
+
+        # Download the previously uploaded file back into local
+        downloaded_file = os.path.join(os.path.dirname(__file__), "test_downloaded.txt")
+        s3_client.download_file(
+            bucket_name=BUCKET_NAME, object_name="test.txt", file_name=downloaded_file
+        )
+
+        with open(downloaded_file, "r", encoding="utf8") as downloadedfile:
+            assert localfile.read() == downloadedfile.read()
+
+            # Finally, if assertion passed, rewrite the file into "test.txt"
+            with open(local_file, "w", encoding="utf8") as f:
+                f.write(downloaded_file)
+                os.remove(downloaded_file)  # delete the downloaded file

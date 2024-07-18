@@ -33,7 +33,9 @@ class S3(BaseAwsUtil):
         )
 
     @boto_error_handler(log)
-    def download_file(self, file_name, bucket_name, object_name):
+    def download_file(
+        self, bucket_name: str = "", object_name: str = "", file_name: str = "'"
+    ):
         if file_name == None:
             file_name = object_name
         return self._create_boto_client().download_file(
