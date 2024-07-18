@@ -109,9 +109,11 @@ def test_download_file(
         )
 
         with open(downloaded_file, "r", encoding="utf8") as downloadedfile:
-            assert localfile.read() == downloadedfile.read()
+            localfile_content = localfile.read()
+            downloadedfile_content = downloadedfile.read()
+            assert downloadedfile_content == localfile_content
 
             # Finally, if assertion passed, rewrite the file into "test.txt"
             with open(local_file, "w", encoding="utf8") as f:
-                f.write(downloaded_file)
+                f.write(downloadedfile_content)
                 os.remove(downloaded_file)  # delete the downloaded file
