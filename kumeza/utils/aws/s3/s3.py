@@ -36,8 +36,6 @@ class S3(BaseAwsUtil):
     def download_file(
         self, bucket_name: str = "", object_name: str = "", file_name: str = "'"
     ):
-        if file_name == None:
-            file_name = object_name
         return self._create_boto_client().download_file(
             bucket_name, object_name, file_name
         )
