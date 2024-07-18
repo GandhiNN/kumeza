@@ -29,14 +29,6 @@ def create_mocked_s3_bucket(create_mocked_s3_connection):
         CreateBucketConfiguration={"LocationConstraint": "eu-west-1"},
     )
 
-
-@pytest.fixture
-def create_mocked_s3_object(create_mocked_s3_connection):
-    create_mocked_s3_connection.put_object(
-        Bucket=BUCKET_NAME, Key=KEY_NAME, Body=BODY, Metadata=METADATA
-    )
-
-
 def test_write_buffer(
     monkeypatch, create_mocked_s3_connection, create_mocked_s3_bucket
 ):
