@@ -24,6 +24,8 @@ PARAMS = {
     "ProvisionedThroughput": {"ReadCapacityUnits": 10, "WriteCapacityUnits": 10},
 }
 
+PARTITION_KEY = "pipeline_name"
+SORT_KEY = "execution_time"
 
 @pytest.fixture
 def create_mocked_dynamodb_connection():
@@ -41,4 +43,46 @@ def create_mocked_dynamodb_table(create_mocked_dynamodb_connection):
 def test_write_item(
     monkeypatch, create_mocked_dynamodb_connection, create_mocked_dynamodb_table
 ):
-    pass
+    def get_mocked_dynamodb_connection(*args, **kwargs):
+        return create_mocked_dynamodb_connection
+    
+    monkeypatch.setattr(DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection)
+
+    ddb_client = DynamoDB()
+    localfile = os.path.join(os.path.dirname(__file__), "tabledata.json")
+
+    monkeypatch.setattr(
+        DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection
+    )
+
+    # Instantiate the monkeypatched client 
+    dynamodb_client = DynamoDB()
+
+    # TODO
+    item = None
+    expected = None
+    assert dynamodb_client.write_item(item, TABLE_NAME) == expected
+
+
+def test_get_item(
+        monkeypatch, create_mocked_dynamodb_connection, create_mocked_dynamodb_table
+):
+    def get_mocked_dynamodb_connection(*args, **kwargs):
+        return create_mocked_dynamodb_connection
+    
+    monkeypatch.setattr(DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection)
+
+    ddb_client = DynamoDB()
+    localfile = os.path.join(os.path.dirname(__file__), "tabledata.json")
+
+    monkeypatch.setattr(
+        DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection
+    )
+
+    # Instantiate the monkeypatched client
+    dynamodb_client = DynamoDB()
+
+    # TODO
+    ITEM_NAME = None
+    expected = None
+    assert dynamodb_client.get_item(PARTITION_KEY, SORT_KEY, TABLE_NAME) == expected
