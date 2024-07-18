@@ -23,7 +23,6 @@ class BaseAwsUtil:
         )
 
 
-
 def boto_error_handler(logger):
     def decorator(func):
         @wraps(func)
