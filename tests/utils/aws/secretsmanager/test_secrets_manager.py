@@ -32,14 +32,14 @@ def test_retrieve_secret_string(
     def get_mocked_secret_manager_connection(*args, **kwargs):
         return create_mocked_secret_manager_connection
 
-    ## Syntax 1: use full dotted path of the mocked class
+    # Syntax 1: use full dotted path of the mocked class
     # ("fullPathToTestedClassMethod", replacementMethod)
     # monkeypatch.setattr(
     #     "kumeza.utils.aws.secretsmanager.secretsmanager.SecretsManager._create_boto_client",
     #     get_mocked_secret_manager,
     # )
 
-    ## Syntax 2: use class instantation syntax
+    # Syntax 2: use class instantation syntax
     # (className, classMethod, replacementMethod)
     monkeypatch.setattr(
         SecretsManager, "_create_boto_client", get_mocked_secret_manager_connection
