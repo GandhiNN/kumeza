@@ -1,5 +1,6 @@
 # pylint: disable=redefined-outer-name
 #
+import os
 from io import BytesIO
 
 import boto3
@@ -60,8 +61,25 @@ def test_write_buffer(
     assert get_resp["Body"].read() == data_input  # flushed upon first read
 
 
-def test_upload_file():
-    pass
+def test_upload_file(monkeypatch, create_mocked_s3_connection, create_mocked_s3_bucket):
+
+    def get_mocked_s3_connection(*args, **kwargs):
+        return create_mocked_s3_connection
+
+    monkeypatch.setattr(S3, "_create_boto_client", get_mocked_s3_connection)
+
+    # Upload file
+    s3_client = S3()
+    local_file = os.path.join(os.path.dirname(__file__), "test.txt")
+    s3_client.upload_file(local_file, BUCKET_NAME, "test.txt")
+
+    # Read object from the mocked bucket
+    data = s3_client.get_object(bucket_name=BUCKET_NAME, key_name="test.txt")
+    contents = data["Body"].read().decode("utf8")  # store in bytes buffer
+
+    # Compare the content of local and remote content
+    with open(local_file, "r", encoding="utf8") as localfile:
+        assert localfile.read() == contents
 
 
 def test_download_file():
