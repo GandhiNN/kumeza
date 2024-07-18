@@ -1,5 +1,6 @@
 import logging
 
+from kumeza.utils import ProgressPercentage
 from kumeza.utils.aws import BaseAwsUtil, boto_error_handler
 
 
@@ -24,11 +25,11 @@ class S3(BaseAwsUtil):
         return self._create_boto_client().get_object(Bucket=bucket_name, Key=key_name)
 
     @boto_error_handler(log)
-    def upload_file(self, file_name, bucket_name, object_name):
-        if object_name == None:
-            object_name = file_name
+    def upload_file(
+        self, file_name: str = "", bucket_name: str = "", object_name: str = ""
+    ):
         return self._create_boto_client().upload_file(
-            file_name, bucket_name, object_name
+            file_name, bucket_name, object_name, Callback=ProgressPercentage(file_name)
         )
 
     @boto_error_handler(log)
