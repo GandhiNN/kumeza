@@ -2,7 +2,9 @@ import logging
 
 from kumeza.utils.aws import BaseAwsUtil, boto_error_handler
 
+
 log = logging.getLogger(__name__)
+
 
 class DynamoDB(BaseAwsUtil):
 
@@ -14,4 +16,3 @@ class DynamoDB(BaseAwsUtil):
 
     def get_table(self):
         pass
-    

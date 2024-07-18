@@ -29,6 +29,7 @@ def create_mocked_s3_bucket(create_mocked_s3_connection):
         CreateBucketConfiguration={"LocationConstraint": "eu-west-1"},
     )
 
+
 def test_write_buffer(
     monkeypatch, create_mocked_s3_connection, create_mocked_s3_bucket
 ):
