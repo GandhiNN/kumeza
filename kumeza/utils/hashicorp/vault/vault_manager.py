@@ -10,9 +10,7 @@ class VaultManager:
 
     def create_vault_client(self, config: dict):
         self.client = hvac.Client(
-            url=config.url,
-            namespace=config.namespace,
-            verify=config.verify_ssl
+            url=config.url, namespace=config.namespace, verify=config.verify_ssl
         )
 
     def approle_login(self, role_id: str, secret_id: str):
