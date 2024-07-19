@@ -36,7 +36,7 @@ class DynamoDB(BaseAwsUtil):
         deserializer = TypeDeserializer()
 
         def serialize_number(number: str) -> Union[float, int]:
-            if "." in number:
+            if "." in number or "e" in number:
                 return float(number)
             return int(number)
 
