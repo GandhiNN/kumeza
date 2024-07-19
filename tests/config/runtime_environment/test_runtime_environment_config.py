@@ -2,9 +2,7 @@ import os
 import unittest
 
 from kumeza.config.loader import ConfigLoader
-from kumeza.config.runtime_environment.runtime_environment_config import (
-    RuntimeEnvironmentConfig,
-)
+from kumeza.config.runtime_environment import RuntimeEnvironmentConfig
 
 
 # Config files to be referenced
