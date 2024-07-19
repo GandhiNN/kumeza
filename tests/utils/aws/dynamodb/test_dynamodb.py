@@ -11,6 +11,7 @@ from moto import mock_aws
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
 
 
+# Constants
 TABLE_NAME = "TestDynamoDBTable"
 PARAMS = {
     "TableName": TABLE_NAME,
@@ -24,7 +25,6 @@ PARAMS = {
     ],
     "ProvisionedThroughput": {"ReadCapacityUnits": 10, "WriteCapacityUnits": 10},
 }
-
 PARTITION_KEY = "pipeline_name"
 SORT_KEY = "execution_time"
 
@@ -42,7 +42,7 @@ def create_mocked_dynamodb_table(create_mocked_dynamodb_connection):
     create_mocked_dynamodb_connection.create_table(**PARAMS)
 
 
-def test_write_item(
+def test_put_and_get_item(
     monkeypatch, create_mocked_dynamodb_connection, create_mocked_dynamodb_table
 ):
     def get_mocked_dynamodb_connection(*args, **kwargs):
@@ -50,37 +50,24 @@ def test_write_item(
 
     monkeypatch.setattr(DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection)
 
-    monkeypatch.setattr(DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection)
-
     # Instantiate the monkeypatched client
     dynamodb_client = DynamoDB()
 
+    # Open the local test file
     test_json_file = os.path.join(os.path.dirname(__file__), "item.json")
     with open(test_json_file, "r", encoding="utf8") as json_file:
         python_json = json.load(json_file)
 
-    result = dynamodb_client.write_item(python_json, TABLE_NAME)
+    result_put = dynamodb_client.put_item(python_json, TABLE_NAME)
 
-    assert result["ResponseMetadata"]["HTTPStatusCode"] == 200
+    assert result_put["ResponseMetadata"]["HTTPStatusCode"] == 200
 
+    # Test keys
+    keys = {
+        "pipeline_name": "pipe-doadi-cvqa-product_family",
+        "execution_time": "1674019243",
+    }
+    result_get = dynamodb_client.get_item(keys, TABLE_NAME)
+    result_get_deserialized = dynamodb_client._dynamo_to_python_json(result_get["Item"])
 
-def test_get_item(
-    monkeypatch, create_mocked_dynamodb_connection, create_mocked_dynamodb_table
-):
-    def get_mocked_dynamodb_connection(*args, **kwargs):
-        return create_mocked_dynamodb_connection
-
-    monkeypatch.setattr(DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection)
-
-    ddb_client = DynamoDB()
-    localfile = os.path.join(os.path.dirname(__file__), "tabledata.json")
-
-    monkeypatch.setattr(DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection)
-
-    # Instantiate the monkeypatched client
-    dynamodb_client = DynamoDB()
-
-    # TODO
-    ITEM_NAME = None
-    expected = ""
-    assert dynamodb_client.get_item(PARTITION_KEY, SORT_KEY, TABLE_NAME) == expected
+    assert result_get_deserialized == python_json
