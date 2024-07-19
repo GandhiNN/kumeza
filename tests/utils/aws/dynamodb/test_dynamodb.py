@@ -1,5 +1,6 @@
 # pylint: disable-redefined-outer-name
 #
+import json
 import os
 
 import boto3
@@ -49,18 +50,18 @@ def test_write_item(
 
     monkeypatch.setattr(DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection)
 
-    ddb_client = DynamoDB()
-    localfile = os.path.join(os.path.dirname(__file__), "tabledata.json")
-
     monkeypatch.setattr(DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection)
 
     # Instantiate the monkeypatched client
     dynamodb_client = DynamoDB()
 
-    # TODO
-    item = None
-    expected = ""
-    assert dynamodb_client.write_item(item, TABLE_NAME) == expected
+    test_json_file = os.path.join(os.path.dirname(__file__), "item.json")
+    with open(test_json_file, "r", encoding="utf8") as json_file:
+        python_json = json.load(json_file)
+
+    result = dynamodb_client.write_item(python_json, TABLE_NAME)
+
+    assert result["ResponseMetadata"]["HTTPStatusCode"] == 200
 
 
 def test_get_item(

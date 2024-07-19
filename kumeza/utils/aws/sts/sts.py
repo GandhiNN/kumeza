@@ -1,8 +1,8 @@
+import logging
 from typing import Dict
 
 from kumeza.utils.aws import BaseAwsUtil, boto_error_handler
 
-import logging
 
 logger = logging.getLogger(__name__)
 
