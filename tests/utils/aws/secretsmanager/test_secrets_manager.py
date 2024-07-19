@@ -47,6 +47,6 @@ def test_retrieve_secret_string(
 
     credentials_client = SecretsManager()
 
-    assert credentials_client.get_secret_value(SECRET_NAME) == {
+    assert credentials_client.get_secret(SECRET_NAME) == {
         "mock_secret_key": "mock_secret_value"
     }
