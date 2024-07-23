@@ -1,22 +1,23 @@
 import hvac
 
-from kumeza.config.ingestor_config import IngestionConfig
-
 
 class VaultManager:
 
-    def __init__(self):
-        self.client = None
+    def __init__(self, vault_url, namespace, ssl_verify=False):
 
-    def create_vault_client(self, config: dict):
+        self.url = vault_url
+        self.namespace = namespace
+        self.ssl_verify = ssl_verify
         self.client = hvac.Client(
-            url=config['url'], namespace=config['namespace'], verify=config['verify_ssl']
+            url=self.url, namespace=self.namespace, verify=self.ssl_verify
         )
 
-    def approle_login(self, role_id: str, secret_id: str):
-        self.client.auth.approle.login(role_id=role_id, secret_id=secret_id)
+    def approle_login(self, role_id, secret_id):
+        self.client = self.client.auth.approle.login(
+            role_id=role_id, secret_id=secret_id
+        )
 
-    def get_secret(self, path: str, mount_point: str) -> dict:
-        return self.client.secrets.kv.v1.read_secret(
+    def get_creds(self, path, mount_point):
+        return self.client.client.secrets.kv.v1.read_secret(
             path=path, mount_point=mount_point
         )

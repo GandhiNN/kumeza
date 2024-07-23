@@ -1,7 +1,7 @@
 import os
 
 from kumeza.utils.aws.secretsmanager import SecretsManager
-from kumeza.utils.hashicorp.vault import VaultManager
+from kumeza.utils.hashicorp.vault import VaultManager, approle_login
 
 # Constants
 ABS_PATH = os.path.dirname(__file__)
@@ -27,8 +27,12 @@ print(secrets)
 
 # Logic Vaultmanager
 vaultmanager = VaultManager()
-vaultmanager.create_vault_client(vault_config)
-print(vaultmanager)
+vault_client = vaultmanager.create_vault_client(vault_config)
+print(vault_client)
 # approle login
-vaultmanager.approle_login(role_id=secrets['role_id'], secret_id=secrets['secret_id'])
+vault_client = approle_login(vault_client, role_id=secrets['role_id'], secret_id=secrets['secret_id'])
 # get secret
+print(vault_client)
+# print(vault_client.token)
+# print(vaultmanager.client.token)
+print(vault_client['auth']['client_token'])
