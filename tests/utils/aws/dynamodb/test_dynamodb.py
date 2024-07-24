@@ -2,10 +2,10 @@
 #
 import json
 import os
+import unittest
 
 import boto3
 import boto3.session
-import pytest
 from moto import mock_aws
 
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
@@ -29,45 +29,41 @@ PARTITION_KEY = "pipeline_name"
 SORT_KEY = "execution_time"
 
 
-@pytest.fixture
-def create_mocked_dynamodb_connection():
-    with mock_aws():
-        yield boto3.session.Session().client(
+class DynamoDBTestIntegration(unittest.TestCase):
+
+    @mock_aws
+    def setUp(self):
+        # Setup the mock connection
+        self.dynamodb_client = boto3.session.Session().client(
             service_name="dynamodb", region_name="eu-west-1"
         )
 
+    @mock_aws
+    def test_put_and_get_item(self):
 
-@pytest.fixture
-def create_mocked_dynamodb_table(create_mocked_dynamodb_connection):
-    create_mocked_dynamodb_connection.create_table(**PARAMS)
+        # Create the mock table
+        self.dynamodb_client.create_table(**PARAMS)
 
+        # Run test on the function
+        dynamodb_client = DynamoDB()
 
-def test_put_and_get_item(
-    monkeypatch, create_mocked_dynamodb_connection, create_mocked_dynamodb_table
-):
-    def get_mocked_dynamodb_connection(*args, **kwargs):
-        return create_mocked_dynamodb_connection
+        # Open the local test file
+        test_json_file = os.path.join(os.path.dirname(__file__), "item.json")
+        with open(test_json_file, "r", encoding="utf8") as json_file:
+            python_json = json.load(json_file)
 
-    monkeypatch.setattr(DynamoDB, "_create_boto_client", get_mocked_dynamodb_connection)
+        result_put = dynamodb_client.put_item(python_json, TABLE_NAME)
 
-    # Instantiate the monkeypatched client
-    dynamodb_client = DynamoDB()
+        assert result_put["ResponseMetadata"]["HTTPStatusCode"] == 200
 
-    # Open the local test file
-    test_json_file = os.path.join(os.path.dirname(__file__), "item.json")
-    with open(test_json_file, "r", encoding="utf8") as json_file:
-        python_json = json.load(json_file)
+        # Test keys
+        keys = {
+            "pipeline_name": "pipe-doadi-cvqa-product_family",
+            "execution_time": "1674019243",
+        }
+        result_get = dynamodb_client.get_item(keys, TABLE_NAME)
+        result_get_deserialized = dynamodb_client.dynamo_to_python_json(
+            result_get["Item"]
+        )
 
-    result_put = dynamodb_client.put_item(python_json, TABLE_NAME)
-
-    assert result_put["ResponseMetadata"]["HTTPStatusCode"] == 200
-
-    # Test keys
-    keys = {
-        "pipeline_name": "pipe-doadi-cvqa-product_family",
-        "execution_time": "1674019243",
-    }
-    result_get = dynamodb_client.get_item(keys, TABLE_NAME)
-    result_get_deserialized = dynamodb_client._dynamo_to_python_json(result_get["Item"])
-
-    assert result_get_deserialized == python_json
+        assert result_get_deserialized == python_json
