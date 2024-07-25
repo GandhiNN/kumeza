@@ -103,8 +103,8 @@ pipeline {
                             cpu: 2
                             memory: 2Gi
                       command:
-                    - name: awsglue
-                      image: art.pmideep.com/dockerhub/amazon/aws-glue-libs
+                    - name: lambda
+                      image: image: public.ecr.aws/sam/build-python3.10
                       resources:
                         requests:
                             cpu: 1
@@ -142,7 +142,7 @@ pipeline {
         }
         stage('Initial Setup') {
             steps {
-                container('awsglue') {
+                container('lambda') {
                     script {
                         echo "Using DEEP environment: ${DEEP_ENVIRONMENT}"
                         echo "Using Service Account: ${SERVICE_ACCOUNT}"
@@ -154,7 +154,7 @@ pipeline {
         }
         stage('Install and Setup Poetry') {
             steps {
-                container("awsglue") {
+                container("lambda") {
                     script {
                         poetrySetup()
                     }
@@ -163,7 +163,7 @@ pipeline {
         }
         stage('Format and Lint the Codebase') {
             steps {
-                container("awsglue") {
+                container("lambda") {
                     script {
                         formatAndLintCodebase()
                     }
@@ -172,7 +172,7 @@ pipeline {
         }
         stage('Unit Test') {
             steps {
-                container("awsglue") {
+                container("lambda") {
                     script {
                         unitTest()
                     }
@@ -181,7 +181,7 @@ pipeline {
         }
         stage('Build Wheel File') {
             steps {
-                container("awsglue") {
+                container("lambda") {
                     script {
                         buildWheel()
                     }
@@ -190,7 +190,7 @@ pipeline {
         }
         stage('Sync Wheel File') {
             steps {
-                container("awsglue") {
+                container("lambda") {
                     script {
                         copyWheelToS3Bucket()
                     }
