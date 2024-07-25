@@ -104,7 +104,7 @@ pipeline {
                             memory: 2Gi
                       command:
                     - name: lambda
-                      image: image: public.ecr.aws/sam/build-python3.10
+                      image: public.ecr.aws/sam/build-python3.10
                       resources:
                         requests:
                             cpu: 1
