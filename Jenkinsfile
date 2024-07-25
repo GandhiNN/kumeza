@@ -105,6 +105,11 @@ pipeline {
                       command:
                       - cat
                       tty: true
+                    - name: pyspark
+                      image: art.pmideep.com/dockerhub/apache/spark:python3
+                      command:
+                      - cat
+                      tty: true
                     - name: sonarscanner
                       image: art.pmideep.com/dockerhub/sonarsource/sonar-scanner-cli:5
                       command:
