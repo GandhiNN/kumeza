@@ -94,7 +94,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/python:3.10
+                      image: art.pmideep.com/dockerhub/amazon/aws-sam-cli-build-image-python3.9
                       resources:
                         requests:
                             cpu: 1
@@ -142,7 +142,7 @@ pipeline {
         }
         stage('Initial Setup') {
             steps {
-                container('python') {
+                container('lambda') {
                     script {
                         echo "Using DEEP environment: ${DEEP_ENVIRONMENT}"
                         echo "Using Service Account: ${SERVICE_ACCOUNT}"
