@@ -5,7 +5,6 @@ import unittest
 from io import BytesIO
 
 import boto3
-import pytest
 from moto import mock_aws
 
 from kumeza.utils.aws.s3.s3 import S3
