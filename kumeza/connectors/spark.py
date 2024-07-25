@@ -1,4 +1,4 @@
-class SparkManager:
+class JDBCManager:
 
     def __init__(
         self, hostname: str, port: str, db_instance: str, db_name: str, domain: str
@@ -32,9 +32,7 @@ class SparkManager:
                     f"""useNTLMv2=true;domain={self.domain}"""
                 )
             case "oracle":
-                return (
-                    f"""jdbc:oracle:thin:@{self.hostname}:{self.port}:{self.db_instance}"""
-                )
+                return f"""jdbc:oracle:thin:@{self.hostname}:{self.port}:{self.db_instance}"""
             case "mysql":
                 return (
                     f"""jdbc:mysql://{self.hostname}:{self.port}/{self.db_name}"""
@@ -45,7 +43,7 @@ class SparkManager:
 
     def get_driver(self, db_type: str) -> str:
         match db_type:
-            case "postgresql"|"mssql"|"mssql-ntlm":
+            case "postgresql" | "mssql" | "mssql-ntlm":
                 return "net.sourceforge.jtds.jdbc.Driver"
             case "oracle":
                 return "oracle.jdbc.driver.OracleDriver"

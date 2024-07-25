@@ -1,8 +1,8 @@
 import os
 import unittest
 
-from kumeza.config.loader import ConfigLoader
 from kumeza.config.integration.integration_config import IntegrationConfig
+from kumeza.config.loader import ConfigLoader
 
 
 # Config files to be referenced
