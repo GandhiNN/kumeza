@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from kumeza.config.data_assets import DataAssetsConfig
+from kumeza.config.data_assets.data_assets_config import DataAssetsConfig
 from kumeza.config.loader import ConfigLoader
 
 

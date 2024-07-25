@@ -2,7 +2,7 @@ import os
 import unittest
 
 from kumeza.config.loader import ConfigLoader
-from kumeza.config.metadata import MetadataConfig
+from kumeza.config.metadata.metadata_config import MetadataConfig
 
 
 # Config files to be referenced

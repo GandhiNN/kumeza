@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from kumeza.config.credentials import CredentialsConfig
+from kumeza.config.credentials.credentials_config import CredentialsConfig
 from kumeza.config.loader import ConfigLoader
 
 

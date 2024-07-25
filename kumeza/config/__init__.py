@@ -1,7 +1,5 @@
 from dataclasses import dataclass, fields
 
-from .loader import ConfigLoader
-
 
 @dataclass
 class BaseConfig:
