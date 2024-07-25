@@ -47,7 +47,15 @@ class JDBCTest(unittest.TestCase):
         )
 
     def test_get_connstring_postgresql(self):
-        pass
+        assert (
+            self.spark_manager.get_connection_string("postgresql")
+            == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
+            """instance=dev;databaseName=somedbname;"""
+            """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net"""
+        )
 
     def test_get_driver_postgresql(self):
-        pass
+        assert (
+            self.spark_manager.get_driver("postgresql")
+            == "net.sourceforge.jtds.jdbc.Driver"
+        )
