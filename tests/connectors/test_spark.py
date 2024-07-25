@@ -37,6 +37,27 @@ class JDBCTest(unittest.TestCase):
             """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net"""
         )
 
+    def test_get_connstring_postgresql(self):
+        assert (
+            self.spark_manager.get_connection_string("postgresql")
+            == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
+            """instance=dev;databaseName=somedbname;"""
+            """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net"""
+        )
+
+    def test_get_connstring_oracle(self):
+        assert (
+            self.spark_manager.get_connection_string("oracle")
+            == """jdbc:oracle:thin:@somedbhostname.db.sdi.pmi:1443:dev"""
+        )
+
+    def test_get_connstring_mysql(self):
+        assert (
+            self.spark_manager.get_connection_string("mysql")
+            == """jdbc:mysql://somedbhostname.db.sdi.pmi:1443/somedbname"""
+            """?zeroDateTimeBehavior=CONVERT_TO_NULL&autoCommit=false"""
+        )
+
     def test_get_driver_mssql(self):
         assert (
             self.spark_manager.get_driver("mssql") == "net.sourceforge.jtds.jdbc.Driver"
@@ -46,16 +67,16 @@ class JDBCTest(unittest.TestCase):
             == "net.sourceforge.jtds.jdbc.Driver"
         )
 
-    def test_get_connstring_postgresql(self):
-        assert (
-            self.spark_manager.get_connection_string("postgresql")
-            == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
-            """instance=dev;databaseName=somedbname;"""
-            """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net"""
-        )
-
     def test_get_driver_postgresql(self):
         assert (
             self.spark_manager.get_driver("postgresql")
             == "net.sourceforge.jtds.jdbc.Driver"
         )
+
+    def test_get_driver_oracle(self):
+        assert (
+            self.spark_manager.get_driver("oracle") == "oracle.jdbc.driver.OracleDriver"
+        )
+
+    def test_get_driver_mysql(self):
+        assert self.spark_manager.get_driver("mysql") == "com.mysql.cj.jdbc.Driver"

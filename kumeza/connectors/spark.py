@@ -30,6 +30,15 @@ class SparkManager:
                 f"""databaseName={self.db_name};integratedSecurity=true;"""
                 f"""useNTLMv2=true;domain={self.domain}"""
             )
+        if db_type == "oracle":
+            return (
+                f"""jdbc:oracle:thin:@{self.hostname}:{self.port}:{self.db_instance}"""
+            )
+        if db_type == "mysql":
+            return (
+                f"""jdbc:mysql://{self.hostname}:{self.port}/{self.db_name}"""
+                """?zeroDateTimeBehavior=CONVERT_TO_NULL&autoCommit=false"""
+            )
 
     def get_driver(self, db_type: str) -> str:
         if db_type == "postgresql" or "mssql" in db_type:
