@@ -94,7 +94,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/python/python
+                      image: art.pmideep.com/dockerhub/python:3.10
                       resources:
                         requests:
                             cpu: 1
