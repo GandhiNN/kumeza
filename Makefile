@@ -51,7 +51,7 @@ format:
 
 .PHONY: test
 test: 
-		$(POETRY) run pytest ./tests/ --cov-report term-missing --cov-fail-under 100 --cov $(NAME)
+		$(POETRY) run pytest ./tests/ --cov-report term-missing --cov-fail-under 100 --cov $(NAME) --cov-report html
 
 build:
 		$(POETRY) build
