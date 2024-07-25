@@ -94,7 +94,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/amazon/aws-sam-cli-build-image-python3.9
+                      image: art.pmideep.com/dockerhub/python/python
                       resources:
                         requests:
                             cpu: 1
@@ -142,7 +142,7 @@ pipeline {
         }
         stage('Initial Setup') {
             steps {
-                container('lambda') {
+                container('python') {
                     script {
                         echo "Using DEEP environment: ${DEEP_ENVIRONMENT}"
                         echo "Using Service Account: ${SERVICE_ACCOUNT}"
@@ -154,7 +154,7 @@ pipeline {
         }
         stage('Install and Setup Poetry') {
             steps {
-                container("lambda") {
+                container("python") {
                     script {
                         poetrySetup()
                     }
@@ -163,7 +163,7 @@ pipeline {
         }
         stage('Format and Lint the Codebase') {
             steps {
-                container("lambda") {
+                container("python") {
                     script {
                         formatAndLintCodebase()
                     }
@@ -172,7 +172,7 @@ pipeline {
         }
         stage('Unit Test') {
             steps {
-                container("lambda") {
+                container("python") {
                     script {
                         unitTest()
                     }
@@ -181,7 +181,7 @@ pipeline {
         }
         stage('Build Wheel File') {
             steps {
-                container("lambda") {
+                container("python") {
                     script {
                         buildWheel()
                     }
@@ -190,7 +190,7 @@ pipeline {
         }
         stage('Sync Wheel File') {
             steps {
-                container("lambda") {
+                container("python") {
                     script {
                         copyWheelToS3Bucket()
                     }
