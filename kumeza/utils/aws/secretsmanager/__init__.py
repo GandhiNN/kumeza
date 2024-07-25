@@ -1,1 +1,1 @@
-from .secretsmanager import *
+from .secretsmanager import SecretsManager

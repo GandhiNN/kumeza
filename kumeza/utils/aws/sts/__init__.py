@@ -1,1 +1,1 @@
-from .sts import *
+from .sts import STS
