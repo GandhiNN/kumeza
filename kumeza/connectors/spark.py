@@ -39,6 +39,7 @@ class SparkManager:
                 f"""jdbc:mysql://{self.hostname}:{self.port}/{self.db_name}"""
                 """?zeroDateTimeBehavior=CONVERT_TO_NULL&autoCommit=false"""
             )
+        return None
 
     def get_driver(self, db_type: str) -> str:
         if db_type == "postgresql" or "mssql" in db_type:
@@ -47,3 +48,4 @@ class SparkManager:
             return "oracle.jdbc.driver.OracleDriver"
         if db_type == "mysql":
             return "com.mysql.cj.jdbc.Driver"
+        return None
