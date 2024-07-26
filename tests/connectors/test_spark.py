@@ -5,10 +5,10 @@ import unittest
 # that have pyspark installed
 import findspark
 
-findspark.init() # noqa: E402
+findspark.init() 
 
-from pyspark.sql import SparkSession
-from kumeza.connectors.spark import SparkManager
+from pyspark.sql import SparkSession # noqa: E402
+from kumeza.connectors.spark import SparkManager # noqa: E402
 
 
 PIPELINE_NAME = "test_pipeline"
