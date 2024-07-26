@@ -46,7 +46,6 @@ def discoverAccountID() {
 
 def initSetup() {
     sh(script: """
-    apt install make
     make init
     """)
 }
@@ -97,7 +96,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/python:3.9.19-slim
+                      image: art.pmideep.com/dockerhub/spark:python3
                       command:
                       - cat
                       tty: true
