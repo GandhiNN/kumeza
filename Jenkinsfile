@@ -46,7 +46,7 @@ def discoverAccountID() {
 
 def initSetup() {
     sh(script: """
-    apt update; apt install build-essential jq zip -y --no-install-recommends
+    apt update; apt install build-essential jq zip default-jdk -y --no-install-recommends
     make init
     """)
 }
