@@ -46,7 +46,7 @@ def discoverAccountID() {
 
 def initSetup() {
     sh(script: """
-    apt-get install build-essential
+    apt install make
     make init
     """)
 }
