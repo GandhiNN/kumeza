@@ -98,11 +98,6 @@ pipeline {
                       command:
                       - cat
                       tty: true
-                    - name: spark
-                      image: art.pmideep.com/dockerhub/bitnami/spark:3.4.3
-                      command:
-                      - cat
-                      tty: true
                     - name: sonarscanner
                       image: art.pmideep.com/dockerhub/sonarsource/sonar-scanner-cli:5
                       command:
@@ -130,7 +125,7 @@ pipeline {
         }
         stage('Initial Setup') {
             steps {
-                container('spark') {
+                container('python') {
                     script {
                         echo "Using DEEP environment: ${DEEP_ENVIRONMENT}"
                         echo "Using Service Account: ${SERVICE_ACCOUNT}"
@@ -142,7 +137,7 @@ pipeline {
         }
         stage('Install and Setup Poetry') {
             steps {
-                container("spark") {
+                container("python") {
                     script {
                         poetrySetup()
                     }
@@ -151,7 +146,7 @@ pipeline {
         }
         stage('Format and Lint the Codebase') {
             steps {
-                container("spark") {
+                container("python") {
                     script {
                         formatAndLintCodebase()
                     }
@@ -160,7 +155,7 @@ pipeline {
         }
         stage('Unit Test') {
             steps {
-                container("spark") {
+                container("python") {
                     script {
                         unitTest()
                     }
@@ -169,7 +164,7 @@ pipeline {
         }
         stage('Build Wheel File') {
             steps {
-                container("spark") {
+                container("python") {
                     script {
                         buildWheel()
                     }
@@ -178,7 +173,7 @@ pipeline {
         }
         stage('Sync Wheel File') {
             steps {
-                container("spark") {
+                container("python") {
                     script {
                         copyWheelToS3Bucket()
                     }
