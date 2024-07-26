@@ -17,7 +17,7 @@ help:
 
 .PHONY: init
 init:
-		yum install -y zip jq
+		yum install -y zip jq openjdk-8-jdk
 		python -m pip install --upgrade pip
 		
 .PHONY: install-poetry
