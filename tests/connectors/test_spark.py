@@ -8,7 +8,7 @@ import findspark
 
 findspark.init()
 
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession # noqa: E402 
 
 from kumeza.connectors.spark import SparkManager
 
