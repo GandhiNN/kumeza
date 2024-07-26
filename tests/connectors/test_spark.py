@@ -1,5 +1,13 @@
 import unittest
 
+# Used during unittest to make sure
+# the code is testable accross different machines
+# that have pyspark installed
+import findspark
+
+
+findspark.init()
+
 from pyspark.sql import SparkSession
 
 from kumeza.connectors.spark import SparkManager

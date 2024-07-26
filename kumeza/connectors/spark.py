@@ -1,7 +1,8 @@
 from pyspark.sql import SparkSession
 
+
 class SparkManager:
-    
+
     def __init__(self):
         self.session = None
 

@@ -104,11 +104,6 @@ pipeline {
                       command:
                       - cat
                       tty: true
-                    - name: spark
-                      image : art.pmideep.com/dockerhub/spark:python3-java17
-                      command:
-                      - cat
-                      tty: true
                     - name: sonarscanner
                       image: art.pmideep.com/dockerhub/sonarsource/sonar-scanner-cli:5
                       command:
@@ -175,7 +170,7 @@ pipeline {
         }
         stage('Unit Test') {
             steps {
-                container("spark") {
+                container("python") {
                     script {
                         unitTest()
                     }
