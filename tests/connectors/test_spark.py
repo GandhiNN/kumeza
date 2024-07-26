@@ -57,11 +57,9 @@ class JDBCManagerTest(unittest.TestCase):
             == """jdbc:mysql://somedbhostname.db.sdi.pmi:1443/somedbname"""
             """?zeroDateTimeBehavior=CONVERT_TO_NULL&autoCommit=false"""
         )
-    
+
     def test_get_connstring_unrecognized_input(self):
-        assert (
-            self.jdbc_manager.get_connection_string("unrecognized") == ""
-        )
+        assert self.jdbc_manager.get_connection_string("unrecognized") == ""
 
     def test_get_driver_mssql(self):
         assert (
