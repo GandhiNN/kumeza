@@ -30,6 +30,8 @@ install-poetry:
 .PHONY: install-pyspark
 install-pyspark:
 		@echo "Installing PySpark..."
+		pip install pyspark
+		pip show pyspark
 		pwd
 		ls -lrt .
 		ls -lrt /tmp
