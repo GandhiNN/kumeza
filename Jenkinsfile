@@ -94,7 +94,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/python/python:3.9.19-slim-bullseye
+                      image: art.pmideep.com/dockerhub/python:3.9.19-slim-bullseye
                       command:
                       - cat
                       tty: true
