@@ -94,7 +94,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/amazon/amazonlinux:latest
+                      image: art.pmideep.com/amazonlinux/amazonlinux:latest
                       resources:
                         requests:
                             cpu: 1
