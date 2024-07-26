@@ -1,14 +1,8 @@
 import unittest
 
-# Used during unittest to make sure
-# the code is testable accross different machines
-# that have pyspark installed
-import findspark
+from pyspark.sql import SparkSession  # noqa: E402
 
-findspark.init() 
-
-from pyspark.sql import SparkSession # noqa: E402
-from kumeza.connectors.spark import SparkManager # noqa: E402
+from kumeza.connectors.spark import SparkManager  # noqa: E402
 
 
 PIPELINE_NAME = "test_pipeline"

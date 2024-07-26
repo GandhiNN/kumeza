@@ -30,10 +30,12 @@ install-poetry:
 .PHONY: install-pyspark
 install-pyspark:
 		@echo "Installing PySpark..."
-		pip install pyspark
-		@export PYSPARK_PYTHON=python3
-		@export SPARK_HOME=~/.local/lib/python3.9/site-packages/pyspark
-		@pyspark --version
+		@curl https://dlcdn.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz -o spark-3.5.1-bin-hadoop3.tgz
+		@tar xvzf spark-3.5.1-bin-hadoop3.tgz --directory /opt/spark --strip-components 1 
+		@rm -rf spark-3.5.1-bin-hadoop3.tgz
+		@echo export PATH=/opt/spark/sbin:/opt/spark/bin:${PATH} >> ~/bashrc
+		@echo export SPARK_HOME=/opt/spark/ >> ~/bashrc
+		@echo export PYSPARK_PYTHON=python3
 
 .PHONY: install
 install:
