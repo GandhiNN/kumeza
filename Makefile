@@ -33,13 +33,13 @@ install-pyspark:
 		pwd
 		ls -lrt .
 		ls -lrt /tmp
+		ls -lrt ~/.local/lib
 		@curl https://dlcdn.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz -o spark-3.5.1-bin-hadoop3.tgz
-		ls -lrt
 		@tar -xvzf spark-3.5.1-bin-hadoop3.tgz -C /opt/spark 
 		@rm -rf spark-3.5.1-bin-hadoop3.tgz
 		@echo export PATH=/opt/spark/sbin:/opt/spark/bin:${PATH} >> ~/bashrc
 		@echo export SPARK_HOME=/opt/spark/ >> ~/bashrc
-		@echo export PYSPARK_PYTHON=python3
+		@echo export PYSPARK_PYTHON=python3 >> ~/bashrc
 
 .PHONY: install
 install:
