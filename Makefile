@@ -33,7 +33,7 @@ install-pyspark:
 		pwd
 		ls -lrt .
 		ls -lrt /tmp
-		ls -lrt ~/.local/lib
+		ls -lrt /usr/local
 		@curl https://dlcdn.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz -o spark-3.5.1-bin-hadoop3.tgz
 		@tar -xvzf spark-3.5.1-bin-hadoop3.tgz -C /opt/spark 
 		@rm -rf spark-3.5.1-bin-hadoop3.tgz
