@@ -26,6 +26,12 @@ install-poetry:
 		pip install poetry
 		$(POETRY) --version
 
+.PHONY: install-pyspark
+install-poetry:
+		@echo "Installing PySpark..."
+		pip install pyspark
+		@pyspark --version
+
 .PHONY: install
 install:
 		@if [ -z $(POETRY) ]; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi

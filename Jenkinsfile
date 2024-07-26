@@ -55,6 +55,12 @@ def poetrySetup() {
     """)
 }
 
+def pysparkSetup() {
+    sh(script: """
+    make install-pyspark
+    """)
+}
+
 def formatAndLintCodebase() {
     sh(script: """
     make format
@@ -140,6 +146,15 @@ pipeline {
                 container("python") {
                     script {
                         poetrySetup()
+                    }
+                }
+            }
+        }
+        stage('Install and Setup PySpark') {
+            steps {
+                container("python") {
+                    script {
+                        pysparkSetup()
                     }
                 }
             }
