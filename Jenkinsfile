@@ -95,6 +95,7 @@ pipeline {
                       tty: true
                     - name: python
                       image: art.pmideep.com/dockerhub/amazon/aws-sam-cli-build-image-python3.9
+                      command
                       - cat
                       tty: true
                     - name: sonarscanner
