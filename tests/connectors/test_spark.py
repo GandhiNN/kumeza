@@ -5,11 +5,9 @@ import unittest
 # that have pyspark installed
 import findspark
 
+findspark.init() # noqa: E402
 
-findspark.init()
-
-from pyspark.sql import SparkSession # noqa: E402 
-
+from pyspark.sql import SparkSession
 from kumeza.connectors.spark import SparkManager
 
 
