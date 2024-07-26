@@ -19,6 +19,7 @@ help:
 init:
 		yum install -y zip jq openjdk-8-jdk
 		python -m pip install --upgrade pip
+		java -version
 		
 .PHONY: install-poetry
 install-poetry:
