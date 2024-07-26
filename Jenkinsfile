@@ -94,7 +94,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/bitnami/python:latest
+                      image: art.pmideep.com/dockerhub/bitnami/python:3.12.4-debian-12-r6
                       resources:
                         requests:
                             cpu: 1
