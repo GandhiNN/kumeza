@@ -93,16 +93,6 @@ pipeline {
                       command:
                       - cat 
                       tty: true
-                    - name: python
-                      image: art.pmideep.com/dockerhub/amazon/aws-sam-cli-build-image-python3.9
-                      resources:
-                        requests:
-                            cpu: 1
-                            memory: 1Gi
-                        limits:
-                            cpu: 2
-                            memory: 2Gi
-                      command:
                     - name: spark
                       image: art.pmideep.com/dockerhub/bitnami/spark:3.4.3-debian-12-r10
                       resources:
