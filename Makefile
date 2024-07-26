@@ -31,6 +31,8 @@ install-poetry:
 install-pyspark:
 		@echo "Installing PySpark..."
 		pip install pyspark
+		@export PYSPARK_PYTHON=python3
+		@export SPARK_HOME=~/.local/lib/python3.9/site-packages/pyspark
 		@pyspark --version
 
 .PHONY: install
