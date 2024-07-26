@@ -27,7 +27,7 @@ install-poetry:
 		$(POETRY) --version
 
 .PHONY: install-pyspark
-install-poetry:
+install-pyspark:
 		@echo "Installing PySpark..."
 		pip install pyspark
 		@pyspark --version

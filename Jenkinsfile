@@ -48,16 +48,16 @@ def initSetup() {
     sh(script: "make init")
 }
 
+def pysparkSetup() {
+    sh(script: """
+    make install-pyspark
+    """)
+}
+
 def poetrySetup() {
     sh(script: """
     make install-poetry
     make install
-    """)
-}
-
-def pysparkSetup() {
-    sh(script: """
-    make install-pyspark
     """)
 }
 
@@ -141,20 +141,20 @@ pipeline {
                 }
             }
         }
-        stage('Install and Setup Poetry') {
-            steps {
-                container("python") {
-                    script {
-                        poetrySetup()
-                    }
-                }
-            }
-        }
         stage('Install and Setup PySpark') {
             steps {
                 container("python") {
                     script {
                         pysparkSetup()
+                    }
+                }
+            }
+        }
+        stage('Install and Setup Poetry') {
+            steps {
+                container("python") {
+                    script {
+                        poetrySetup()
                     }
                 }
             }
