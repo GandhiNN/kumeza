@@ -45,7 +45,10 @@ def discoverAccountID() {
 }
 
 def initSetup() {
-    sh(script: "make init")
+    sh(script: """
+    apt-get install build-essential
+    make init
+    """)
 }
 
 def poetrySetup() {
