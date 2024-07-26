@@ -46,6 +46,7 @@ def discoverAccountID() {
 
 def initSetup() {
     sh(script: """
+    apt update; apt install build-essential -y --no-install-recommends
     make init
     """)
 }
@@ -96,7 +97,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/spark:python3
+                      image: art.pmideep.com/dockerhub/python:3.9.19-slim
                       command:
                       - cat
                       tty: true
