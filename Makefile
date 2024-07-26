@@ -17,7 +17,7 @@ help:
 
 .PHONY: init
 init:
-		yum install -y zip jq openjdk-8-jdk
+		yum install -y zip jq java
 		python -m pip install --upgrade pip
 		java -version
 		
