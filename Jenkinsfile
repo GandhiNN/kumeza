@@ -95,13 +95,8 @@ pipeline {
                       tty: true
                     - name: python
                       image: art.pmideep.com/dockerhub/amazon/aws-sam-cli-build-image-python3.9
-                      resources:
-                        requests:
-                            cpu: 1
-                            memory: 1Gi
-                        limits:
-                            cpu: 2
-                            memory: 2Gi
+                      - cat
+                      tty: true
                     - name: sonarscanner
                       image: art.pmideep.com/dockerhub/sonarsource/sonar-scanner-cli:5
                       command:
