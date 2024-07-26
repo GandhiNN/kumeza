@@ -48,12 +48,6 @@ def initSetup() {
     sh(script: "make init")
 }
 
-def pysparkSetup() {
-    sh(script: """
-    make install-pyspark
-    """)
-}
-
 def poetrySetup() {
     sh(script: """
     make install-poetry
@@ -137,15 +131,6 @@ pipeline {
                         echo "Using Service Account: ${SERVICE_ACCOUNT}"
                         initSetup()
                         accountId = discoverAccountID()
-                    }
-                }
-            }
-        }
-        stage('Install and Setup PySpark') {
-            steps {
-                container("python") {
-                    script {
-                        pysparkSetup()
                     }
                 }
             }

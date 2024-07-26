@@ -27,22 +27,6 @@ install-poetry:
 		pip install poetry
 		$(POETRY) --version
 
-.PHONY: install-pyspark
-install-pyspark:
-		@echo "Installing PySpark..."
-		pip install pyspark
-		pip show pyspark
-		pwd
-		ls -lrt .
-		ls -lrt /tmp
-		ls -lrt /usr/local
-		@curl https://dlcdn.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz -o spark-3.5.1-bin-hadoop3.tgz
-		@tar -xvzf spark-3.5.1-bin-hadoop3.tgz -C /opt/spark 
-		@rm -rf spark-3.5.1-bin-hadoop3.tgz
-		@echo export PATH=/opt/spark/sbin:/opt/spark/bin:${PATH} >> ~/bashrc
-		@echo export SPARK_HOME=/opt/spark/ >> ~/bashrc
-		@echo export PYSPARK_PYTHON=python3 >> ~/bashrc
-
 .PHONY: install
 install:
 		@if [ -z $(POETRY) ]; then echo "Poetry could not be found. See https://python-poetry.org/docs/"; exit 2; fi

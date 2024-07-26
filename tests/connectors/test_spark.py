@@ -1,8 +1,8 @@
 import unittest
 
-from pyspark.sql import SparkSession  # noqa: E402
+from pyspark.sql import SparkSession
 
-from kumeza.connectors.spark import SparkManager  # noqa: E402
+from kumeza.connectors.spark import SparkManager
 
 
 PIPELINE_NAME = "test_pipeline"
