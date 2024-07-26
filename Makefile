@@ -35,10 +35,10 @@ install-pyspark:
 		ls -lrt /tmp
 		@curl https://dlcdn.apache.org/spark/spark-3.5.1/spark-3.5.1-bin-hadoop3.tgz -o spark-3.5.1-bin-hadoop3.tgz
 		ls -lrt
-		@sudo tar xvzf spark-3.5.1-bin-hadoop3.tgz --directory /tmp/spark --strip-components 1 
+		@sudo tar xvzf spark-3.5.1-bin-hadoop3.tgz --directory /home/jenkins/agent/workspace/DAA1_kumeza_dev/spark --strip-components 1 
 		@rm -rf spark-3.5.1-bin-hadoop3.tgz
-		@echo export PATH=/tmp/spark/sbin:/tmp/opt/spark/bin:${PATH} >> ~/bashrc
-		@echo export SPARK_HOME=/tmp/spark/ >> ~/bashrc
+		@echo export PATH=/home/jenkins/agent/workspace/DAA1_kumeza_dev/spark/sbin:/home/jenkins/agent/workspace/DAA1_kumeza_dev/spark/bin:${PATH} >> ~/bashrc
+		@echo export SPARK_HOME=/home/jenkins/agent/workspace/DAA1_kumeza_dev/spark/ >> ~/bashrc
 		@echo export PYSPARK_PYTHON=python3
 
 .PHONY: install
