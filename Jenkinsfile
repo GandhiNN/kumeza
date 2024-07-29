@@ -97,19 +97,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/python:3.9.19-slim
-                      command:
-                      - cat
-                      tty: true
-                    - name: pyspark
-                      image: art.pmideep.com/dockerhub/apache/spark-py:latest
-                      resources:
-                      requests:
-                          cpu: 2
-                          memory: 2Gi
-                      limits:
-                          cpu: 4
-                          memory: 4Gi
+                      image: art.pmideep.com/dockerhub/python:latest
                       command:
                       - cat
                       tty: true
