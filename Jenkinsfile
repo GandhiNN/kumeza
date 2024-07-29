@@ -103,6 +103,13 @@ pipeline {
                       tty: true
                     - name: pyspark
                       image: art.pmideep.com/dockerhub/apache/spark-py:latest
+                      resources:
+                      requests:
+                          cpu: 2
+                          memory: 2Gi
+                      limits:
+                          cpu: 4
+                          memory: 4Gi
                       command:
                       - cat
                       tty: true
