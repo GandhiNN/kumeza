@@ -18,7 +18,7 @@ help:
 .PHONY: init
 init:
 		python -m pip install --upgrade pip
-		java -version
+		python -m pip install awscli
 		
 .PHONY: install-poetry
 install-poetry:
