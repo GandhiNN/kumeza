@@ -128,7 +128,7 @@ pipeline {
         }
         stage('Initial Setup') {
             steps {
-                container('pyspark') {
+                container('python') {
                     script {
                         echo "Using DEEP environment: ${DEEP_ENVIRONMENT}"
                         echo "Using Service Account: ${SERVICE_ACCOUNT}"
@@ -140,7 +140,7 @@ pipeline {
         }
         stage('Install and Setup Poetry') {
             steps {
-                container("pyspark") {
+                container("python") {
                     script {
                         poetrySetup()
                     }
@@ -149,7 +149,7 @@ pipeline {
         }
         stage('Format and Lint the Codebase') {
             steps {
-                container("pyspark") {
+                container("python") {
                     script {
                         formatAndLintCodebase()
                     }
@@ -158,7 +158,7 @@ pipeline {
         }
         stage('Unit Test') {
             steps {
-                container("pyspark") {
+                container("python") {
                     script {
                         unitTest()
                     }
@@ -167,7 +167,7 @@ pipeline {
         }
         stage('Build Wheel File') {
             steps {
-                container("pyspark") {
+                container("python") {
                     script {
                         buildWheel()
                     }
@@ -176,7 +176,7 @@ pipeline {
         }
         stage('Sync Wheel File') {
             steps {
-                container("pyspark") {
+                container("python") {
                     script {
                         copyWheelToS3Bucket()
                     }
