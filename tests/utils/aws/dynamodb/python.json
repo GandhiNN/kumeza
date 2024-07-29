@@ -1,0 +1,12 @@
+{
+    "ingestor_name": "pipe-doadi-clipp-pmi_sellableproductparameter",
+    "execution_time": "1713784295",
+    "data_load_type": "il",
+    "ingestion_status": "success",
+    "last_exec_as_date": "2024-04-22 11:11:35",
+    "records_processed": 8346,
+    "clean_records_processed": 8346.1,
+    "job_cost": 10e6,
+    "schema_hash": "55fce1e41fd4752ee371138a69bb5bb8c7328ade4cdaade864371870e99acbc9",
+    "table_name": "PMI_SELLABLEPRODUCTPARAMETER"
+   }
