@@ -19,11 +19,11 @@ class MSSQL:
         self.port = None
         self.driver = None
 
-    def build_connection(self, config: IngestionConfig):
+    def create_connection(self, config: IngestionConfig):
         self.authentication_type = config.source_system.authentication_type
         self.database_instance = config.source_system.database_instance
         self.hostname = config.source_system.hostname
         self.username = config.credentials.username or os.getenv("DB_USERNAME")
         self.password = config.credentials or os.getenv("DB_PASSWORD")
         self.port = config.source_system.port
-        self.driver = config.integration.driver or "ODBC Driver 18 for SQL Server"
+        self.driver = config.integration.driver or "FreeTDS"
