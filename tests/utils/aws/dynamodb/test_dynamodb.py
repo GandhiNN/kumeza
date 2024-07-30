@@ -70,10 +70,10 @@ class DynamoDBTestIntegration(unittest.TestCase):
 
     @mock_aws
     def test_dynamo_to_python_json(self):
-        
+
         # Run test on the function
         dynamodb_client = DynamoDB()
-        
+
         # open the dynamodb json file
         ddb_json = os.path.join(os.path.dirname(__file__), "dynamo.json")
         with open(ddb_json, "r", encoding="utf8") as json_file:
@@ -85,6 +85,3 @@ class DynamoDBTestIntegration(unittest.TestCase):
             pjson = json.load(json_file)
 
         assert dynamodb_client.dynamo_to_python_json(ddbjson) == pjson
-        
-
-
