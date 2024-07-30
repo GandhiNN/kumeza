@@ -1,5 +1,7 @@
 import unittest
 
+import pytest
+
 from kumeza.connectors.jdbc import JDBCManager
 
 
@@ -59,7 +61,8 @@ class JDBCManagerTest(unittest.TestCase):
         )
 
     def test_get_connstring_unrecognized_input(self):
-        assert self.jdbc_manager.get_connection_string("unrecognized") == ""
+        with pytest.raises(ValueError):
+            self.jdbc_manager.get_connection_string("unrecognized")
 
     def test_get_driver_mssql(self):
         assert (
@@ -85,4 +88,5 @@ class JDBCManagerTest(unittest.TestCase):
         assert self.jdbc_manager.get_driver("mysql") == "com.mysql.cj.jdbc.Driver"
 
     def test_get_driver_unrecognized_input(self):
-        assert self.jdbc_manager.get_driver("unrecognized") == ""
+        with pytest.raises(ValueError):
+            self.jdbc_manager.get_driver("unrecognized")

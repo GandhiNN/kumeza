@@ -10,42 +10,44 @@ class JDBCManager:
         self.domain = domain
 
     def get_connection_string(self, db_type: str) -> str:
-        if db_type == "mssql":
-            return (
-                """jdbc:jtds:sqlserver://"""
-                f"""{self.hostname}:{self.port};instance={self.db_instance};"""
-                f"""databaseName={self.db_name};integratedSecurity=false"""
-            )
-        if db_type == "mssql-ntlm":
-            return (
-                """jdbc:jtds:sqlserver://"""
-                f"""{self.hostname}:{self.port};instance={self.db_instance};"""
-                f"""databaseName={self.db_name};integratedSecurity=true;"""
-                f"""useNTLMv2=true;domain={self.domain}"""
-            )
-        if db_type == "postgresql":
-            return (
-                """jdbc:jtds:sqlserver://"""
-                f"""{self.hostname}:{self.port};instance={self.db_instance};"""
-                f"""databaseName={self.db_name};integratedSecurity=true;"""
-                f"""useNTLMv2=true;domain={self.domain}"""
-            )
-        if db_type == "oracle":
-            return (
-                f"""jdbc:oracle:thin:@{self.hostname}:{self.port}:{self.db_instance}"""
-            )
-        if db_type == "mysql":
-            return (
-                f"""jdbc:mysql://{self.hostname}:{self.port}/{self.db_name}"""
-                """?zeroDateTimeBehavior=CONVERT_TO_NULL&autoCommit=false"""
-            )
-        return ""
+        match db_type:
+            case "mssql":
+                return (
+                    """jdbc:jtds:sqlserver://"""
+                    f"""{self.hostname}:{self.port};instance={self.db_instance};"""
+                    f"""databaseName={self.db_name};integratedSecurity=false"""
+                )
+            case "mssql-ntlm":
+                return (
+                    """jdbc:jtds:sqlserver://"""
+                    f"""{self.hostname}:{self.port};instance={self.db_instance};"""
+                    f"""databaseName={self.db_name};integratedSecurity=true;"""
+                    f"""useNTLMv2=true;domain={self.domain}"""
+                )
+            case "postgresql":
+                return (
+                    """jdbc:jtds:sqlserver://"""
+                    f"""{self.hostname}:{self.port};instance={self.db_instance};"""
+                    f"""databaseName={self.db_name};integratedSecurity=true;"""
+                    f"""useNTLMv2=true;domain={self.domain}"""
+                )
+            case "oracle":
+                return f"""jdbc:oracle:thin:@{self.hostname}:{self.port}:{self.db_instance}"""
+            case "mysql":
+                return (
+                    f"""jdbc:mysql://{self.hostname}:{self.port}/{self.db_name}"""
+                    """?zeroDateTimeBehavior=CONVERT_TO_NULL&autoCommit=false"""
+                )
+            case _:
+                raise ValueError(f"{db_type}: Database type is not implemented!")
 
     def get_driver(self, db_type: str) -> str:
-        if db_type == "postgresql" or "mssql" in db_type:
-            return "net.sourceforge.jtds.jdbc.Driver"
-        if db_type == "oracle":
-            return "oracle.jdbc.driver.OracleDriver"
-        if db_type == "mysql":
-            return "com.mysql.cj.jdbc.Driver"
-        return ""
+        match db_type:
+            case "postgresql" | "mssql" | "mssql-ntlm":
+                return "net.sourceforge.jtds.jdbc.Driver"
+            case "oracle":
+                return "oracle.jdbc.driver.OracleDriver"
+            case "mysql":
+                return "com.mysql.cj.jdbc.Driver"
+            case _:
+                raise ValueError(f"{db_type}: Database type is not implemented!")
