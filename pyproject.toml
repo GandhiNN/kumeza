@@ -39,7 +39,8 @@ omit = [
     "kumeza/config/ingestor_config.py",
     "kumeza/kumeza_integration/*",
     "kumeza/connectors/spark.py",
-    "kumeza/utils/aws/__init__.py"
+    "kumeza/utils/aws/__init__.py",
+    "kumeza/integration/sql/mssql/*"
 ]
 
 [build-system]
