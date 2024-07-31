@@ -2,7 +2,7 @@ import pyarrow
 from arrow_odbc import read_arrow_batches_from_odbc
 
 
-class ArrowODBC:
+class ArrowODBCExtractor:
 
     def __init__(self, username: str, password: str, batch_size: int):
         self.username = username
