@@ -1,7 +1,7 @@
 import os
 
-from kumeza.utils.aws.secretsmanager import SecretsManager
-from kumeza.utils.hashicorp.vault import VaultManager
+from kumeza.utils.aws.secretsmanager.secretsmanager import SecretsManager
+from kumeza.utils.hashicorp.vault.vault_manager import VaultManager
 
 # Constants
 ABS_PATH = os.path.dirname(__file__)
