@@ -144,3 +144,6 @@ templates/eventbridge.template
 
 # Skip makefiles file
 *.stamp
+
+# Temporary text file
+note.txt
