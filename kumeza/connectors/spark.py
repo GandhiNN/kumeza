@@ -10,6 +10,5 @@ class SparkManager:
             .getOrCreate()
         )
 
-
     def stop_session(self):
         self.session.stop()
