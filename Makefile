@@ -34,7 +34,7 @@ install:
 .PHONY: clean
 clean:
 		find . -type d -name "__pycache__" | xargs rm -rf {};
-		rm -rf .coverage .mypy_cache .pytest_cache ./dist
+		rm -rf .coverage .mypy_cache .pytest_cache ./dist .htmlcov
 
 .PHONY: lint
 lint: 
