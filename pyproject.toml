@@ -6,7 +6,7 @@ authors = ["Ngakan Gandhi <ngandhi@pmintl.net>"]
 readme = "README.md"
 license = "MIT"
 packages = [
-    {include = "*", from = "kumeza"}
+    {include = "kumeza"}
 ]
 
 [tool.poetry.dependencies]
