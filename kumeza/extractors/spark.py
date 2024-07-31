@@ -3,6 +3,7 @@ import pyspark
 from kumeza.connectors.jdbc import JDBCManager
 from kumeza.connectors.spark import SparkManager
 
+from kumeza import StaticFiles
 
 class SparkExtractor:
 
@@ -12,7 +13,7 @@ class SparkExtractor:
 
     def set_spark_debug_level(self, level: str = "DEBUG"):
         self.sparkmanager.session.SparkContext.setLogLevel(level)
-
+        
     def use_proleptic_gregorian_calendar(self):
         """
         # https://issues.apache.org/jira/browse/SPARK-31408
@@ -38,13 +39,43 @@ class SparkExtractor:
     ) -> pyspark.sql.DataFrame:
         if use_proleptic_gregorian_calendar:
             self.use_proleptic_gregorian_calendar()
-        return (
-            self.sparkmanager.session.read.format("jdbc")
-            .option("url", self.jdbcmanager.get_connection_string(db_engine))
-            .option("driver", self.jdbcmanager.get_driver(db_engine))
-            .option("fetchsize", 1e6)
-            .option("user", username)
-            .option("password", password)
-            .option("query", sqlquery)
-            .load()
-        )
+        match db_engine:
+            case "mssql"|"mssql-ntlm"|"postgresql":
+                self.sparkmanager.session.conf.set("spark.jars", StaticFiles.jtds_jar)
+                return (
+                    self.sparkmanager.session.read.format("jdbc")
+                    .option("url", self.jdbcmanager.get_connection_string(db_engine))
+                    .option("driver", self.jdbcmanager.get_driver(db_engine))
+                    .option("fetchsize", 1e6)
+                    .option("user", username)
+                    .option("password", password)
+                    .option("query", sqlquery)
+                    .load()
+                )
+            case "oracle":
+                self.sparkmanager.session.conf.set("spark.jars", StaticFiles.oracle_jar)
+                return (
+                    self.sparkmanager.session.read.format("jdbc")
+                    .option("url", self.jdbcmanager.get_connection_string(db_engine))
+                    .option("driver", self.jdbcmanager.get_driver(db_engine))
+                    .option("fetchsize", 1e6)
+                    .option("user", username)
+                    .option("password", password)
+                    .option("dbtable", f"({sqlquery})")
+                    .load()
+                )
+            case "mysql":
+                self.sparkmanager.session.conf.set("spark.jars", StaticFiles.mysql_jar)
+                return (
+                    self.sparkmanager.session.read.format("jdbc")
+                    .option("url", self.jdbcmanager.get_connection_string(db_engine))
+                    .option("driver", self.jdbcmanager.get_driver(db_engine))
+                    .option("fetchsize", 1e6)
+                    .option("user", username)
+                    .option("password", password)
+                    .option("dbtable", f"({sqlquery}) foo")
+                    .load()
+                )
+            case _:
+                raise ValueError(f"{db_engine}: Database Engine is not Implemented!")
+
