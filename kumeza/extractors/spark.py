@@ -32,7 +32,7 @@ class SparkExtractor:
         self, db_type: str, sqlquery: str, username: str, password: str
     ) -> pyspark.sql.DataFrame:
         return (
-            self.sparkmanager.spark.read.format("jdbc")
+            self.sparkmanager.session.read.format("jdbc")
             .option("url", self.jdbcmanager.get_connection_string(db_type))
             .option("driver", self.jdbcmanager.get_driver(db_type))
             .option("fetchsize", 1e6)
