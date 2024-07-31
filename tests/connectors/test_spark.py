@@ -12,8 +12,7 @@ class SparkManagerTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.spark_manager = SparkManager()
-        cls.spark_manager.start_session(PIPELINE_NAME)
+        cls.spark_manager = SparkManager(PIPELINE_NAME)
 
     def test_start_spark_session(self):
         assert isinstance(self.spark_manager.session, SparkSession)
