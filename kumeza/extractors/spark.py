@@ -29,12 +29,19 @@ class SparkExtractor:
         )
 
     def read(
-        self, db_type: str, sqlquery: str, username: str, password: str
+        self,
+        db_engine: str,
+        sqlquery: str,
+        username: str,
+        password: str,
+        use_proleptic_gregorian_calendar: bool = True,
     ) -> pyspark.sql.DataFrame:
+        if use_proleptic_gregorian_calendar:
+            self.use_proleptic_gregorian_calendar()
         return (
             self.sparkmanager.session.read.format("jdbc")
-            .option("url", self.jdbcmanager.get_connection_string(db_type))
-            .option("driver", self.jdbcmanager.get_driver(db_type))
+            .option("url", self.jdbcmanager.get_connection_string(db_engine))
+            .option("driver", self.jdbcmanager.get_driver(db_engine))
             .option("fetchsize", 1e6)
             .option("user", username)
             .option("password", password)

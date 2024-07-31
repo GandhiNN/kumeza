@@ -41,8 +41,8 @@ class JDBCManager:
             case _:
                 raise ValueError(f"{db_type}: Database type is not implemented!")
 
-    def get_driver(self, db_type: str) -> str:
-        match db_type:
+    def get_driver(self, db_engine: str) -> str:
+        match db_engine:
             case "postgresql" | "mssql" | "mssql-ntlm":
                 return "net.sourceforge.jtds.jdbc.Driver"
             case "oracle":
@@ -50,4 +50,4 @@ class JDBCManager:
             case "mysql":
                 return "com.mysql.cj.jdbc.Driver"
             case _:
-                raise ValueError(f"{db_type}: Database type is not implemented!")
+                raise ValueError(f"{db_engine}: Database Engine is not Implemented!")
