@@ -11,12 +11,12 @@ class ArrowODBCExtractor:
 
     def read(
         self,
-        query: str,
+        sql_query: str,
         odbc_connstring: str,
         concurrent: bool = False,
     ) -> pyarrow.RecordBatch:
         reader = read_arrow_batches_from_odbc(
-            query=query,
+            query=sql_query,
             connection_string=odbc_connstring,
             batch_size=self.batch_size,
             user=self.username,
