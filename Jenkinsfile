@@ -97,7 +97,7 @@ pipeline {
                       - cat 
                       tty: true
                     - name: python
-                      image: art.pmideep.com/dockerhub/python:latest
+                      image: art.pmideep.com/dockerhub/python:3.10-bookworm
                       command:
                       - cat
                       tty: true
