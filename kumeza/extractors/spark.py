@@ -1,9 +1,9 @@
 import pyspark
 
+from kumeza import StaticFiles
 from kumeza.connectors.jdbc import JDBCManager
 from kumeza.connectors.spark import SparkManager
 
-from kumeza import StaticFiles
 
 class SparkExtractor:
 
@@ -13,7 +13,7 @@ class SparkExtractor:
 
     def set_spark_debug_level(self, level: str = "DEBUG"):
         self.sparkmanager.session.SparkContext.setLogLevel(level)
-        
+
     def use_proleptic_gregorian_calendar(self):
         """
         # https://issues.apache.org/jira/browse/SPARK-31408
@@ -40,7 +40,7 @@ class SparkExtractor:
         if use_proleptic_gregorian_calendar:
             self.use_proleptic_gregorian_calendar()
         match db_engine:
-            case "mssql"|"mssql-ntlm"|"postgresql":
+            case "mssql" | "mssql-ntlm" | "postgresql":
                 self.sparkmanager.session.conf.set("spark.jars", StaticFiles.JTDS_JAR)
                 return (
                     self.sparkmanager.session.read.format("jdbc")
@@ -78,4 +78,3 @@ class SparkExtractor:
                 )
             case _:
                 raise ValueError(f"{db_engine}: Database Engine is not Implemented!")
-

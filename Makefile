@@ -7,11 +7,13 @@ POETRY := $(shell command -v poetry 2> /dev/null)
 help:
 		@echo "Please use 'make <target> where <target> is one of:"
 		@echo ""
-		@echo "	install		install packages and prepare environment"
-		@echo "	clean		remove all temporary files"
-		@echo "	lint		run the code linters"
-		@echo "	format		reformat code"
-		@echo "	test 		run all the tests"
+		@echo " init				install prerequisites packages"
+		@echo "	install				install packages and prepare environment"
+		@echo "	install-poetry		install poetry package manager"
+		@echo "	clean				remove all temporary files"
+		@echo "	lint				run the code linters"
+		@echo "	format				reformat code"
+		@echo "	test 				run all the tests"
 		@echo ""
 		@echo "Check the Makefile to know exactly what each target is doing."
 
