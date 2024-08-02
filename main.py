@@ -2,10 +2,14 @@ import os
 
 from kumeza.utils.aws.secretsmanager.secretsmanager import SecretsManager
 from kumeza.utils.hashicorp.vault.vault_manager import VaultManager
+from kumeza import StaticFiles
 
 # Constants
 ABS_PATH = os.path.dirname(__file__)
-CERT_FILE = os.path.join(ABS_PATH, "kumeza", "shared_lib", "cert", "pki_bundle.crt")
+print(type(StaticFiles.PKI_CERT))
+print(StaticFiles.PKI_CERT.value)
+# CERT_FILE = os.path.join(ABS_PATH, "kumeza", "shared_lib", "cert", "pki_bundle.crt")
+CERT_FILE = StaticFiles.PKI_CERT.value
 SECRET_NAME = "hcv-icloud-approle-dev"
 NAMESPACE = "icloud-dev"
 VAULT_URL = (
