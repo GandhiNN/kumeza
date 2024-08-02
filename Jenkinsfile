@@ -194,7 +194,7 @@ pipeline {
             steps {
                 container("python") {
                     script {
-                        copySharedLibToS3Bucket()
+                        copyOdbcLibToS3Bucket()
                     }
                 }
             }
