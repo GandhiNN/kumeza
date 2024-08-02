@@ -80,10 +80,10 @@ def copyWheelToS3Bucket() {
     """)
 }
 
-def copySharedLibToS3Bucket() {
+def copyOdbcLibToS3Bucket() {
     sh(script: """
-    echo 'Transferring shared library files to S3'
-    aws s3 cp ./shared_lib s3://${S3_BUCKET_NAME}/python/kumeza --recursive
+    echo 'Transferring ODBC shared library files to S3'
+    aws s3 cp ./shared_lib/odbc s3://${S3_BUCKET_NAME}/odbc --recursive
     """)
 }
 
