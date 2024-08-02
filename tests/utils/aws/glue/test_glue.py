@@ -10,11 +10,14 @@ from kumeza.utils.aws.glue.glue import Glue
 
 JOBNAME = "testGlueJob"
 JOBARGS = {
-    "day_partition_key": "partition_0",
-    "hour_partition_key": "partition_1",
+    "--assume_role_arn": "someTestARN",
+    "--vault_url": "https://vault-url.test",
+    "--table_name": "someTestTable",
 }
 ROLENAME = "testRole"
 COMMAND = {"Name": "testCommand"}
+
+PIPELINE_ARGS = ["assume-role-arn", "vault-url", "table-name"]
 
 
 class GlueTestIntegration(unittest.TestCase):
@@ -27,13 +30,15 @@ class GlueTestIntegration(unittest.TestCase):
         )
 
     @mock_aws
-    def test_create_job(self):
-        glue_client = Glue()
-        response = glue_client.create_glue_job(JOBNAME, ROLENAME, COMMAND)
-        assert response["Name"] == "testGlueJob"
+    def test_create_and_start_job_run(self):
+        resp = self.glue_client.create_job(
+            Name=JOBNAME,
+            Role=ROLENAME,
+            Command=COMMAND,
+            DefaultArguments=JOBARGS,
+        )
+        assert resp["Name"] == "testGlueJob"
 
-    # @mock_aws
-    # def test_start_job_run(self):
-    #     glue_client = Glue()
-    #     response = glue_client.start_glue_job(JOBNAME, JOBARGS)
-    #     assert response["JobRunId"]
+        glue_client = Glue()
+        start_job_response = glue_client.start_glue_job(JOBNAME, JOBARGS)
+        assert start_job_response["JobRunId"]
