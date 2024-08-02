@@ -21,6 +21,7 @@ help:
 init:
 		python -m pip install --upgrade pip
 		python -m pip install awscli
+		python -m pip install git+https://github.com/awslabs/aws-glue-libs.git
 		
 .PHONY: install-poetry
 install-poetry:
