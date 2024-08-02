@@ -1,6 +1,5 @@
 import pyspark
 
-from kumeza import StaticFiles
 from kumeza.connectors.jdbc import JDBCManager
 from kumeza.connectors.spark import SparkManager
 
@@ -41,7 +40,6 @@ class SparkExtractor:
             self.use_proleptic_gregorian_calendar()
         match db_engine:
             case "mssql" | "mssql-ntlm" | "postgresql":
-                self.sparkmanager.session.conf.set("spark.jars", StaticFiles.JTDS_JAR)
                 return (
                     self.sparkmanager.session.read.format("jdbc")
                     .option("url", self.jdbcmanager.get_connection_string(db_engine))
@@ -53,7 +51,6 @@ class SparkExtractor:
                     .load()
                 )
             case "oracle":
-                self.sparkmanager.session.conf.set("spark.jars", StaticFiles.ORACLE_JAR)
                 return (
                     self.sparkmanager.session.read.format("jdbc")
                     .option("url", self.jdbcmanager.get_connection_string(db_engine))
@@ -65,7 +62,6 @@ class SparkExtractor:
                     .load()
                 )
             case "mysql":
-                self.sparkmanager.session.conf.set("spark.jars", StaticFiles.MYSQL_JAR)
                 return (
                     self.sparkmanager.session.read.format("jdbc")
                     .option("url", self.jdbcmanager.get_connection_string(db_engine))
