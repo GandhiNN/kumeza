@@ -76,7 +76,14 @@ def buildWheel() {
 def copyWheelToS3Bucket() {
     sh(script: """
     echo 'Transferring wheel file to S3'
-    aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/python/ --recursive --exclude \"*.gz\"
+    aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/python/kumeza --recursive --exclude \"*.gz\"
+    """)
+}
+
+def copySharedLibToS3Bucket() {
+    sh(script: """
+    echo 'Transferring shared library files to S3'
+    aws s3 cp ./shared_lib s3://${S3_BUCKET_NAME}/python/kumeza --recursive
     """)
 }
 
@@ -179,6 +186,15 @@ pipeline {
                 container("python") {
                     script {
                         copyWheelToS3Bucket()
+                    }
+                }
+            }
+        }
+        stage('Sync Shared Library File') {
+            steps {
+                container("python") {
+                    script {
+                        copySharedLibToS3Bucket()
                     }
                 }
             }
