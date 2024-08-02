@@ -1,5 +1,7 @@
 import hvac
+
 from kumeza import StaticFiles
+
 
 class VaultManager:
 
