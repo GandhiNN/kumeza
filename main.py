@@ -5,36 +5,29 @@ from kumeza.utils.hashicorp.vault.vault_manager import VaultManager
 
 # Constants
 ABS_PATH = os.path.dirname(__file__)
-CERT_FILE = os.path.join(ABS_PATH, "kumeza", "cert", "pki_bundle.crt")
-AWS_PROFILE_NAME = "291751643970_tlz_developer"
-SECRETS_MANAGER_PATH = "secret/icloud-ingestion/vault/dev/credential"
+CERT_FILE = os.path.join(ABS_PATH, "kumeza", "shared_lib", "cert", "pki_bundle.crt")
+SECRET_NAME = "hcv-icloud-approle-dev"
 NAMESPACE = "icloud-dev"
-# VAULT_URL = "https://dev.vault-dev-dev.eu-west-1.aws.private-pmideep.biz:8200"
-VAULT_URL = "https://vault.vault-dev-dev.shared-services.eu-west-1.aws.pmicloud.biz:8200"
-SECRET_MOUNT_POINT = 'static-secret'
-SECRET_PATH = 'data/daas/imel'
+VAULT_URL = (
+    "https://vault.vault-dev-dev.shared-services.eu-west-1.aws.pmicloud.biz:8200"
+)
+MOUNT_POINT = "static-secret"
+PATH = "data/daas/imel_sandbox"
 
 # SecretsManager Config
-vault_config = {
-    'url': VAULT_URL,
-    'namespace': NAMESPACE,
-    'verify_ssl': CERT_FILE
-}
-print(vault_config)
+vault_config = {"url": VAULT_URL, "namespace": NAMESPACE, "verify_ssl": CERT_FILE}
 
-# print(vault_config['url'])
-# Logic SecretsManager
+# Retrieve secrets from Secrets Manager
 secretsmanager = SecretsManager()
-secrets = secretsmanager.get_secret(SECRETS_MANAGER_PATH)
+secrets = secretsmanager.get_secret(SECRET_NAME)
 print(secrets)
 
-# Logic Vaultmanager
-vaultmanager = VaultManager(vault_url=VAULT_URL, namespace=NAMESPACE, ssl_verify=CERT_FILE)
-vaultmanager.set_client_with_approle_auth(role_id=secrets['role_id'], secret_id=secrets['secret_id'])
-# print(client)
-# print(client.auth)
-# print(client.token)
-print(vaultmanager.client.auth.token)
-
-creds = vaultmanager.get_credentials(SECRET_PATH, SECRET_MOUNT_POINT)
+# Retrieve credentials from Hashicorp Vault
+vaultmanager = VaultManager(
+    vault_url=VAULT_URL, namespace=NAMESPACE, ssl_verify=CERT_FILE
+)
+vaultmanager.set_client_with_approle_auth(
+    role_id=secrets["role_id"], secret_id=secrets["secret_id"]
+)
+creds = vaultmanager.get_credentials(PATH, MOUNT_POINT)
 print(creds)
