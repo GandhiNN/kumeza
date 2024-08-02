@@ -1,9 +1,9 @@
 import hvac
-
+from kumeza import StaticFiles
 
 class VaultManager:
 
-    def __init__(self, vault_url, namespace, ssl_verify=False):
+    def __init__(self, vault_url, namespace, ssl_verify=StaticFiles.PKI_CERT):
 
         self.url = vault_url
         self.namespace = namespace

@@ -1,13 +1,10 @@
-import importlib.resources as resources
-
-# import pathlib
 from enum import Enum
+import pathlib
 
-from kumeza import __name__ as pkg_name
 
 
-# PARENT = pathlib.Path(__file__).parent
-PARENT = resources.files(pkg_name)
+PARENT = pathlib.Path(__file__).parent
+# PARENT = resources.files(pkg_name)
 
 # class StaticFiles(Enum):
 #     PKI_CERT = PARENT / "shared_lib/cert/pki_bundle.crt"
