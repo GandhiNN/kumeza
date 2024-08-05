@@ -43,6 +43,7 @@ class SparkExtractor:
         sqlquery: str,
         username: str,
         password: str,
+        fetchsize: int = 1000000,
         use_proleptic_gregorian_calendar: bool = True,
     ) -> pyspark.sql.DataFrame:
         if use_proleptic_gregorian_calendar:
@@ -56,7 +57,7 @@ class SparkExtractor:
                         self.jdbcmanager.get_connection_string(db_engine, db_name),
                     )
                     .option("driver", self.jdbcmanager.driver)
-                    .option("fetchsize", 1e6)
+                    .option("fetchsize", fetchsize)
                     .option("user", username)
                     .option("password", password)
                     .option("query", sqlquery)
@@ -70,7 +71,7 @@ class SparkExtractor:
                         self.jdbcmanager.get_connection_string(db_engine, db_name),
                     )
                     .option("driver", self.jdbcmanager.driver)
-                    .option("fetchsize", 1e6)
+                    .option("fetchsize", fetchsize)
                     .option("user", username)
                     .option("password", password)
                     .option("dbtable", f"({sqlquery})")
@@ -84,7 +85,7 @@ class SparkExtractor:
                         self.jdbcmanager.get_connection_string(db_engine, db_name),
                     )
                     .option("driver", self.jdbcmanager.driver)
-                    .option("fetchsize", 1e6)
+                    .option("fetchsize", fetchsize)
                     .option("user", username)
                     .option("password", password)
                     .option("dbtable", f"({sqlquery}) foo")
