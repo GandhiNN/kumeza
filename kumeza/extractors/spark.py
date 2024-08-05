@@ -31,6 +31,7 @@ class SparkExtractor:
     def read(
         self,
         db_engine: str,
+        db_name: str,
         sqlquery: str,
         username: str,
         password: str,
@@ -42,8 +43,11 @@ class SparkExtractor:
             case "mssql" | "mssql-ntlm" | "postgresql":
                 return (
                     self.sparkmanager.session.read.format("jdbc")
-                    .option("url", self.jdbcmanager.get_connection_string(db_engine))
-                    .option("driver", self.jdbcmanager.get_driver(db_engine))
+                    .option(
+                        "url",
+                        self.jdbcmanager.get_connection_string(db_engine, db_name),
+                    )
+                    .option("driver", self.jdbcmanager.driver)
                     .option("fetchsize", 1e6)
                     .option("user", username)
                     .option("password", password)
@@ -53,8 +57,11 @@ class SparkExtractor:
             case "oracle":
                 return (
                     self.sparkmanager.session.read.format("jdbc")
-                    .option("url", self.jdbcmanager.get_connection_string(db_engine))
-                    .option("driver", self.jdbcmanager.get_driver(db_engine))
+                    .option(
+                        "url",
+                        self.jdbcmanager.get_connection_string(db_engine, db_name),
+                    )
+                    .option("driver", self.jdbcmanager.driver)
                     .option("fetchsize", 1e6)
                     .option("user", username)
                     .option("password", password)
@@ -64,8 +71,11 @@ class SparkExtractor:
             case "mysql":
                 return (
                     self.sparkmanager.session.read.format("jdbc")
-                    .option("url", self.jdbcmanager.get_connection_string(db_engine))
-                    .option("driver", self.jdbcmanager.get_driver(db_engine))
+                    .option(
+                        "url",
+                        self.jdbcmanager.get_connection_string(db_engine, db_name),
+                    )
+                    .option("driver", self.jdbcmanager.driver)
                     .option("fetchsize", 1e6)
                     .option("user", username)
                     .option("password", password)
