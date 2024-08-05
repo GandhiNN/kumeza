@@ -32,7 +32,7 @@ class ConfigInstance:
         )
         self.source_system = SourceSystemConfig(
             id="imel",
-            database_type="mssql",
+            database_engine="mssql",
             database_instance="dev",
             authentication_type="ntlm",
             hostname="sqlqa_qimel_pmhboz.dbiaas.sdi.pmi",
