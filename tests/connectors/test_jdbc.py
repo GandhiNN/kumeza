@@ -22,18 +22,18 @@ class JDBCManagerTest(unittest.TestCase):
         self.db_name = DB_NAME
         self.domain = DOMAIN
         self.jdbc_manager = JDBCManager(
-            self.hostname, self.port, self.db_instance, self.db_name, self.domain
+            self.hostname, self.port, self.db_instance, self.domain
         )
 
     def test_get_connstring_mssql(self):
         assert (
-            self.jdbc_manager.get_connection_string("mssql")
+            self.jdbc_manager.get_connection_string("mssql", DB_NAME)
             == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
             """instance=dev;databaseName=somedbname;"""
             """integratedSecurity=false"""
         )
         assert (
-            self.jdbc_manager.get_connection_string("mssql-ntlm")
+            self.jdbc_manager.get_connection_string("mssql-ntlm", DB_NAME)
             == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
             """instance=dev;databaseName=somedbname;"""
             """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net"""
@@ -41,7 +41,7 @@ class JDBCManagerTest(unittest.TestCase):
 
     def test_get_connstring_postgresql(self):
         assert (
-            self.jdbc_manager.get_connection_string("postgresql")
+            self.jdbc_manager.get_connection_string("postgresql", DB_NAME)
             == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
             """instance=dev;databaseName=somedbname;"""
             """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net"""
@@ -49,20 +49,20 @@ class JDBCManagerTest(unittest.TestCase):
 
     def test_get_connstring_oracle(self):
         assert (
-            self.jdbc_manager.get_connection_string("oracle")
+            self.jdbc_manager.get_connection_string("oracle", DB_NAME)
             == """jdbc:oracle:thin:@somedbhostname.db.sdi.pmi:1443:dev"""
         )
 
     def test_get_connstring_mysql(self):
         assert (
-            self.jdbc_manager.get_connection_string("mysql")
+            self.jdbc_manager.get_connection_string("mysql", DB_NAME)
             == """jdbc:mysql://somedbhostname.db.sdi.pmi:1443/somedbname"""
             """?zeroDateTimeBehavior=CONVERT_TO_NULL&autoCommit=false"""
         )
 
     def test_get_connstring_unrecognized_input(self):
         with pytest.raises(ValueError):
-            self.jdbc_manager.get_connection_string("unrecognized")
+            self.jdbc_manager.get_connection_string("unrecognized", DB_NAME)
 
     def test_get_driver_mssql(self):
         assert (
