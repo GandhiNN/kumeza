@@ -1,12 +1,14 @@
 class JDBCManager:
 
     def __init__(
-        self, hostname: str, port: str, db_instance: str, domain: str
+        self, hostname: str, port: str, db_instance: str, domain: str, db_engine: str
     ):
         self.hostname = hostname
         self.port = port
         self.db_instance = db_instance
         self.domain = domain
+        self.db_engine = db_engine
+        self.driver = self._get_driver(self.db_engine)
 
     def get_connection_string(self, db_type: str, db_name: str) -> str:
         match db_type:
@@ -40,7 +42,7 @@ class JDBCManager:
             case _:
                 raise ValueError(f"{db_type}: Database type is not implemented!")
 
-    def get_driver(self, db_engine: str) -> str:
+    def _get_driver(self, db_engine: str) -> str:
         match db_engine:
             case "postgresql" | "mssql" | "mssql-ntlm":
                 return "net.sourceforge.jtds.jdbc.Driver"
