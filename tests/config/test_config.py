@@ -48,6 +48,7 @@ class ConfigInstance:
             url="https://vault.vault-dev-dev.shared-services.eu-west-1.aws.pmicloud.biz:8200",
             verify_ssl=False,
             namespace="icloud",
+            secret_name="hcv-icloud-approle-dev",
             mount_point="static-secret",
             path="data/imel",
         )

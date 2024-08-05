@@ -11,6 +11,7 @@ class CredentialsConfig(BaseConfig):
     url: str
     verify_ssl: bool
     namespace: str
+    secret_name: str
     mount_point: str
     path: str
 
@@ -22,6 +23,7 @@ class CredentialsConfig(BaseConfig):
             url=obj["url"],
             verify_ssl=obj["verify_ssl"],
             namespace=obj["namespace"],
+            secret_name=obj["secret_name"],
             mount_point=obj["mount_point"],
             path=obj["path"],
         )
