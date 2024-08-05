@@ -18,15 +18,23 @@ class SparkExtractor:
         # https://issues.apache.org/jira/browse/SPARK-31408
         # https://stackoverflow.com/questions/69745427/pyspark-outputting-01-01-0001-and-12-31-9999-incorrectly-in-parquet
         #"""
-        self.sparkmanager.session.SparkContext._conf.setAll(
-            [
-                ("spark.sql.legacy.parquet.int96RebaseModeInRead", "CORRECTED"),
-                ("spark.sql.legacy.parquet.int96RebaseModeInWrite", "CORRECTED"),
-                ("spark.sql.legacy.parquet.datetimeRebaseModeInRead", "CORRECTED"),
-                ("spark.sql.legacy.parquet.datetimeRebaseModeInWrite", "CORRECTED"),
-                ("spark.sql.parquet.outputTimestampType", "TIMESTAMP_MICROS"),
-            ]
+        self.sparkmanager.session.conf.set(
+            "spark.sql.legacy.parquet.int96RebaseModeInRead", "CORRECTED"
         )
+        self.sparkmanager.session.conf.set(
+            "spark.sql.legacy.parquet.int96RebaseModeInWrite", "CORRECTED"
+        )
+        self.sparkmanager.session.conf.set(
+            "spark.sql.legacy.parquet.datetimeRebaseModeInRead",
+            "CORRECTED",
+        )
+        self.sparkmanager.session.conf.set(
+            "spark.sql.legacy.parquet.datetimeRebaseModeInWrite",
+            "CORRECTED",
+        )
+        self.sparkmanager.session.conf.set(
+            "spark.sql.parquet.outputTimestampType", "TIMESTAMP_MICROS"
+        )  # https://stackoverflow.com/questions/69745427/pyspark-outputting-01-01-0001-and-12-31-9999-incorrectly-in-parquet
 
     def read(
         self,
