@@ -11,13 +11,13 @@ load_dotenv()
 
 class MSSQL:
     def __init__(self):
-        self.authentication_type = None
-        self.database_instance = None
-        self.hostname = None
-        self.username = None
-        self.password = None
-        self.port = None
-        self.driver = None
+        self.authentication_type: str = ""
+        self.database_instance: str = ""
+        self.hostname: str = ""
+        self.username: str = ""
+        self.password: str = ""
+        self.port: int = None
+        self.driver: str = ""
 
     def create_connection(self, config: IngestionConfig):
         self.authentication_type = config.source_system.authentication_type
