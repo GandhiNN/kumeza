@@ -29,6 +29,12 @@ class SanitizersTest(unittest.TestCase):
             == "this sentence has a leading and trailing backticks"
         )
 
+    def test_remove_extraneous_blank_lines(self):
+        test_str = "Foo\n\nBar\nBaz\n\n"
+        assert (
+            self.sanitizers.remove_extraneous_blank_lines(test_str) == "Foo\nBar\nBaz\n"
+        )
+
     def test_replace_special_characters_with_underscore(self):
         test_str = "<this@sentence!contains_special#characters>"
         assert (

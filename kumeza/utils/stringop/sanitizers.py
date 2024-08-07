@@ -16,5 +16,9 @@ class Sanitizers:
         return re.sub(r"^`+|`+$", "", s)
 
     @staticmethod
+    def remove_extraneous_blank_lines(s: str) -> str:
+        return re.sub(r"^$\n", "", s, flags=re.MULTILINE)
+
+    @staticmethod
     def replace_special_characters_with_underscore(s: str) -> str:
         return re.sub(r"[ <>/!?+@()%#\"\\]", "_", s)
