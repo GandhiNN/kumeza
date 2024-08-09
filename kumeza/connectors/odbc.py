@@ -13,7 +13,7 @@ class ODBCManager:
         self, db_engine: str, db_name: str, uid: str, username: str, password: str
     ) -> str:
         match db_engine:
-            case "mssql":
+            case "mssql" | "mssql-ntlm":
                 return (
                     f"DRIVER={self.driver};SERVER={self.hostname};PORT={self.port};"
                     f"DATABASE={db_name};UID={uid}\\{username};PWD={password};"
@@ -25,7 +25,7 @@ class ODBCManager:
 
     def get_driver(self, db_engine: str) -> str:
         match db_engine:
-            case "mssql":
+            case "mssql" | "mssql-ntlm":
                 return "FreeTDS"
             case _:
                 raise ValueError(f"{db_engine}: Database type is not implemented!")
