@@ -45,7 +45,7 @@ omit = [
     "kumeza/extractors/spark.py",
     "kumeza/utils/aws/__init__.py",
     "kumeza/integrations/rdbms/mssql/*",
-    "kumeza/extractors/arrow_odbc.py"
+    "kumeza/extractors/arrow.py"
 ]
 
 [build-system]
