@@ -17,15 +17,17 @@ class Glue(BaseAwsUtil):
             JobName=glue_job_name, Arguments=args
         )
 
-
-class GluePythonShell(Glue):
-
+    @boto_error_handler
     def get_pyshell_referenced_files(
-        self, bucket_param_name: str, object_param_name: str, file_name: str, **paramfile_opt: dict
+        self,
+        bucket_param_name: str,
+        object_param_name: str,
+        file_name: str,
+        glue_args: dict,
     ):  # pragma: no cover
         s3 = S3()
         s3.download_file(
-            bucket_name=paramfile_opt[bucket_param_name],
-            object_name=paramfile_opt[object_param_name],
+            bucket_name=glue_args[bucket_param_name],
+            object_name=glue_args[object_param_name],
             file_name=file_name,
         )
