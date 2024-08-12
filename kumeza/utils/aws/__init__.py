@@ -38,19 +38,19 @@ def boto_error_handler(logger):
                         "text using the provided KMS key."
                     )
                     raise e
-                elif error_code == "InternalServiceErrorException":
+                if error_code == "InternalServiceErrorException":
                     logger.exception("An error occured on the server side.")
                     raise e
-                elif error_code == "InvalidParameterException":
+                if error_code == "InvalidParameterException":
                     logger.exception("You provided an invalid value for a parameter.")
                     raise e
-                elif error_code == "InvalidRequestException":
+                if error_code == "InvalidRequestException":
                     logger.exception(
                         "You provided a parameter value that is not valid "
                         "for the current state of the resource."
                     )
                     raise e
-                elif error_code == "ResourceNotFoundException":
+                if error_code == "ResourceNotFoundException":
                     logger.info("We can't find the resource that you asked for.")
                     raise e
 
