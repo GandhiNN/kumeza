@@ -42,3 +42,7 @@ class GlueTestIntegration(unittest.TestCase):
         glue_client = Glue()
         start_job_response = glue_client.start_glue_job(JOBNAME, JOBARGS)
         assert start_job_response["JobRunId"]
+
+    @unittest.skip("no way to test this for now")
+    def test_get_pyshell_referenced_files(self):
+        pass
