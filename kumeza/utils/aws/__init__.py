@@ -1,5 +1,6 @@
 import logging
 from functools import wraps
+from typing import Callable
 
 import boto3
 import boto3.session
@@ -32,21 +33,8 @@ class BaseAwsUtil:
             service_name=self.service_name, region_name=self.region_name
         )
 
-    def log_request(self, method: callable, *args, **kwargs):
+    def log_request(self, method: Callable, *args, **kwargs):
         print(f"Calling {method} with args: {args} and kwargs: {kwargs}")
-
-    def cache_response(self, method: callable, *args, **kwargs):
-        """Cache the response for a given method call
-
-        Args:
-            method (callable): Class method
-        """
-        key = (method, args, frozenset(kwargs.items()))
-        if key in self.response_cache:
-            return self.response_cache[key]
-        response = getattr(self.client, method)(*args, **kwargs)
-        self.response_cache[key] = response
-        return response
 
 
 def boto_error_handler(logger):
