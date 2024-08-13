@@ -17,6 +17,7 @@ class Glue(BaseAwsUtil):
             JobName=glue_job_name, Arguments=args
         )
 
+    @boto_error_handler(logger)
     def get_pyshell_referenced_files(
         self,
         bucket_param_name: str,
