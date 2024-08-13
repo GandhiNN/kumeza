@@ -44,6 +44,11 @@ class ODBCManager:
     #         case _:
     #             raise ValueError(f"{db_engine}: Database type is not implemented!")
 
+    # def get_driver(self, db_engine: str) -> str:
+    #     if "mssql" in db_engine:
+    #         return "FreeTDS"
+    #     raise ValueError(f"{db_engine}: Database type is not implemented!")
+
     def get_driver(self, db_engine: str) -> str:
         if "mssql" in db_engine:
             return "libtdsodbc.so"
