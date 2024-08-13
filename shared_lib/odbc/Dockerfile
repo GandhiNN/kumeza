@@ -1,7 +1,7 @@
 FROM public.ecr.aws/lambda/python:3.9 as builder
 
 RUN yum update -y
-RUN yum install wget tar gzip zip gcc make gcc gcc-c++ unixODBC-devel -y
+RUN yum install wget tar gzip zip gcc make gcc gcc-c++ unixODBC unixODBC-devel -y
 
 # Dependencies of freeTDS
 RUN yum install gnutls ncurses-compat-libs -y
