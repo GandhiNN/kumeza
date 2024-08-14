@@ -1,3 +1,5 @@
+from typing import Any
+
 import pymssql
 
 
@@ -13,7 +15,7 @@ class TDSExtractor:
         domain: str,
         username: str,
         password: str,
-    ):
+    ) -> list[tuple[Any, ...]] | None:
         conn = pymssql.connect(
             server=f"{hostname}:{port}\\{db_instance}",
             user=f"{domain}\\{username}",
