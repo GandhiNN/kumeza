@@ -9,21 +9,6 @@ class ODBCManager:
         self.domain = domain
         self.driver = self.get_driver(db_engine)
 
-    # TODO: Python 3.10
-    # def get_connection_string(
-    #     self, db_engine: str, db_name: str, uid: str, username: str, password: str
-    # ) -> str:
-    #     match db_engine:
-    #         case "mssql" | "mssql-ntlm":
-    #             return (
-    #                 f"DRIVER={self.driver};SERVER={self.hostname};PORT={self.port};"
-    #                 f"DATABASE={db_name};UID={uid}\\{username};PWD={password};"
-    #                 f"DOMAIN={self.domain};IntegratedSecurity=True;"
-    #                 f"TrustServerCertificate=Yes;TrustedConnection=No"
-    #             )
-    #         case _:
-    #             raise ValueError(f"{db_engine}: Database type is not implemented!")
-
     def get_connection_string(
         self, db_engine: str, db_name: str, uid: str, username: str, password: str
     ) -> str:
