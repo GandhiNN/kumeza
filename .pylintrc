@@ -1,0 +1,3 @@
+[MASTER]
+# Whitelisting pymssql C extension
+extension-pkg-allow-list=pymssql
