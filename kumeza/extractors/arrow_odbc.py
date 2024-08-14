@@ -4,7 +4,7 @@ from arrow_odbc import read_arrow_batches_from_odbc
 from kumeza.connectors.odbc import ODBCManager
 
 
-class ArrowExtractor:
+class ArrowODBCExtractor:
 
     def __init__(self, odbcmanager: ODBCManager):
         self.odbcmanager = odbcmanager
