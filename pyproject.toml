@@ -28,6 +28,7 @@ findspark = "^2.0.1"
 pyarrow = "^17.0.0"
 arrow-odbc = "2.0.2"
 pyparsing = "^3.1.2"
+pymssql = "^2.3.0"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -45,7 +46,8 @@ omit = [
     "kumeza/extractors/spark.py",
     "kumeza/utils/aws/__init__.py",
     "kumeza/integrations/rdbms/mssql/*",
-    "kumeza/extractors/arrow.py"
+    "kumeza/extractors/arrow_odbc.py",
+    "kumeza/extractors/tds.py"
 ]
 
 [build-system]
