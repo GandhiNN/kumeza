@@ -1,30 +1,9 @@
-# from typing import Any, Union
+from typing import Any
 
 import pymssql
 
 
 class TDSExtractor:
-
-    # def read(
-    #     self,
-    #     hostname: str,
-    #     port: str,
-    #     db_name: str,
-    #     db_instance: str,
-    #     sqlquery: str,
-    #     domain: str,
-    #     username: str,
-    #     password: str,
-    # ) -> Union[list[tuple[Any, ...]], None]:
-    #     conn = pymssql.connect(
-    #         server=f"{hostname}:{port}\\{db_instance}",
-    #         user=f"{domain}\\{username}",
-    #         password=password,
-    #         database=db_name,
-    #     )
-    #     cursor = conn.cursor()
-    #     cursor.execute(sqlquery)
-    #     return cursor.fetchall()
 
     def read(
         self,
@@ -36,26 +15,29 @@ class TDSExtractor:
         domain: str,
         username: str,
         password: str,
-    ):
-        conn = pymssql.connect(
-            server=f"{hostname}:{port}\\{db_instance}",
-            user=f"{domain}\\{username}",
-            password=password,
-            database=db_name,
-        )
-        cursor = conn.cursor()
-        cursor.execute(sqlquery)
+    ) -> list[dict[str, Any]]:
+        try:
+            conn = pymssql.connect(
+                server=f"{hostname}:{port}\\{db_instance}",
+                user=f"{domain}\\{username}",
+                password=password,
+                database=db_name,
+            )
+            cursor = conn.cursor()
+            cursor.execute(sqlquery)
 
-        def _return_dict_pair(row_item):
-            return_dict = {}
-            for column_name, row in zip(cursor.description, row_item):
-                return_dict[column_name[0]] = row
-            return return_dict
+            def _return_dict_pair(row_item):
+                return_dict = {}
+                for column_name, row in zip(cursor.description, row_item):
+                    return_dict[column_name[0]] = row
+                return return_dict
 
-        return_list = []
-        for row in cursor:
-            row_item = _return_dict_pair(row)
-            return_list.append(row_item)
+            return_list = []
+            for row in cursor:
+                row_item = _return_dict_pair(row)
+                return_list.append(row_item)
 
-        conn.close()
-        return return_list
+            conn.close()
+            return return_list
+        except Exception as e:
+            raise e
