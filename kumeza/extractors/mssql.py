@@ -1,9 +1,17 @@
-from typing import Any
+from typing import Any, Tuple
 
 import pymssql
 
 
-class TDSExtractor:
+class MSSQLExtractor:
+
+    def _return_dict_pair(
+        self, cursor: pymssql.Cursor, row_item: list[Tuple[str, Any]]
+    ) -> dict:
+        return_dict = {}
+        for column_name, row in zip(cursor.description, row_item):
+            return_dict[column_name[0]] = row
+        return return_dict
 
     def read(
         self,
@@ -26,15 +34,9 @@ class TDSExtractor:
             cursor = conn.cursor()
             cursor.execute(sqlquery)
 
-            def _return_dict_pair(row_item):
-                return_dict = {}
-                for column_name, row in zip(cursor.description, row_item):
-                    return_dict[column_name[0]] = row
-                return return_dict
-
             return_list = []
             for row in cursor:
-                row_item = _return_dict_pair(row)
+                row_item = self._return_dict_pair(cursor, row)
                 return_list.append(row_item)
 
             conn.close()
