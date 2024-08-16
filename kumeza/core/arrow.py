@@ -2,6 +2,8 @@ from typing import Any
 
 import pyarrow as pa
 
+from kumeza.core.data_type import ArrowToHiveMapping
+
 
 class ArrowConverter:
 
@@ -12,12 +14,16 @@ class ArrowConverter:
 class ArrowManager:
 
     @classmethod
-    def get_schema(cls, table: pa.Table) -> list[dict]:
+    def get_schema(cls, table: pa.Table, hive: bool = False) -> list[dict]:
         schema = []
         for field in table.schema:
             s = {
                 "name": str(field.name),
-                "type": str(field.type),
+                "type": (
+                    ArrowToHiveMapping.transform_schema(str(field.type))
+                    if hive
+                    else str(field.type)
+                ),
                 "description": str(field.metadata),
                 "nullable": str(field.nullable),
             }

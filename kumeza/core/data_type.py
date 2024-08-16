@@ -21,18 +21,17 @@ class SparkToHiveMapping:
 
 
 class ArrowToHiveMapping:
+    dtype_mapping = {
+        "int64": "int",
+        "timestamp[us]": "string",
+        "string": "string",
+        "bool": "string",
+        "null": "string",
+    }
 
-    def __init__(self):
-        self.dtype_mapping = {
-            "int64": "int",
-            "timestamp[us]": "string",
-            "string": "string",
-            "bool": "string",
-            "null": "string",
-        }
-
-    def transform_schema(self, arrow_dtype: str):
+    @classmethod
+    def transform_schema(cls, arrow_dtype: str):
         try:
-            return self.dtype_mapping[arrow_dtype]
+            return cls.dtype_mapping[arrow_dtype]
         except Exception as e:
             raise ValueError(f"{arrow_dtype} is not implemented yet") from e
