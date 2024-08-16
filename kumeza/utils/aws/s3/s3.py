@@ -1,4 +1,6 @@
 import logging
+from io import BytesIO, StringIO
+from typing import Union
 
 from kumeza.utils import ProgressPercentage
 from kumeza.utils.aws import BaseAwsUtil, boto_error_handler
@@ -13,9 +15,18 @@ class S3(BaseAwsUtil):
         super().__init__(service_name="s3", region_name="eu-west-1")
 
     @boto_error_handler(logger)
-    def write_buffer(self, buf, bucket_name: str = "", key_name: str = ""):
+    def write_buffer(
+        self,
+        buf: Union[bytes | StringIO | BytesIO],
+        bucket_name: str = "",
+        key_name: str = "",
+    ):
         return self._create_boto_client().put_object(
-            Body=buf.getvalue(),
+            Body=(
+                buf.getvalue()
+                if isinstance(buf, BytesIO) or isinstance(buf, StringIO)
+                else buf
+            ),
             Bucket=bucket_name,
             Key=key_name,
         )
