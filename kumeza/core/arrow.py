@@ -12,8 +12,14 @@ class ArrowConverter:
 class ArrowManager:
 
     @classmethod
-    def get_schema(cls, table: pa.Table) -> dict:
-        schema = {}
+    def get_schema(cls, table: pa.Table) -> list[dict]:
+        schema = []
         for field in table.schema:
-            schema[str(field.name)] = str(field.type)
+            s = {
+                "name": str(field.name),
+                "type": str(field.type),
+                "description": str(field.metadata),
+                "nullable": str(field.nullable),
+            }
+            schema.append(s)
         return schema
