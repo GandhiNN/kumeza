@@ -50,7 +50,8 @@ omit = [
     "kumeza/integrations/rdbms/mssql/*",
     "kumeza/extractors/arrow_odbc.py",
     "kumeza/extractors/mssql.py",
-    "kumeza/core/arrow.py"
+    "kumeza/core/arrow.py",
+    "kumeza/utils/common/date_object.py"
 ]
 
 [build-system]
