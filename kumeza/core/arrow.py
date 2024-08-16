@@ -12,5 +12,8 @@ class ArrowConverter:
 class ArrowManager:
 
     @classmethod
-    def get_schema_as_json(cls, table: pa.Table) -> pa.Schema:
-        return table.schema
+    def get_schema(cls, table: pa.Table) -> dict:
+        schema = {}
+        for field in table:
+            schema[str(field.name)] = str(field.type)
+        return schema
