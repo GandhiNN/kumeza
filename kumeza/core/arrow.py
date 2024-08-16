@@ -14,6 +14,6 @@ class ArrowManager:
     @classmethod
     def get_schema(cls, table: pa.Table) -> dict:
         schema = {}
-        for field in table:
+        for field in table.schema:
             schema[str(field.name)] = str(field.type)
         return schema
