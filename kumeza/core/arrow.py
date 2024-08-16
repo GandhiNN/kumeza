@@ -11,5 +11,6 @@ class ArrowConverter:
 
 class ArrowManager:
 
-    def get_schema(self, table: pa.Table):
+    @classmethod
+    def get_schema_as_json(cls, table: pa.Table) -> pa.Schema:
         return table.schema
