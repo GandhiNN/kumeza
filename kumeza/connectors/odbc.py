@@ -21,20 +21,7 @@ class ODBCManager:
             )
         raise ValueError(f"{db_engine}: Database type is not implemented!")
 
-    # TODO: Python 3.10
-    # def get_driver(self, db_engine: str) -> str:
-    #     match db_engine:
-    #         case "mssql" | "mssql-ntlm":
-    #             return "FreeTDS"
-    #         case _:
-    #             raise ValueError(f"{db_engine}: Database type is not implemented!")
-
     def get_driver(self, db_engine: str) -> str:
         if "mssql" in db_engine:
             return "FreeTDS"
         raise ValueError(f"{db_engine}: Database type is not implemented!")
-
-    # def get_driver(self, db_engine: str) -> str:
-    #     if "mssql" in db_engine:
-    #         return "libtdsodbc.so"
-    #     raise ValueError(f"{db_engine}: Database type is not implemented!")
