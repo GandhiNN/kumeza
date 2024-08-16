@@ -2,8 +2,13 @@ from typing import Any, Tuple
 
 import pymssql
 
+from kumeza.connectors.tds import TDSManager
+
 
 class MSSQLExtractor:
+
+    def __init__(self, tdsmanager: TDSManager):
+        self.tdsmanager = tdsmanager
 
     def _return_dict_pair(
         self, cursor: pymssql.Cursor, row_item: list[Tuple[str, Any]]
@@ -15,10 +20,7 @@ class MSSQLExtractor:
 
     def read(
         self,
-        hostname: str,
-        port: str,
         db_name: str,
-        db_instance: str,
         sqlquery: str,
         domain: str,
         username: str,
@@ -26,7 +28,7 @@ class MSSQLExtractor:
     ) -> list[dict[str, Any]]:
         try:
             conn = pymssql.connect(
-                server=f"{hostname}:{port}\\{db_instance}",
+                server=self.tdsmanager.get_connection_string(),
                 user=f"{domain}\\{username}",
                 password=password,
                 database=db_name,
