@@ -51,7 +51,7 @@ omit = [
     "kumeza/extractors/arrow_odbc.py",
     "kumeza/extractors/mssql.py",
     "kumeza/core/arrow.py",
-    "kumeza/core/data_type.py",
+    "kumeza/core/data.py",
     "kumeza/utils/common/date_object.py"
 ]
 
