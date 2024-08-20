@@ -27,7 +27,7 @@ class Sinks(BaseConfig):
     sink_targets: t.Sequence[SinkTargets]
 
     @classmethod
-    def marshal(cls: t.Type["SinkTargets"], obj: dict):
+    def marshal(cls: t.Type["Sinks"], obj: dict):
         return cls(
             sink_type=obj["sink_type"],
             sink_targets=[SinkTargets.marshal(item) for item in obj["sink_targets"]],
