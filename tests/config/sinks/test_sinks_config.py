@@ -38,21 +38,23 @@ class SinksConfigTest(unittest.TestCase, SetUp):
 
         # Keys sameness assertion
         self.assertEqual(
-            SinksConfig.marshal(self.yml_config["sinks"]).targets[0].get_field_name(),
+            SinksConfig.marshal(self.yml_config["sinks"]).sink_type[0].get_field_name(),
             keys_yaml,
         )
         self.assertEqual(
-            SinksConfig.marshal(self.json_config["sinks"]).targets[0].get_field_name(),
+            SinksConfig.marshal(self.json_config["sinks"])
+            .sink_type[0]
+            .get_field_name(),
             keys_json,
         )
 
         # Object length assertion
         self.assertEqual(
-            SinksConfig.marshal(self.yml_config["sinks"]).targets[0].get_length(),
+            SinksConfig.marshal(self.yml_config["sinks"]).sink_type[0].get_length(),
             len(keys_yaml),
         )
         self.assertEqual(
-            SinksConfig.marshal(self.json_config["sinks"]).targets[0].get_length(),
+            SinksConfig.marshal(self.json_config["sinks"]).sink_type[0].get_length(),
             len(keys_json),
         )
 
