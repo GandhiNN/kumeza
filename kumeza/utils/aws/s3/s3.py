@@ -17,7 +17,7 @@ class S3(BaseAwsUtil):
     @boto_error_handler(logger)
     def write_to_bucket(
         self,
-        buf: Union[bytes | StringIO | BytesIO],
+        buf: Union[bytes, StringIO, BytesIO],
         bucket_name: str = "",
         key_name: str = "",
     ):
