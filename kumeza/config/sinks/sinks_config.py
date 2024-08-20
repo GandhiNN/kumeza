@@ -33,6 +33,7 @@ class Sinks(BaseConfig):
             sink_targets=[SinkTargets.marshal(item) for item in obj["sink_targets"]],
         )
 
+
 @dataclass
 class SinksConfig:
     sink_type: t.Sequence[Sinks]
