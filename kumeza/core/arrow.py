@@ -2,7 +2,7 @@ from typing import Any
 
 import pyarrow as pa
 
-from kumeza.core.data_type import ArrowToHiveMapping
+from kumeza.core.data import ArrowToHiveMapping
 
 
 class ArrowConverter:
