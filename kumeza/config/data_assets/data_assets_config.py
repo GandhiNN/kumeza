@@ -57,11 +57,3 @@ class DataAssetsConfig:
     @classmethod
     def marshal(cls: t.Type["DataAssetsConfig"], obj: list):
         return cls(id=[AssetsId.marshal(item) for item in obj])
-
-
-# @dataclass
-# class DataAssetsConfig:
-
-#     @classmethod
-#     def marshal(cls: t.Type["DataAssetsConfig"], obj: list):
-#         return [AssetsId.marshal(item) for item in obj]
