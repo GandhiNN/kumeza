@@ -27,7 +27,7 @@ class S3TestIntegration(unittest.TestCase):
         )
 
     @mock_aws
-    def test_write_buffer(self):
+    def test_write_to_bucket(self):
 
         # Create a mock bucket
         self.s3_client.create_bucket(
@@ -37,7 +37,7 @@ class S3TestIntegration(unittest.TestCase):
         s3_client = S3()
         data_input = b"some data 123 321"
         buffer = BytesIO(data_input)  # convert bytestring to buffered reader
-        resp = s3_client.write_buffer(
+        resp = s3_client.write_to_bucket(
             buf=buffer, bucket_name=BUCKET_NAME, key_name=KEY_NAME
         )
         # make sure the write process is successful

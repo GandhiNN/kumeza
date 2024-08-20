@@ -15,7 +15,7 @@ class S3(BaseAwsUtil):
         super().__init__(service_name="s3", region_name="eu-west-1")
 
     @boto_error_handler(logger)
-    def write_buffer(
+    def write_to_bucket(
         self,
         buf: Union[bytes | StringIO | BytesIO],
         bucket_name: str = "",
