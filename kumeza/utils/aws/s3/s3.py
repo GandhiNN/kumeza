@@ -22,11 +22,7 @@ class S3(BaseAwsUtil):
         key_name: str = "",
     ):
         return self._create_boto_client().put_object(
-            Body=(
-                buf.getvalue()
-                if isinstance(buf, BytesIO) or isinstance(buf, StringIO)
-                else buf
-            ),
+            Body=(buf.getvalue() if isinstance(buf, (BytesIO, StringIO)) else buf),
             Bucket=bucket_name,
             Key=key_name,
         )
