@@ -7,6 +7,7 @@ from kumeza.config import BaseConfig
 @dataclass
 class Sinks(BaseConfig):
     id: str
+    sink_type: str
     target: str
     file_format: str
     path: str
@@ -15,6 +16,7 @@ class Sinks(BaseConfig):
     def marshal(cls: t.Type["Sinks"], obj: dict):
         return cls(
             id=obj["id"],
+            sink_type=obj["sink_type"],
             target=obj["target"],
             file_format=obj["file_format"],
             path=obj["path"],

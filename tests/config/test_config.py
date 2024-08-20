@@ -60,18 +60,21 @@ class ConfigInstance:
             [
                 Sinks(
                     id="daas_raw_bucket",
+                    sink_type="raw_data",
                     target="s3",
                     file_format="parquet",
                     path="daas-s3-raw-dev",
                 ),
                 Sinks(
                     id="enterprise_landing_raw_bucket",
+                    sink_type="raw_data",
                     target="s3",
                     file_format="parquet",
                     path="enterprise-landing-raw-dev",
                 ),
                 Sinks(
                     id="enterprise_landing_schema_bucket",
+                    sink_type="schema",
                     target="s3",
                     file_format="json",
                     path="enterprise-landing-schema-raw-dev",
