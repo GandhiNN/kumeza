@@ -36,23 +36,24 @@ metadata:
   table_name: daas-imel-ingestion-status-dev
 
 sinks:
-  - id: daas_raw_bucket
-    sink_type: raw_data
-    target: s3
-    file_format: parquet
-    path: daas-s3-raw-dev
+  - sink_type: raw
+    sink_targets:
+      - id: daas_raw_bucket
+        target: s3
+        file_format: parquet
+        path: daas-s3-raw-dev
 
-  - id: enterprise_landing_raw_bucket
-    sink_type: raw_data
-    target: s3
-    file_format: parquet
-    path: enterprise-landing-raw-dev
+      - id: enterprise_landing_raw_bucket
+        target: s3
+        file_format: parquet
+        path: enterprise-landing-raw-dev
 
-  - id: enterprise_landing_schema_bucket
-    sink_type: schema
-    target: s3
-    file_format: json
-    path: enterprise-landing-schema-raw-dev
+  - sink_type: schema
+    sink_targets:
+      - id: enterprise_landing_schema_bucket
+        target: s3
+        file_format: json
+        path: enterprise-landing-schema-raw-dev
 
 data_assets:
   - id: group_1
