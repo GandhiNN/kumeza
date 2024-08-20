@@ -5,18 +5,16 @@ from kumeza.config import BaseConfig
 
 
 @dataclass
-class Sinks(BaseConfig):
+class SinkTargets(BaseConfig):
     id: str
-    sink_type: str
     target: str
     file_format: str
     path: str
 
     @classmethod
-    def marshal(cls: t.Type["Sinks"], obj: dict):
+    def marshal(cls: t.Type["SinkTargets"], obj: dict):
         return cls(
             id=obj["id"],
-            sink_type=obj["sink_type"],
             target=obj["target"],
             file_format=obj["file_format"],
             path=obj["path"],
@@ -24,9 +22,21 @@ class Sinks(BaseConfig):
 
 
 @dataclass
+class Sinks(BaseConfig):
+    sink_type: str
+    sink_targets: t.Sequence[SinkTargets]
+
+    @classmethod
+    def marshal(cls: t.Type["SinkTargets"], obj: dict):
+        return cls(
+            sink_type=obj["sink_type"],
+            sink_targets=[SinkTargets.marshal(item) for item in obj["sink_targets"]],
+        )
+
+@dataclass
 class SinksConfig:
-    targets: t.Sequence[Sinks]
+    sink_type: t.Sequence[Sinks]
 
     @classmethod
     def marshal(cls: t.Type["SinksConfig"], obj: list):
-        return cls(targets=[Sinks.marshal(item) for item in obj])
+        return cls(sink_type=[Sinks.marshal(item) for item in obj])

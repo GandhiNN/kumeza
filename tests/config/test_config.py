@@ -14,7 +14,7 @@ from kumeza.config.metadata.metadata_config import MetadataConfig
 from kumeza.config.runtime_environment.runtime_environment_config import (
     RuntimeEnvironmentConfig,
 )
-from kumeza.config.sinks.sinks_config import Sinks, SinksConfig
+from kumeza.config.sinks.sinks_config import Sinks, SinksConfig, SinkTargets
 from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
 
@@ -59,25 +59,32 @@ class ConfigInstance:
         self.sinks = SinksConfig(
             [
                 Sinks(
-                    id="daas_raw_bucket",
-                    sink_type="raw_data",
-                    target="s3",
-                    file_format="parquet",
-                    path="daas-s3-raw-dev",
+                    sink_type="raw",
+                    sink_targets=[
+                        SinkTargets(
+                            id="daas_raw_bucket",
+                            target="s3",
+                            file_format="parquet",
+                            path="daas-s3-raw-dev",
+                        ),
+                        SinkTargets(
+                            id="enterprise_landing_raw_bucket",
+                            target="s3",
+                            file_format="parquet",
+                            path="enterprise-landing-raw-dev",
+                        ),
+                    ],
                 ),
                 Sinks(
-                    id="enterprise_landing_raw_bucket",
-                    sink_type="raw_data",
-                    target="s3",
-                    file_format="parquet",
-                    path="enterprise-landing-raw-dev",
-                ),
-                Sinks(
-                    id="enterprise_landing_schema_bucket",
                     sink_type="schema",
-                    target="s3",
-                    file_format="json",
-                    path="enterprise-landing-schema-raw-dev",
+                    sink_targets=[
+                        SinkTargets(
+                            id="enterprise_landing_schema_bucket",
+                            target="s3",
+                            file_format="json",
+                            path="enterprise-landing-schema-raw-dev",
+                        )
+                    ],
                 ),
             ]
         )
