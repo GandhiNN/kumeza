@@ -1,3 +1,11 @@
+import hashlib
+import json
+
+
+def get_schema_hash(schema: list[dict]) -> str:
+    return hashlib.sha256(json.dumps(schema, indent=4).encode("utf-8")).hexdigest()
+
+
 class SparkToHiveMapping:
 
     def __init__(self):
