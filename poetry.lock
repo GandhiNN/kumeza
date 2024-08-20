@@ -496,17 +496,6 @@ files = [
 test = ["pytest (>=6)"]
 
 [[package]]
-name = "findspark"
-version = "2.0.1"
-description = "Find pyspark to make it importable."
-optional = false
-python-versions = "*"
-files = [
-    {file = "findspark-2.0.1-py2.py3-none-any.whl", hash = "sha256:e5d5415ff8ced6b173b801e12fc90c1eefca1fb6bf9c19c4fc1f235d4222e753"},
-    {file = "findspark-2.0.1.tar.gz", hash = "sha256:aa10a96cb616cab329181d72e8ef13d2dc453b4babd02b5482471a0882c1195e"},
-]
-
-[[package]]
 name = "flake8"
 version = "7.1.0"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -1457,4 +1446,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "83a05e04e11ee00efbb0b5b3de958d84c6c50f8c98973b81f55a2ffb4438acfd"
+content-hash = "b56e1d9d3d7586b17f87ec7013da5ec4d0631f14bd78bbae378d0b8261ad5c51"
