@@ -33,6 +33,11 @@ class Sinks(BaseConfig):
             sink_targets=[SinkTargets.marshal(item) for item in obj["sink_targets"]],
         )
 
+    def get_sink_target(self, target_id: str):  # pragma: no cover
+        for target in self.sink_targets:
+            if target.id == target_id:
+                return target
+
 
 @dataclass
 class SinksConfig:
@@ -42,7 +47,7 @@ class SinksConfig:
     def marshal(cls: t.Type["SinksConfig"], obj: list):
         return cls(sink_type=[Sinks.marshal(item) for item in obj])
 
-    def get_sink(self, sink_type: str): 
+    def get_sink(self, sink_type: str):
         for sink in self.sink_type:
             if sink.sink_type == sink_type:
                 return sink
