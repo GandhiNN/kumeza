@@ -43,7 +43,7 @@ class SinksConfig:
         return cls(sink_type=[Sinks.marshal(item) for item in obj])
 
     @classmethod
-    def get(cls, sinks: t.Sequence[Sinks], sink_type: str):  # pragma: no cover
-        for sink in sinks:
+    def get(cls, sink_type: str):  # pragma: no cover
+        for sink in cls.sink_type:
             if sink.sink_type == sink_type:
                 return sink
