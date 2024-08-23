@@ -96,6 +96,20 @@ class SinksConfigTest(unittest.TestCase, SetUp):
         assert self.sinks_config_yaml.get_sink("schema") == expected_schema
         assert self.sinks_config_json.get_sink("schema") == expected_schema
 
+    def test_get_sink_target(self):
+        assert (
+            self.sinks_config_yaml.get_sink("raw")
+            .get_sink_target("daas_raw_bucket")
+            .path
+            == "daas-s3-raw-dev"
+        )
+        assert (
+            self.sinks_config_json.get_sink("raw")
+            .get_sink_target("daas_raw_bucket")
+            .path
+            == "daas-s3-raw-dev"
+        )
+
 
 def testSuite():
     suite = unittest.TestSuite()

@@ -33,7 +33,7 @@ class Sinks(BaseConfig):
             sink_targets=[SinkTargets.marshal(item) for item in obj["sink_targets"]],
         )
 
-    def get_sink_target(self, target_id: str):  # pragma: no cover
+    def get_sink_target(self, target_id: str):
         for target in self.sink_targets:
             if target.id == target_id:
                 return target
