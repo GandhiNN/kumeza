@@ -2,7 +2,7 @@ import os
 import unittest
 
 from kumeza.config.loader import ConfigLoader
-from kumeza.config.sinks.sinks_config import SinksConfig
+from kumeza.config.sinks.sinks_config import Sinks, SinksConfig, SinkTargets
 
 
 # Config files to be referenced
@@ -30,33 +30,71 @@ class ConfigInstanceSinks:
 class SinksConfigTest(unittest.TestCase, SetUp):
     def setUp(self) -> None:
         self.setup()
+        self.base_config = ConfigInstanceSinks()
+        self.keys_yaml = list(self.base_config.sinks_yaml[0].keys())
+        self.keys_json = list(self.base_config.sinks_json[0].keys())
+        self.sinks_config_yaml = SinksConfig.marshal(self.yml_config["sinks"])
+        self.sinks_config_json = SinksConfig.marshal(self.json_config["sinks"])
 
-    def test(self):
-        base_config = ConfigInstanceSinks()
-        keys_yaml = list(base_config.sinks_yaml[0].keys())
-        keys_json = list(base_config.sinks_json[0].keys())
-
-        # Keys sameness assertion
+    def test_key_sameness(self):
+        # Key sameness assertion
         self.assertEqual(
-            SinksConfig.marshal(self.yml_config["sinks"]).sink_type[0].get_field_name(),
-            keys_yaml,
+            self.sinks_config_yaml.sink_type[0].get_field_name(),
+            self.keys_yaml,
         )
         self.assertEqual(
-            SinksConfig.marshal(self.json_config["sinks"])
-            .sink_type[0]
-            .get_field_name(),
-            keys_json,
+            self.sinks_config_json.sink_type[0].get_field_name(),
+            self.keys_json,
         )
 
+    def test_object_length(self):
         # Object length assertion
         self.assertEqual(
-            SinksConfig.marshal(self.yml_config["sinks"]).sink_type[0].get_length(),
-            len(keys_yaml),
+            self.sinks_config_yaml.sink_type[0].get_length(),
+            len(self.keys_yaml),
         )
         self.assertEqual(
-            SinksConfig.marshal(self.json_config["sinks"]).sink_type[0].get_length(),
-            len(keys_json),
+            self.sinks_config_json.sink_type[0].get_length(),
+            len(self.keys_json),
         )
+
+    def test_get_sinks(self):
+        # Set expected output
+        expected_raw = Sinks(
+            sink_type="raw",
+            sink_targets=[
+                SinkTargets(
+                    id="daas_raw_bucket",
+                    target="s3",
+                    file_format="parquet",
+                    path="daas-s3-raw-dev",
+                ),
+                SinkTargets(
+                    id="enterprise_landing_raw_bucket",
+                    target="s3",
+                    file_format="parquet",
+                    path="enterprise-landing-raw-dev",
+                ),
+            ],
+        )
+        expected_schema = Sinks(
+            sink_type="schema",
+            sink_targets=[
+                SinkTargets(
+                    id="enterprise_landing_schema_bucket",
+                    target="s3",
+                    file_format="json",
+                    path="enterprise-landing-schema-raw-dev",
+                )
+            ],
+        )
+        # Test raw sinks
+        assert self.sinks_config_yaml.get_sink("raw") == expected_raw
+        assert self.sinks_config_json.get_sink("raw") == expected_raw
+
+        # Test schema sinks
+        assert self.sinks_config_yaml.get_sink("schema") == expected_schema
+        assert self.sinks_config_json.get_sink("schema") == expected_schema
 
 
 def testSuite():
