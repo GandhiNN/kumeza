@@ -42,7 +42,7 @@ class SinksConfig:
     def marshal(cls: t.Type["SinksConfig"], obj: list):
         return cls(sink_type=[Sinks.marshal(item) for item in obj])
 
-    def get_sink(self, sink_type: str):  # pragma: no cover
+    def get_sink(self, sink_type: str): 
         for sink in self.sink_type:
             if sink.sink_type == sink_type:
                 return sink
