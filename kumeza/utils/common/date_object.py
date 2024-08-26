@@ -11,11 +11,19 @@ class DateObject:
     ):
         self.ts_format = ts_format
 
-    def get_timestamp_milliseconds(self, epoch: str) -> str:
-        millisecond = int(epoch) % 1000
-        timestamp = datetime.datetime.fromtimestamp(int(epoch) / 1000).strftime(
-            self.ts_format
-        )
+    def get_timestamp_with_milliseconds(self, epoch: str) -> str:
+        timestamp: str = "0"
+        millisecond: int = 0
+        epoch_int = int(epoch)
+        if len(epoch) == 13:
+            millisecond = epoch_int % 1000
+            timestamp = datetime.datetime.fromtimestamp(epoch_int / 1000).strftime(
+                self.ts_format
+            )
+        elif len(epoch) > 0 and len(epoch) <= 10:
+            timestamp = datetime.datetime.fromtimestamp(epoch_int).strftime(
+                self.ts_format
+            )
         return f"{timestamp}.{millisecond}"
 
     def get_year_diff(
@@ -39,12 +47,14 @@ class DateObject:
     ) -> list:
         # for freqalias -> https://pandas.pydata.org/docs/user_guide/timeseries.html#timeseries-offset-aliases
         tslist = [
-            i.strftime("%Y-%m-%d %H:%M:%S")
+            i.strftime(self.ts_format)
             for i in pd.date_range(start=datestart, end=dateend, freq=freqalias)
         ]
         return tslist
 
-    def get_current_timestamp(self, ts_format: str = "epoch") -> Any:
+    def get_current_timestamp(
+        self, ts_format: str = "epoch"
+    ) -> Any:  # pragma: no cover
         """
         Get current timestamp according to desired input format.
 
@@ -64,5 +74,5 @@ class DateObject:
             return datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
         if ts_format == "timenow_string":
             return datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
-        if type == "datetime_object":
+        if ts_format == "datetime_object":
             return datetime.datetime.now()
