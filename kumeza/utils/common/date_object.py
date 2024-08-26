@@ -17,13 +17,13 @@ class DateObject:
         epoch_int = int(epoch)
         if len(epoch) == 13:
             millisecond = epoch_int % 1000
-            timestamp = datetime.datetime.fromtimestamp(epoch_int / 1000).strftime(
-                self.ts_format
-            )
+            timestamp = datetime.datetime.fromtimestamp(
+                epoch_int / 1000, tz=datetime.timezone.utc
+            ).strftime(self.ts_format)
         elif len(epoch) > 0 and len(epoch) <= 10:
-            timestamp = datetime.datetime.fromtimestamp(epoch_int).strftime(
-                self.ts_format
-            )
+            timestamp = datetime.datetime.fromtimestamp(
+                epoch_int, tz=datetime.timezone.utc
+            ).strftime(self.ts_format)
         return f"{timestamp}.{millisecond}"
 
     def get_year_diff(
