@@ -75,10 +75,11 @@ def buildWheel() {
     """)
 }
 
-def buildLambdaLayerZip(zip_semver) {
+def buildLambdaLayerZip() {
     sh(script: """
+    ZIP_SEMVER=poetry version | awk '{print \$2}'
     poetry run pip install -t package dist/*.whl
-    cd package; zip -r ../kumeza-${zip_semver}.zip . -x '*.pyc'
+    cd package; zip -r ../kumeza-${ZIP_SEMVER}.zip . -x '*.pyc'
     """)
 }
 
@@ -204,13 +205,10 @@ pipeline {
             }
         }
         stage('Build Lambda Layer Zip File') {
-            environment {
-                ZIP_SEMVER = sh(script: "poetry version | awk '{print \$2}'", returnStdout: true)
-            }
             steps {
                 container("python") {
                     script {
-                        buildLambdaLayerZip(ZIP_SEMVER)
+                        buildLambdaLayerZip()
                     }
                 }
             }
