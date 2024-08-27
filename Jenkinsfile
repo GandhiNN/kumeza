@@ -76,11 +76,12 @@ def buildWheel() {
 }
 
 // single quotes enclosure is necessary to solve dynamic variable assignment
-def buildLambdaLayerZip() {
+def buildLambdaLayerZipAndSyncArtifact() {
     sh(script: '''
     ZIP_SEMVER=$(poetry version | awk '{print $2}')
     poetry run pip install -t package dist/*.whl
     cd package; zip -r ../kumeza-${ZIP_SEMVER}.zip . -x '*.pyc'
+    aws s3 cp ../kumeza-${ZIP_SEMVER}.zip s3://${S3_BUCKET_NAME}/python/kumeza-${ZIP_SEMVER}.zip
     ''')
 }
 
@@ -88,7 +89,6 @@ def copyArtifactsToS3Bucket() {
     sh(script: """
     echo 'Transferring wheel file to S3'
     aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/python/kumeza --recursive --exclude \"*.gz\"
-    aws s3 cp kumeza.zip s3://${S3_BUCKET_NAME}/python/kumeza.zip
     """)
 }
 
@@ -205,11 +205,11 @@ pipeline {
                 }
             }
         }
-        stage('Build Lambda Layer Zip File') {
+        stage('Build Lambda Layer Zip File and sync Artifact') {
             steps {
                 container("python") {
                     script {
-                        buildLambdaLayerZip()
+                        buildLambdaLayerZipAndSyncArtifact()
                     }
                 }
             }
