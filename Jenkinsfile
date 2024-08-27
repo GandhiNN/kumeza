@@ -70,10 +70,19 @@ def unitTest() {
 }
 
 def buildWheel() {
-    sh(script: "make build")
+    sh(script: """
+    make build
+    """)
 }
 
-def copyWheelToS3Bucket() {
+def buildLambdaLayerZip() {
+    sh(script: """
+    poetry run pip install -t package dist/*.whl
+    cd package; zip -r ../kumeza.zip . -x '*.pyc'
+    """)
+}
+
+def copyArtifactsToS3Bucket() {
     sh(script: """
     echo 'Transferring wheel file to S3'
     aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/python/kumeza --recursive --exclude \"*.gz\"
@@ -84,6 +93,16 @@ def copyOdbcLibToS3Bucket() {
     sh(script: """
     echo 'Transferring ODBC shared library files to S3'
     aws s3 cp ./shared_lib/odbc s3://${S3_BUCKET_NAME}/odbc --recursive
+    """)
+}
+
+def deployLambdaLayer() {
+    sh(script: """
+    aws lambda publish-layer-version --layer-name ${ZIP_NAME} \
+        --description "DAAS Common Library V2 SDK Layer" \
+        --license-info "MIT" \
+        --content S3Bucket=${S3_BUCKET_NAME},S3Key=python/kumeza.zip \
+        --compatible-runtimes python3.9
     """)
 }
 
@@ -181,11 +200,20 @@ pipeline {
                 }
             }
         }
-        stage('Sync Wheel File') {
+        stage('Build Lambda Layer Zip File') {
             steps {
                 container("python") {
                     script {
-                        copyWheelToS3Bucket()
+                        buildLambdaLayerZip()
+                    }
+                }
+            }
+        }
+        stage('Sync Artifacts') {
+            steps {
+                container("python") {
+                    script {
+                        copyArtifactsToS3Bucket()
                     }
                 }
             }
@@ -195,6 +223,15 @@ pipeline {
                 container("python") {
                     script {
                         copyOdbcLibToS3Bucket()
+                    }
+                }
+            }
+        }
+        stage('Deploy lambda layers') {
+            steps {
+                container("python") {
+                    script {
+                        deployLambdaLayer()
                     }
                 }
             }
