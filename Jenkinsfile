@@ -86,6 +86,7 @@ def copyArtifactsToS3Bucket() {
     sh(script: """
     echo 'Transferring wheel file to S3'
     aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/python/kumeza --recursive --exclude \"*.gz\"
+    aws s3 cp kumeza.zip s3://${S3_BUCKET_NAME}/python/kumeza
     """)
 }
 
