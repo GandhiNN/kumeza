@@ -37,6 +37,7 @@ MANIFEST
 bkp/
 ojdbc8-full/
 *tar.gz
+package/*
 
 # Local configuration files
 secret.json
