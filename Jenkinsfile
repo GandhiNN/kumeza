@@ -69,9 +69,11 @@ def unitTest() {
     sh(script: "make test")
 }
 
-def buildWheel() {
+def buildWheelAndSyncArtifact() {
     sh(script: """
     make build
+    echo 'Transferring wheel file to S3'
+    aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/python/kumeza --recursive --exclude \"*.gz\"
     """)
 }
 
@@ -196,29 +198,20 @@ pipeline {
                 }
             }
         }
-        stage('Build Wheel File') {
+        stage('Build Wheel File and Sync Artifact') {
             steps {
                 container("python") {
                     script {
-                        buildWheel()
+                        buildWheelAndSyncArtifact()
                     }
                 }
             }
         }
-        stage('Build Lambda Layer Zip File and sync Artifact') {
+        stage('Build Lambda Layer Zip File and Sync Artifact') {
             steps {
                 container("python") {
                     script {
                         buildLambdaLayerZipAndSyncArtifact()
-                    }
-                }
-            }
-        }
-        stage('Sync Artifacts') {
-            steps {
-                container("python") {
-                    script {
-                        copyArtifactsToS3Bucket()
                     }
                 }
             }
