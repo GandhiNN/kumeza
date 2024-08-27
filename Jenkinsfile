@@ -75,12 +75,13 @@ def buildWheel() {
     """)
 }
 
+// single quotes enclosure is necessary to solve dynamic variable assignment
 def buildLambdaLayerZip() {
-    sh(script: """
-    ZIP_SEMVER=\$(poetry version | awk '{print \$2}')
+    sh(script: '''
+    ZIP_SEMVER=$(poetry version | awk '{print $2}')
     poetry run pip install -t package dist/*.whl
     cd package; zip -r ../kumeza-${ZIP_SEMVER}.zip . -x '*.pyc'
-    """)
+    ''')
 }
 
 def copyArtifactsToS3Bucket() {
