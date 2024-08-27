@@ -205,7 +205,7 @@ pipeline {
         }
         stage('Build Lambda Layer Zip File') {
             environment {
-                ZIP_SEMVER = sh(script: "poetry version | awk '{print $2}'", returnStdout: true)
+                ZIP_SEMVER = sh(script: "poetry version | awk '{print \$2}'", returnStdout: true)
             }
             steps {
                 container("python") {
