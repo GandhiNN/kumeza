@@ -86,7 +86,7 @@ def copyArtifactsToS3Bucket() {
     sh(script: """
     echo 'Transferring wheel file to S3'
     aws s3 cp ./dist/ s3://${S3_BUCKET_NAME}/python/kumeza --recursive --exclude \"*.gz\"
-    aws s3 cp kumeza.zip s3://${S3_BUCKET_NAME}/python/kumeza
+    aws s3 cp kumeza.zip s3://${S3_BUCKET_NAME}/python/kumeza.zip
     """)
 }
 
@@ -97,6 +97,8 @@ def copyOdbcLibToS3Bucket() {
     """)
 }
 
+// DEEP-Jenkins IAM role permission need to be modified
+// by allowing lambda:PublishLayerVersion action -> Not valid for now
 def deployLambdaLayer() {
     sh(script: """
     aws lambda publish-layer-version --layer-name ${ZIP_NAME} \
@@ -224,15 +226,6 @@ pipeline {
                 container("python") {
                     script {
                         copyOdbcLibToS3Bucket()
-                    }
-                }
-            }
-        }
-        stage('Deploy lambda layers') {
-            steps {
-                container("python") {
-                    script {
-                        deployLambdaLayer()
                     }
                 }
             }
