@@ -52,9 +52,7 @@ class DateObject:
         ]
         return tslist
 
-    def get_current_timestamp(
-        self, ts_format: str = "epoch"
-    ) -> Any:  # pragma: no cover
+    def get_current_timestamp(self, ts_format: str = "epoch") -> Any:
         """
         Get current timestamp according to desired input format.
 
