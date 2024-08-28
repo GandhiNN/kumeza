@@ -81,7 +81,7 @@ def buildWheelAndSyncArtifact() {
 def buildLambdaLayerZipAndSyncArtifact(package_semver) {
     sh(script: """
     echo 'Transferring wheel file to S3 as a Lambda Layer zip'
-    cd dist; aws s3 cp ../kumeza-${package_semver}-py3-none-any.whl s3://${S3_BUCKET_NAME}/python/kumeza-${package_semver}-none-any.zip
+    cd dist; aws s3 cp kumeza-${package_semver}-py3-none-any.whl s3://${S3_BUCKET_NAME}/python/kumeza-${package_semver}-none-any.zip
     """)
 }
 
