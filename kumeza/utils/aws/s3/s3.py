@@ -17,12 +17,16 @@ class S3(BaseAwsUtil):
     @boto_error_handler(logger)
     def write_to_bucket(
         self,
-        buf: Union[bytes, StringIO, BytesIO],
+        content: Union[bytes, StringIO, BytesIO, list[dict]],
         bucket_name: str = "",
         key_name: str = "",
     ):
         return self._create_boto_client().put_object(
-            Body=(buf.getvalue() if isinstance(buf, (BytesIO, StringIO)) else buf),
+            Body=(
+                content.getvalue()
+                if isinstance(content, (BytesIO, StringIO))
+                else content
+            ),
             Bucket=bucket_name,
             Key=key_name,
         )

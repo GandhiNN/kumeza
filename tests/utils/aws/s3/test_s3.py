@@ -38,7 +38,7 @@ class S3TestIntegration(unittest.TestCase):
         data_input = b"some data 123 321"
         buffer = BytesIO(data_input)  # convert bytestring to buffered reader
         resp = s3_client.write_to_bucket(
-            buf=buffer, bucket_name=BUCKET_NAME, key_name=KEY_NAME
+            content=buffer, bucket_name=BUCKET_NAME, key_name=KEY_NAME
         )
         # make sure the write process is successful
         assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
