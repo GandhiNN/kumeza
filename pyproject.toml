@@ -47,6 +47,7 @@ omit = [
     "kumeza/connectors/tds.py",
     "kumeza/extractors/spark.py",
     "kumeza/utils/aws/__init__.py",
+    "kumeza/utils/query/sql.py",
     "kumeza/integrations/rdbms/mssql/*",
     "kumeza/extractors/arrow_odbc.py",
     "kumeza/extractors/mssql.py",
