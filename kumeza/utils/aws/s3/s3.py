@@ -1,6 +1,7 @@
+import json
 import logging
 from io import BytesIO, StringIO
-from typing import Union
+from typing import Any, Union
 
 from kumeza.utils import ProgressPercentage
 from kumeza.utils.aws import BaseAwsUtil, boto_error_handler
@@ -21,12 +22,15 @@ class S3(BaseAwsUtil):
         bucket_name: str = "",
         key_name: str = "",
     ):
+        body: Any = None
+        if isinstance(content, (BytesIO, StringIO)):
+            body = content.getvalue()
+        elif isinstance(content, bytes):
+            body = content
+        else:
+            body = json.dumps(content, indent=4, default=str)
         return self._create_boto_client().put_object(
-            Body=(
-                content.getvalue()
-                if isinstance(content, (BytesIO, StringIO))
-                else content
-            ),
+            Body=body,
             Bucket=bucket_name,
             Key=key_name,
         )

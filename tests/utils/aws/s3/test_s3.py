@@ -1,5 +1,6 @@
 # pylint: disable=redefined-outer-name
 #
+import json
 import os
 import unittest
 from io import BytesIO
@@ -27,7 +28,7 @@ class S3TestIntegration(unittest.TestCase):
         )
 
     @mock_aws
-    def test_write_to_bucket(self):
+    def test_write_bytes_io_to_bucket(self):
 
         # Create a mock bucket
         self.s3_client.create_bucket(
@@ -48,6 +49,64 @@ class S3TestIntegration(unittest.TestCase):
         )  # read the same object from mocked bucket
         # make sure that we get the same bytestream
         assert get_resp["Body"].read() == data_input  # flushed upon first read
+
+    @mock_aws
+    def test_write_bytes_buffer_to_bucket(self):
+
+        # Create a mock bucket
+        self.s3_client.create_bucket(
+            Bucket=BUCKET_NAME,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-1"},
+        )
+        s3_client = S3()
+        data_input = b"some data 123 321"
+        resp = s3_client.write_to_bucket(
+            content=data_input, bucket_name=BUCKET_NAME, key_name=KEY_NAME
+        )
+        # make sure the write process is successful
+        assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
+
+        get_resp = s3_client.get_object(
+            bucket_name=BUCKET_NAME, key_name=KEY_NAME
+        )  # read the same object from mocked bucket
+        # make sure that we get the same bytestream
+        assert get_resp["Body"].read() == data_input  # flushed upon first read
+
+    @mock_aws
+    def test_write_list_of_dict_to_bucket(self):
+
+        # Create a mock bucket
+        self.s3_client.create_bucket(
+            Bucket=BUCKET_NAME,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-1"},
+        )
+        s3_client = S3()
+        data_input = [
+            {
+                "name": "ActionFlagType",
+                "type": "int",
+                "description": "None",
+                "nullable": "True",
+            },
+            {
+                "name": "TextID",
+                "type": "int",
+                "description": "None",
+                "nullable": "True",
+            },
+        ]
+        resp = s3_client.write_to_bucket(
+            content=data_input, bucket_name=BUCKET_NAME, key_name=KEY_NAME
+        )
+        # make sure the write process is successful
+        assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
+
+        get_resp = s3_client.get_object(
+            bucket_name=BUCKET_NAME, key_name=KEY_NAME
+        )  # read the same object from mocked bucket
+        # make sure that we get the same bytestream
+        resp_body = get_resp["Body"].read()
+        assert json.loads(resp_body.decode("utf-8").replace("'", '"')) == data_input
 
     @mock_aws
     def test_upload_file(self):
