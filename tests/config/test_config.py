@@ -110,6 +110,7 @@ class ConfigInstance:
                             columns_to_anonymize=[],
                             custom_query=None,
                             custom_schema={},
+                            incremental=True,
                             cast_timestamp_columns_to_string=False,
                         ),
                         Assets(
@@ -124,6 +125,7 @@ class ConfigInstance:
                             columns_to_anonymize=[],
                             custom_query=None,
                             custom_schema={},
+                            incremental=False,
                             cast_timestamp_columns_to_string=False,
                         ),
                     ],
@@ -143,6 +145,7 @@ class ConfigInstance:
                             columns_to_anonymize=[],
                             custom_query=None,
                             custom_schema={},
+                            incremental=False,
                             cast_timestamp_columns_to_string=False,
                         )
                     ],

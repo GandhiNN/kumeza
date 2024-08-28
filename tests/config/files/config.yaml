@@ -70,6 +70,7 @@ data_assets:
         columns_to_anonymize: []
         custom_query: null
         custom_schema: {}
+        incremental: true
         cast_timestamp_columns_to_string: false
 
       - asset_name: CUSTOMER_NAME
@@ -83,6 +84,7 @@ data_assets:
         columns_to_anonymize: []
         custom_query: null
         custom_schema: {}
+        incremental: false
         cast_timestamp_columns_to_string: false
 
   - id: group_2
@@ -98,6 +100,7 @@ data_assets:
         columns_to_anonymize: []
         custom_query: null
         custom_schema: {}
+        incremental: false
         cast_timestamp_columns_to_string: false
 
 

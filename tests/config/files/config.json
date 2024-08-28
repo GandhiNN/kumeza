@@ -83,6 +83,7 @@
                     "columns_to_anonymize": [],
                     "custom_query": null,
                     "custom_schema": {},
+                    "incremental": true,
                     "cast_timestamp_columns_to_string": false
                 },
                 {
@@ -97,6 +98,7 @@
                     "columns_to_anonymize": [],
                     "custom_query": null,
                     "custom_schema": {},
+                    "incremental": false,
                     "cast_timestamp_columns_to_string": false
                 }
             ]
@@ -116,6 +118,7 @@
                     "columns_to_anonymize": [],
                     "custom_query": null,
                     "custom_schema": {},
+                    "incremental": false,
                     "cast_timestamp_columns_to_string": false
                 }
             ]
