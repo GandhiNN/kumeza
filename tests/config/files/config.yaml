@@ -8,6 +8,7 @@ runtime_environment:
   
 source_system:
   id: custdb
+  type: rdbms
   database_engine: mssql
   database_instance: dev
   authentication_type: ntlm

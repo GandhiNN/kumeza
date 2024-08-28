@@ -36,6 +36,7 @@ class ConfigInstance:
         )
         self.source_system = SourceSystemConfig(
             id="custdb",
+            type="rdbms",
             database_engine="mssql",
             database_instance="dev",
             authentication_type="ntlm",
