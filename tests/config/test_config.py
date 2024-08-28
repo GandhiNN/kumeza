@@ -42,6 +42,7 @@ class ConfigInstance:
             hostname="custdb.mssql.example",
             domain="example.com",
             port=1433,
+            physical_location="jkt",
         )
         self.integration = IntegrationConfig(
             engine="spark", driver="jdbc", fetchsize=1000, chunksize=1000000

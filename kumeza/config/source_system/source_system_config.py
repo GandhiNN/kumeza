@@ -13,6 +13,7 @@ class SourceSystemConfig(BaseConfig):
     hostname: str
     domain: str
     port: int
+    physical_location: str
 
     @classmethod
     def marshal(cls: t.Type["SourceSystemConfig"], obj: dict):
@@ -24,4 +25,5 @@ class SourceSystemConfig(BaseConfig):
             hostname=obj["hostname"],
             domain=obj["domain"],
             port=obj["port"],
+            physical_location=obj["physical_location"],
         )

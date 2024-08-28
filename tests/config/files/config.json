@@ -13,7 +13,8 @@
         "authentication_type": "ntlm",
         "hostname": "custdb.mssql.example",
         "domain": "example.com",
-        "port": 1433
+        "port": 1433,
+        "physical_location": "jkt"
     },
     "integration": {
         "engine": "spark",
