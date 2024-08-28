@@ -28,33 +28,37 @@ YAML_CONFIG = os.path.join(ABS_PATH, CFG_PATH, "config.yaml")
 class ConfigInstance:
     def __init__(self):
         self.runtime_environment = RuntimeEnvironmentConfig(
-            id="icloud", provider="aws", service="glue", region="eu-west-1", env="dev"
+            id="aws_tenant",
+            provider="aws",
+            service="glue",
+            region="ap-southeast-3",
+            env="dev",
         )
         self.source_system = SourceSystemConfig(
-            id="imel",
+            id="custdb",
             database_engine="mssql",
             database_instance="dev",
             authentication_type="ntlm",
-            hostname="sqlqa_qimel_pmhboz.dbiaas.sdi.pmi",
-            domain="pmintl.net",
+            hostname="custdb.mssql.example",
+            domain="example.com",
             port=1433,
         )
         self.integration = IntegrationConfig(
             engine="spark", driver="jdbc", fetchsize=1000, chunksize=1000000
         )
         self.credentials = CredentialsConfig(
-            username="s-imel-opsdaas-qas01",
+            username="some_username",
             provider="hashicorp_vault",
-            url="https://vault.vault-dev-dev.shared-services.eu-west-1.aws.pmicloud.biz:8200",
+            url="https://hashicorp-vault.dev.com:8200",
             verify_ssl=False,
-            namespace="icloud",
-            secret_name="hcv-icloud-approle-dev",
+            namespace="some_vault_namespace",
+            secret_name="hcv-approle-dev",
             mount_point="static-secret",
-            path="data/imel",
+            path="data/custdb",
         )
         self.metadata = MetadataConfig(
             sink_type="dynamodb",
-            table_name="daas-imel-ingestion-status-dev",
+            table_name="ingestion-status-dev",
         )
         self.sinks = SinksConfig(
             [
@@ -62,16 +66,16 @@ class ConfigInstance:
                     sink_type="raw",
                     sink_targets=[
                         SinkTargets(
-                            id="daas_raw_bucket",
+                            id="staging",
                             target="s3",
                             file_format="parquet",
-                            path="daas-s3-raw-dev",
+                            path="staging-bucket-dev",
                         ),
                         SinkTargets(
-                            id="enterprise_landing_raw_bucket",
+                            id="silver",
                             target="s3",
                             file_format="parquet",
-                            path="enterprise-landing-raw-dev",
+                            path="silver-bucket-dev",
                         ),
                     ],
                 ),
@@ -79,10 +83,10 @@ class ConfigInstance:
                     sink_type="schema",
                     sink_targets=[
                         SinkTargets(
-                            id="enterprise_landing_schema_bucket",
+                            id="raw_schema",
                             target="s3",
                             file_format="json",
-                            path="enterprise-landing-schema-raw-dev",
+                            path="schema-bucket-dev",
                         )
                     ],
                 ),
@@ -94,9 +98,9 @@ class ConfigInstance:
                     id="group_1",
                     assets=[
                         Assets(
-                            asset_name="ACTION_FLAG_TYPE",
+                            asset_name="CUSTOMER_ID",
                             asset_type="table",
-                            database_name="Apriso",
+                            database_name="master",
                             database_schema="dbo",
                             query_type="standard",
                             reload=False,
@@ -108,9 +112,9 @@ class ConfigInstance:
                             cast_timestamp_columns_to_string=False,
                         ),
                         Assets(
-                            asset_name="ACTION_SCRIPT",
+                            asset_name="CUSTOMER_NAME",
                             asset_type="table",
-                            database_name="Apriso",
+                            database_name="master",
                             database_schema="dbo",
                             query_type="standard",
                             reload=False,
@@ -127,9 +131,9 @@ class ConfigInstance:
                     id="group_2",
                     assets=[
                         Assets(
-                            asset_name="WIP_ORDER",
+                            asset_name="ADDRESS",
                             asset_type="table",
-                            database_name="Apriso",
+                            database_name="master",
                             database_schema="dbo",
                             query_type="standard",
                             reload=False,

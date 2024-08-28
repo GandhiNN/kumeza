@@ -64,16 +64,16 @@ class SinksConfigTest(unittest.TestCase, SetUp):
             sink_type="raw",
             sink_targets=[
                 SinkTargets(
-                    id="daas_raw_bucket",
+                    id="staging",
                     target="s3",
                     file_format="parquet",
-                    path="daas-s3-raw-dev",
+                    path="staging-bucket-dev",
                 ),
                 SinkTargets(
-                    id="enterprise_landing_raw_bucket",
+                    id="silver",
                     target="s3",
                     file_format="parquet",
-                    path="enterprise-landing-raw-dev",
+                    path="silver-bucket-dev",
                 ),
             ],
         )
@@ -81,10 +81,10 @@ class SinksConfigTest(unittest.TestCase, SetUp):
             sink_type="schema",
             sink_targets=[
                 SinkTargets(
-                    id="enterprise_landing_schema_bucket",
+                    id="raw_schema",
                     target="s3",
                     file_format="json",
-                    path="enterprise-landing-schema-raw-dev",
+                    path="schema-bucket-dev",
                 )
             ],
         )
@@ -98,16 +98,12 @@ class SinksConfigTest(unittest.TestCase, SetUp):
 
     def test_get_sink_target(self):
         assert (
-            self.sinks_config_yaml.get_sink("raw")
-            .get_sink_target("daas_raw_bucket")
-            .path
-            == "daas-s3-raw-dev"
+            self.sinks_config_yaml.get_sink("raw").get_sink_target("staging").path
+            == "staging-bucket-dev"
         )
         assert (
-            self.sinks_config_json.get_sink("raw")
-            .get_sink_target("daas_raw_bucket")
-            .path
-            == "daas-s3-raw-dev"
+            self.sinks_config_json.get_sink("raw").get_sink_target("staging").path
+            == "staging-bucket-dev"
         )
 
 
