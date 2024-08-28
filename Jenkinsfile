@@ -80,9 +80,8 @@ def buildWheelAndSyncArtifact() {
 // single quotes enclosure is necessary to solve dynamic variable assignment
 def buildLambdaLayerZipAndSyncArtifact(package_semver) {
     sh(script: """
-    poetry run pip install -t package dist/*.whl
-    cd package; zip -r ../kumeza-${package_semver}.zip . -x '*.pyc'
-    aws s3 cp ../kumeza-${package_semver}.zip s3://${S3_BUCKET_NAME}/python/kumeza-${package_semver}.zip
+    echo 'Transferring wheel file to S3 as a Lambda Layer zip'
+    cd dist; aws s3 cp ../kumeza-${package_semver}-py3-none-any.whl s3://${S3_BUCKET_NAME}/python/kumeza-${package_semver}-none-any.zip
     """)
 }
 
@@ -105,7 +104,8 @@ def copyOdbcLibToS3Bucket() {
 }
 
 // DEEP-Jenkins IAM role permission need to be modified
-// by allowing lambda:PublishLayerVersion action -> Not valid for now
+// by allowing lambda:PublishLayerVersion action
+// !!Not valid for now!!
 def deployLambdaLayer() {
     sh(script: """
     aws lambda publish-layer-version --layer-name ${ZIP_NAME} \
