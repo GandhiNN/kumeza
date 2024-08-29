@@ -24,26 +24,59 @@ class JDBCManagerTest(unittest.TestCase):
         self.domain = DOMAIN
         self.db_engine = DB_ENGINE
         self.jdbc_manager = JDBCManager(
-            self.hostname, self.port, self.db_instance, self.domain, self.db_engine
+            self.hostname, self.port, self.db_instance, self.domain
         )
 
-    def test_get_connstring_mssql(self):
+    def test_get_connstring_mssql_with_readonly_intent(self):
         assert (
-            self.jdbc_manager.get_connection_string("mssql", DB_NAME)
+            self.jdbc_manager.get_connection_string("mssql", DB_NAME, read_only=True)
+            == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
+            """instance=dev;databaseName=somedbname;"""
+            """integratedSecurity=false;"""
+            """readonly=true"""
+        )
+        assert (
+            self.jdbc_manager.get_connection_string(
+                "mssql-ntlm", DB_NAME, read_only=True
+            )
+            == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
+            """instance=dev;databaseName=somedbname;"""
+            """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net;"""
+            """readonly=true"""
+        )
+
+    def test_get_connstring_mssql_with_no_readonly_intent(self):
+        assert (
+            self.jdbc_manager.get_connection_string("mssql", DB_NAME, read_only=False)
             == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
             """instance=dev;databaseName=somedbname;"""
             """integratedSecurity=false"""
         )
         assert (
-            self.jdbc_manager.get_connection_string("mssql-ntlm", DB_NAME)
+            self.jdbc_manager.get_connection_string(
+                "mssql-ntlm", DB_NAME, read_only=False
+            )
             == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
             """instance=dev;databaseName=somedbname;"""
             """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net"""
         )
 
-    def test_get_connstring_postgresql(self):
+    def test_get_connstring_postgresql_with_readonly_intent(self):
         assert (
-            self.jdbc_manager.get_connection_string("postgresql", DB_NAME)
+            self.jdbc_manager.get_connection_string(
+                "postgresql", DB_NAME, read_only=True
+            )
+            == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
+            """instance=dev;databaseName=somedbname;"""
+            """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net;"""
+            """readonly=true"""
+        )
+
+    def test_get_connstring_postgresql_with_no_readonly_intent(self):
+        assert (
+            self.jdbc_manager.get_connection_string(
+                "postgresql", DB_NAME, read_only=False
+            )
             == """jdbc:jtds:sqlserver://somedbhostname.db.sdi.pmi:1443;"""
             """instance=dev;databaseName=somedbname;"""
             """integratedSecurity=true;useNTLMv2=true;domain=somedomain.net"""
@@ -68,27 +101,27 @@ class JDBCManagerTest(unittest.TestCase):
 
     def test_get_driver_mssql(self):
         assert (
-            self.jdbc_manager._get_driver("mssql") == "net.sourceforge.jtds.jdbc.Driver"
+            self.jdbc_manager.get_driver("mssql") == "net.sourceforge.jtds.jdbc.Driver"
         )
         assert (
-            self.jdbc_manager._get_driver("mssql-ntlm")
+            self.jdbc_manager.get_driver("mssql-ntlm")
             == "net.sourceforge.jtds.jdbc.Driver"
         )
 
     def test_get_driver_postgresql(self):
         assert (
-            self.jdbc_manager._get_driver("postgresql")
+            self.jdbc_manager.get_driver("postgresql")
             == "net.sourceforge.jtds.jdbc.Driver"
         )
 
     def test_get_driver_oracle(self):
         assert (
-            self.jdbc_manager._get_driver("oracle") == "oracle.jdbc.driver.OracleDriver"
+            self.jdbc_manager.get_driver("oracle") == "oracle.jdbc.driver.OracleDriver"
         )
 
     def test_get_driver_mysql(self):
-        assert self.jdbc_manager._get_driver("mysql") == "com.mysql.cj.jdbc.Driver"
+        assert self.jdbc_manager.get_driver("mysql") == "com.mysql.cj.jdbc.Driver"
 
     def test_get_driver_unrecognized_input(self):
         with pytest.raises(ValueError):
-            self.jdbc_manager._get_driver("unrecognized")
+            self.jdbc_manager.get_driver("unrecognized")
