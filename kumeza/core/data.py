@@ -31,7 +31,6 @@ class SparkToHiveMapping:
 class ArrowToHiveMapping:
     dtype_mapping = {
         "int64": "int",
-        "decimal128(19, 10)": "float",
         "timestamp[us]": "string",
         "string": "string",
         "bool": "string",
@@ -41,6 +40,8 @@ class ArrowToHiveMapping:
     @classmethod
     def transform_schema(cls, arrow_dtype: str):
         try:
+            if "decimal" in str(arrow_dtype):
+                return "float"
             return cls.dtype_mapping[arrow_dtype]
         except Exception as e:
             raise ValueError(f"{arrow_dtype} is not implemented yet") from e
