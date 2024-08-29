@@ -25,7 +25,7 @@ class MSSQLQueryManager:
     def _render_standard_query(self):
         template = pkgutil.get_data(__package__, "models/mssql/standard.sql")
         return Template(template.decode("utf-8")).render(
-            source=f"{self.assets.database_schema}.{self.assets.asset_name}"
+            source=f"{self.assets.database_name}.{self.assets.database_schema}.{self.assets.asset_name}"
         )
 
     def get_sql_query(self) -> str:
