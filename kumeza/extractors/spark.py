@@ -55,7 +55,7 @@ class SparkExtractor:
                     "url",
                     self.jdbcmanager.get_connection_string(db_engine, db_name),
                 )
-                .option("driver", self.jdbcmanager.driver)
+                .option("driver", self.jdbcmanager.get_driver(db_engine))
                 .option("fetchsize", fetchsize)
                 .option("user", username)
                 .option("password", password)
@@ -69,7 +69,7 @@ class SparkExtractor:
                     "url",
                     self.jdbcmanager.get_connection_string(db_engine, db_name),
                 )
-                .option("driver", self.jdbcmanager.driver)
+                .option("driver", self.jdbcmanager.get_driver(db_engine))
                 .option("fetchsize", fetchsize)
                 .option("user", username)
                 .option("password", password)
@@ -83,7 +83,7 @@ class SparkExtractor:
                     "url",
                     self.jdbcmanager.get_connection_string(db_engine, db_name),
                 )
-                .option("driver", self.jdbcmanager.driver)
+                .option("driver", self.jdbcmanager.get_driver(db_engine))
                 .option("fetchsize", fetchsize)
                 .option("user", username)
                 .option("password", password)
