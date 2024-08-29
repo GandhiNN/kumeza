@@ -8,7 +8,7 @@ from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
 class MSSQLQueryManager:
 
-    def __init__(self, source_system_config: SourceSystemConfig, assets: Assets):
+    def __init__(self, source_system_config: SourceSystemConfig):
         if source_system_config.type != "rdbms":
             raise TypeError("MS-SQL Query Manager only accepts RDBMS Database Type!")
         if "mssql" not in source_system_config.database_engine:
@@ -16,8 +16,14 @@ class MSSQLQueryManager:
                 "MS-SQL Query Manager only accepts MS-SQL Database Engine!"
             )
         self.source_system_config = source_system_config
-        self.assets = assets
         self.time_format = "yyyy-mm-dd HH:MM:SS"
+
+
+class MSSQLQueryTemplater(MSSQLQueryManager):
+
+    def __init__(self, source_system_config: SourceSystemConfig, assets: Assets):
+        super().__init__(source_system_config=source_system_config)
+        self.assets = assets
 
     def _render_custom_query(self):
         return self.assets.custom_query
