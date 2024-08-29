@@ -11,13 +11,13 @@ class Assets(BaseConfig):
     database_name: str
     database_schema: str
     query_type: str
+    incremental: bool
+    incremental_columns: list
     reload: bool
-    record_creation_columns: list
-    record_update_columns: list
+    partition_columns: list
     columns_to_anonymize: list
     custom_query: str
     custom_schema: dict
-    incremental: bool
     cast_timestamp_columns_to_string: bool
 
     @classmethod
@@ -28,13 +28,13 @@ class Assets(BaseConfig):
             database_name=obj["database_name"],
             database_schema=obj["database_schema"],
             query_type=obj["query_type"],
+            incremental=obj["incremental"],
+            incremental_columns=obj["incremental_columns"],
             reload=obj["reload"],
-            record_creation_columns=obj["record_creation_columns"],
-            record_update_columns=obj["record_update_columns"],
+            partition_columns=obj["partition_columns"],
             columns_to_anonymize=obj["columns_to_anonymize"],
             custom_query=obj["custom_query"],
             custom_schema=obj["custom_schema"],
-            incremental=obj["incremental"],
             cast_timestamp_columns_to_string=obj["cast_timestamp_columns_to_string"],
         )
 

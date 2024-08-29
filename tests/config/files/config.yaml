@@ -65,13 +65,13 @@ data_assets:
         database_name: master
         database_schema: dbo
         query_type: standard
+        incremental: true
+        incremental_columns: []
         reload: false
-        record_creation_columns: []
-        record_update_columns: []
+        partition_columns: []
         columns_to_anonymize: []
         custom_query: null
         custom_schema: {}
-        incremental: true
         cast_timestamp_columns_to_string: false
 
       - asset_name: CUSTOMER_NAME
@@ -79,13 +79,13 @@ data_assets:
         database_name: master
         database_schema: dbo
         query_type: standard
+        incremental: false
+        incremental_columns: []
         reload: false
-        record_creation_columns: []
-        record_update_columns: []
+        partition_columns: []
         columns_to_anonymize: []
         custom_query: null
         custom_schema: {}
-        incremental: false
         cast_timestamp_columns_to_string: false
 
   - id: group_2
@@ -95,13 +95,13 @@ data_assets:
         database_name: master
         database_schema: dbo
         query_type: standard
+        incremental: false
+        incremental_columns: []
         reload: false
-        record_creation_columns: []
-        record_update_columns: []
+        partition_columns: []
         columns_to_anonymize: []
         custom_query: null
         custom_schema: {}
-        incremental: false
         cast_timestamp_columns_to_string: false
 
 
