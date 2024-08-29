@@ -31,6 +31,7 @@ class SparkToHiveMapping:
 class ArrowToHiveMapping:
     dtype_mapping = {
         "int64": "int",
+        "decimal128(19, 10)": "float",
         "timestamp[us]": "string",
         "string": "string",
         "bool": "string",
