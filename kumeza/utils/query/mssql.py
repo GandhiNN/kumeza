@@ -34,4 +34,4 @@ class MSSQLQueryManager:
         if not self.assets.incremental:
             if self.assets.query_type == "standard":
                 return self._render_standard_query()
-        raise ValueError("Database engine not implemented yet!")
+        raise ValueError("Query logic not implemented yet!")
