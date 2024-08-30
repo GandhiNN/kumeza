@@ -54,20 +54,23 @@ class DateObjectTest(unittest.TestCase):
         # Check if epoch is producing length of 13 chars
         assert len(self.dateobject.get_current_timestamp(ts_format="epoch")) == 13
 
-        # Check if schemafile format adheres to "%Y-%m-%d" format
+        # Check if date_only format adheres to "%Y-%m-%d" format
         assert datetime.datetime.strptime(
-            self.dateobject.get_current_timestamp(ts_format="schemafile"), "%Y-%m-%d"
+            self.dateobject.get_current_timestamp(ts_format="date_only"), "%Y-%m-%d"
         )
-        assert len(self.dateobject.get_current_timestamp(ts_format="schemafile")) == 10
+        assert len(self.dateobject.get_current_timestamp(ts_format="date_only")) == 10
 
-        # Check if schemafile format adheres to "%Y-%m-%d-%H-%M-%S-%f" format
+        # Check if date_with_clock format adheres to "%Y-%m-%d-%H-%M-%S-%f" format
         assert datetime.datetime.strptime(
-            self.dateobject.get_current_timestamp(ts_format="rawfile"),
+            self.dateobject.get_current_timestamp(ts_format="date_with_clock"),
             "%Y-%m-%d-%H-%M-%S-%f",
         )
-        assert len(self.dateobject.get_current_timestamp(ts_format="rawfile")) == 23
+        assert (
+            len(self.dateobject.get_current_timestamp(ts_format="date_with_clock"))
+            == 23
+        )
 
-        # Check if schemafile format adheres to "%Y-%m-%d %H:%M:%S" format
+        # Check if timenow_string format adheres to "%Y-%m-%d %H:%M:%S" format
         assert datetime.datetime.strptime(
             self.dateobject.get_current_timestamp(ts_format="timenow_string"),
             "%Y-%m-%d %H:%M:%S",

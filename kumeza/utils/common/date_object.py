@@ -66,9 +66,9 @@ class DateObject:
         """
         if ts_format == "epoch":
             return str(int(datetime.datetime.now().timestamp() * 1000))
-        if ts_format == "schemafile":
+        if ts_format == "date_only":
             return datetime.datetime.today().strftime("%Y-%m-%d")
-        if ts_format == "rawfile":
+        if ts_format == "date_with_clock":
             return datetime.datetime.today().strftime("%Y-%m-%d-%H-%M-%S-%f")[:-3]
         if ts_format == "timenow_string":
             return datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")
