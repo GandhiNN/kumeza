@@ -1,6 +1,7 @@
 from typing import Any
 
 import pyarrow as pa
+import pyarrow.parquet as pq
 
 from kumeza.core.data import ArrowToHiveMapping
 
@@ -29,3 +30,7 @@ class ArrowManager:
             }
             schema.append(s)
         return schema
+
+    @classmethod
+    def write_to_s3(cls, table: pa.Table, s3uri: str):
+        pq.write_to_dataset(table, root_path=s3uri)
