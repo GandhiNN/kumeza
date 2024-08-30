@@ -21,7 +21,7 @@ class S3(BaseAwsUtil):
     @boto_error_handler(logger)
     def write_to_bucket(
         self,
-        content: Union[bytes, StringIO, BytesIO, list[dict], pa.Table],
+        content: Union[bytes, StringIO, BytesIO, list[dict], pa.lib.Table],
         bucket_name: str = "",
         key_name: str = "",
     ):
@@ -34,7 +34,7 @@ class S3(BaseAwsUtil):
         body: Any = None
 
         # If content is arrow table
-        if isinstance(content, pa.Table):
+        if isinstance(content, pa.lib.Table):
             body = write_table_to_parquet(content)
         if isinstance(content, (BytesIO, StringIO)):
             body = content.getvalue()
