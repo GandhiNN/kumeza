@@ -6,6 +6,9 @@ import unittest
 from io import BytesIO
 
 import boto3
+import pyarrow as pa
+
+# import pyarrow.parquet as pq
 from moto import mock_aws
 
 from kumeza.utils.aws.s3.s3 import S3
@@ -28,6 +31,42 @@ class S3TestIntegration(unittest.TestCase):
         )
 
     @mock_aws
+    def test_write_pyarrow_table_to_bucket(self):
+
+        # Create a mock bucket
+        self.s3_client.create_bucket(
+            Bucket=BUCKET_NAME,
+            CreateBucketConfiguration={"LocationConstraint": "eu-west-1"},
+        )
+        s3_client = S3()
+        arrow_table = pa.Table.from_pylist(
+            [
+                {"col1": 1, "col2": "a"},
+                {"col1": 2, "col2": "b"},
+                {"col1": 3, "col2": "c"},
+                {"col1": 4, "col2": "d"},
+                {"col1": 5, "col2": "e"},
+            ]
+        )
+        resp = s3_client.write_to_bucket(
+            content=arrow_table, bucket_name=BUCKET_NAME, key_name=KEY_NAME
+        )
+        assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
+        # Read the same object from the mocked bucket
+        # get_resp = s3_client.get_object(bucket_name=BUCKET_NAME, key_name=KEY_NAME)
+        # assert get_resp["Body"].read() == arrow_table
+        # print(get_resp)
+        # print(type(get_resp["Body"].read()))
+        # print(type(get_resp["Body"].read()))
+
+        # reader = pa.BufferReader(get_resp["Body"].read())
+        # returned_table = pq.read_table(reader)
+        # print(returned_table)
+        # print(arrow_table)
+        # print(arrow_table.get_total_buffer_size())
+        # print(len(get_resp["Body"].read()))
+
+    @mock_aws
     def test_write_bytes_io_to_bucket(self):
 
         # Create a mock bucket
@@ -44,9 +83,8 @@ class S3TestIntegration(unittest.TestCase):
         # make sure the write process is successful
         assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
 
-        get_resp = s3_client.get_object(
-            bucket_name=BUCKET_NAME, key_name=KEY_NAME
-        )  # read the same object from mocked bucket
+        # read the same object from mocked bucket
+        get_resp = s3_client.get_object(bucket_name=BUCKET_NAME, key_name=KEY_NAME)
         # make sure that we get the same bytestream
         assert get_resp["Body"].read() == data_input  # flushed upon first read
 
@@ -98,6 +136,7 @@ class S3TestIntegration(unittest.TestCase):
         resp = s3_client.write_to_bucket(
             content=data_input, bucket_name=BUCKET_NAME, key_name=KEY_NAME
         )
+        print(resp)
         # make sure the write process is successful
         assert resp["ResponseMetadata"]["HTTPStatusCode"] == 200
 

@@ -3,6 +3,9 @@ import logging
 from io import BytesIO, StringIO
 from typing import Any, Union
 
+import pyarrow as pa
+import pyarrow.parquet as pq
+
 from kumeza.utils import ProgressPercentage
 from kumeza.utils.aws import BaseAwsUtil, boto_error_handler
 
@@ -18,11 +21,21 @@ class S3(BaseAwsUtil):
     @boto_error_handler(logger)
     def write_to_bucket(
         self,
-        content: Union[bytes, StringIO, BytesIO, list[dict]],
+        content: Union[bytes, StringIO, BytesIO, list[dict], pa.Table],
         bucket_name: str = "",
         key_name: str = "",
     ):
+        def write_table_to_parquet(content):
+            writer = pa.BufferOutputStream()
+            pq.write_table(content, writer)
+            body = bytes(writer.getvalue())
+            return body
+
         body: Any = None
+
+        # If content is arrow table
+        if isinstance(content, pa.Table):
+            body = write_table_to_parquet(content)
         if isinstance(content, (BytesIO, StringIO)):
             body = content.getvalue()
         elif isinstance(content, bytes):
