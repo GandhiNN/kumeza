@@ -34,10 +34,17 @@ class MSSQLQueryTemplater(MSSQLQueryManager):
             source=f"{self.assets.database_name}.{self.assets.database_schema}.{self.assets.asset_name}"
         )
 
-    def get_sql_query(self) -> str:
-        if self.assets.custom_query is not None:
+    def _render_schema_query(self):
+        template = pkgutil.get_data(__package__, "models/mssql/header_only.sql")
+        return Template(template.decode("utf-8")).render(
+            source=f"{self.assets.database_name}.{self.assets.database_schema}.{self.assets.asset_name}"
+        )
+
+    def get_sql_query(self, mode: str = "standard") -> str:
+        if mode == "schema":
+            return self._render_schema_query()
+        if mode == "standard":
+            return self._render_standard_query()
+        if mode == "custom":
             return self._render_custom_query()
-        if not self.assets.incremental:
-            if self.assets.query_type == "standard":
-                return self._render_standard_query()
         raise ValueError("Query logic not implemented yet!")
