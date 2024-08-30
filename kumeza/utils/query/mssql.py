@@ -35,7 +35,7 @@ class MSSQLQueryTemplater(MSSQLQueryManager):
         )
 
     def _render_schema_query(self):
-        template = pkgutil.get_data(__package__, "models/mssql/header_only.sql")
+        template = pkgutil.get_data(__package__, "models/mssql/schema.sql")
         return Template(template.decode("utf-8")).render(
             source=f"{self.assets.database_name}.{self.assets.database_schema}.{self.assets.asset_name}"
         )
