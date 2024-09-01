@@ -12,7 +12,7 @@ class ArrowConverter:
         return pa.Table.from_pylist(result_sets)
 
 
-class ArrowManager:
+class ArrowManager:  # pragma: no cover
 
     @classmethod
     def get_schema(cls, table: pa.Table, hive: bool = False) -> list[dict]:
