@@ -52,7 +52,6 @@ omit = [
     "kumeza/integrations/rdbms/mssql/*",
     "kumeza/extractors/arrow_odbc.py",
     "kumeza/extractors/mssql.py",
-    "kumeza/core/arrow.py",
     "kumeza/core/data.py",
 ]
 
