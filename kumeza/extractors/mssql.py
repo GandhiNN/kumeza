@@ -1,8 +1,12 @@
+import logging
 from typing import Any, Tuple
 
 import pymssql
 
 from kumeza.connectors.tds import TDSManager
+
+
+log = logging.getLogger(__name__)
 
 
 class MSSQLExtractor:
@@ -27,6 +31,7 @@ class MSSQLExtractor:
         password: str,
     ) -> list[dict[str, Any]]:
         try:
+            log.info("Connecting to the database...")
             conn = pymssql.connect(
                 server=self.tdsmanager.get_connection_string(),
                 user=f"{domain}\\{username}",
@@ -44,4 +49,5 @@ class MSSQLExtractor:
             conn.close()
             return return_list
         except Exception as e:
+            log.error(e)
             raise e
