@@ -16,6 +16,7 @@ class DynamoDB(BaseAwsUtil):
 
     @boto_error_handler(logger)
     def put_item(self, item: dict, table_name: str):
+        logger.info("Putting item into %s", table_name)
         dynamojson = self.python_to_dynamo_json(item)
         return self._create_boto_client().put_item(
             TableName=table_name, Item=dynamojson
@@ -23,16 +24,19 @@ class DynamoDB(BaseAwsUtil):
 
     @boto_error_handler(logger)
     def get_item(self, keys: dict, table_name: str):
+        logger.info("Get item from %s using %s", table_name, keys)
         keys_in_ddb_json = self.python_to_dynamo_json(keys)
         return self._create_boto_client().get_item(
             TableName=table_name, Key=keys_in_ddb_json
         )
 
     def python_to_dynamo_json(self, obj: dict) -> dict:
+        logger.info("Serializing Python object into DynamoDB JSON object")
         serializer = TypeSerializer()
         return {k: serializer.serialize(v) for k, v in obj.items()}
 
     def dynamo_to_python_json(self, obj: dict) -> dict:
+        logger.info("Deserializing DynamoDB JSON object into Python object")
         deserializer = TypeDeserializer()
 
         def serialize_number(number: str) -> Union[float, int]:

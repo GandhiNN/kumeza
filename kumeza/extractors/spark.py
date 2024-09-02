@@ -1,7 +1,12 @@
+import logging
+
 import pyspark
 
 from kumeza.connectors.jdbc import JDBCManager
 from kumeza.connectors.spark import SparkManager
+
+
+logger = logging.getLogger(__name__)
 
 
 class SparkExtractor:
@@ -18,6 +23,7 @@ class SparkExtractor:
         # https://issues.apache.org/jira/browse/SPARK-31408
         # https://stackoverflow.com/questions/69745427/pyspark-outputting-01-01-0001-and-12-31-9999-incorrectly-in-parquet
         #"""
+        logger.info("Setting up Proleptic Gregorian calendar configuration")
         self.sparkmanager.session.conf.set(
             "spark.sql.legacy.parquet.int96RebaseModeInRead", "CORRECTED"
         )
@@ -46,6 +52,7 @@ class SparkExtractor:
         fetchsize: int = 1000000,
         use_proleptic_gregorian_calendar: bool = True,
     ) -> pyspark.sql.DataFrame:
+        logger.info("Reading data into Spark Dataframe")
         if use_proleptic_gregorian_calendar:
             self.use_proleptic_gregorian_calendar()
         if db_engine in ("postgresql", "mssql"):

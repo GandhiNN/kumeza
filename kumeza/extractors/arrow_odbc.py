@@ -1,7 +1,12 @@
+import logging
+
 import pyarrow
 from arrow_odbc import read_arrow_batches_from_odbc
 
 from kumeza.connectors.odbc import ODBCManager
+
+
+logger = logging.getLogger(__name__)
 
 
 class ArrowODBCExtractor:
@@ -20,6 +25,7 @@ class ArrowODBCExtractor:
         fetchsize: int = 1000000,
         concurrent: bool = False,
     ) -> pyarrow.RecordBatch:
+        logger.info("Reading data into Arrow table")
         if "mssql" in db_engine:
             reader = read_arrow_batches_from_odbc(
                 query=sqlquery,

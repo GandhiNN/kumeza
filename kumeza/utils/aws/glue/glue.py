@@ -13,6 +13,7 @@ class Glue(BaseAwsUtil):
 
     @boto_error_handler(logger)
     def start_glue_job(self, glue_job_name: str, args: dict):
+        logger.info("Starting %s Glue job", glue_job_name)
         return self._create_boto_client().start_job_run(
             JobName=glue_job_name, Arguments=args
         )
@@ -25,6 +26,12 @@ class Glue(BaseAwsUtil):
         file_name: str,
         glue_args: dict,
     ):  # pragma: no cover
+        logger.info(
+            "Downlading Glue referenced files = %s from %s - %s",
+            file_name,
+            bucket_param_name,
+            object_param_name,
+        )
         s3 = S3()
         s3.download_file(
             bucket_name=glue_args[bucket_param_name],

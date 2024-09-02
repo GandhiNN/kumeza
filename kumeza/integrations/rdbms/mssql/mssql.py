@@ -1,9 +1,10 @@
-import os
 import logging
+import os
 
 from dotenv import load_dotenv
 
 from kumeza.config.ingestor_config import IngestionConfig
+
 
 logger = logging.getLogger(__name__)
 

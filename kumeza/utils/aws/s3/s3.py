@@ -25,7 +25,12 @@ class S3(BaseAwsUtil):
         bucket_name: str = "",
         key_name: str = "",
     ):
+        logger.info(
+            "Writing content into bucket: %s, and key: %s", bucket_name, key_name
+        )
+
         def write_table_to_parquet(content):
+            logger.info("Writing content as Parquet file")
             writer = pa.BufferOutputStream()
             pq.write_table(content, writer)
             body = bytes(writer.getvalue())
@@ -50,12 +55,19 @@ class S3(BaseAwsUtil):
 
     @boto_error_handler(logger)
     def get_object(self, bucket_name: str = "", key_name: str = ""):
+        logger.info("Getting object from %s with key %s", bucket_name, key_name)
         return self._create_boto_client().get_object(Bucket=bucket_name, Key=key_name)
 
     @boto_error_handler(logger)
     def upload_file(
         self, file_name: str = "", bucket_name: str = "", object_name: str = ""
     ):
+        logger.info(
+            "Uploading object: %s into: %s with name: %s",
+            file_name,
+            bucket_name,
+            object_name,
+        )
         return self._create_boto_client().upload_file(
             file_name, bucket_name, object_name, Callback=ProgressPercentage(file_name)
         )
@@ -64,6 +76,9 @@ class S3(BaseAwsUtil):
     def download_file(
         self, bucket_name: str = "", object_name: str = "", file_name: str = "'"
     ):
+        logger.info(
+            "Downloading %s from %s as: %s", object_name, bucket_name, file_name
+        )
         return self._create_boto_client().download_file(
             bucket_name, object_name, file_name
         )
