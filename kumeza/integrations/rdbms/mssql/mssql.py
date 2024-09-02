@@ -1,9 +1,11 @@
 import os
+import logging
 
 from dotenv import load_dotenv
 
 from kumeza.config.ingestor_config import IngestionConfig
 
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -20,6 +22,7 @@ class MSSQL:
         self.driver = None
 
     def create_connection(self, config: IngestionConfig):
+        logger.info("Creating MSSQL connection")
         self.authentication_type = config.source_system.authentication_type
         self.database_instance = config.source_system.database_instance
         self.hostname = config.source_system.hostname
