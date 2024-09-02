@@ -27,7 +27,7 @@ class Glue(BaseAwsUtil):
         glue_args: dict,
     ):  # pragma: no cover
         logger.info(
-            "Downlading Glue referenced files = %s from %s - %s",
+            "Downloading Glue referenced files = %s from %s - %s",
             file_name,
             bucket_param_name,
             object_param_name,
