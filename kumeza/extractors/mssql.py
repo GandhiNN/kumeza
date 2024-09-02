@@ -31,7 +31,7 @@ class MSSQLExtractor:
         password: str,
     ) -> list[dict[str, Any]]:
         try:
-            log.info("Connecting to the database...")
+            log.info("Connecting to the database")
             conn = pymssql.connect(
                 server=self.tdsmanager.get_connection_string(),
                 user=f"{domain}\\{username}",
