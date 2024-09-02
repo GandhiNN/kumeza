@@ -13,6 +13,7 @@ class SecretsManager(BaseAwsUtil):
 
     @boto_error_handler(logger)
     def get_secret(self, secret_name):
+        logger.info("Retrieving secret from %s", secret_name)
         return json.loads(
             self._create_boto_client().get_secret_value(SecretId=secret_name)[
                 "SecretString"
