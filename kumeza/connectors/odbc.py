@@ -1,3 +1,9 @@
+import logging
+
+
+log = logging.getLogger(__name__)
+
+
 class ODBCManager:
 
     def __init__(
@@ -12,6 +18,7 @@ class ODBCManager:
     def get_connection_string(
         self, db_engine: str, db_name: str, uid: str, username: str, password: str
     ) -> str:
+        log.info("Getting ODBC connection string")
         if "mssql" in db_engine:
             return (
                 f"DRIVER={self.driver};SERVER={self.hostname};PORT={self.port};"
@@ -22,6 +29,7 @@ class ODBCManager:
         raise ValueError(f"{db_engine}: Database type is not implemented!")
 
     def get_driver(self, db_engine: str) -> str:
+        log.info("Getting Database Driver")
         if "mssql" in db_engine:
             return "FreeTDS"
         raise ValueError(f"{db_engine}: Database type is not implemented!")
