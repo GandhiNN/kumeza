@@ -3,7 +3,7 @@ import logging
 from pyspark.sql import SparkSession
 
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class SparkManager:
@@ -16,5 +16,5 @@ class SparkManager:
         )
 
     def stop_session(self):
-        log.info("Stopping Spark session")
+        logger.info("Stopping Spark session")
         self.session.stop()

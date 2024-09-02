@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 class JDBCManager:
 
     def __init__(self, hostname: str, port: str, db_instance: str, domain: str):
@@ -9,6 +13,7 @@ class JDBCManager:
     def get_connection_string(
         self, db_engine: str, db_name: str, read_only: bool = True
     ) -> str:
+        logger.info("Getting JDBC connection string")
         if db_engine == "mssql":
             if read_only:
                 return (
@@ -49,6 +54,7 @@ class JDBCManager:
         raise ValueError(f"{db_engine}: Database type is not implemented!")
 
     def get_driver(self, db_engine: str) -> str:
+        logger.info("Getting JDBC driver")
         if db_engine == "postgresql" or "mssql" in db_engine:
             return "net.sourceforge.jtds.jdbc.Driver"
         if db_engine == "oracle":

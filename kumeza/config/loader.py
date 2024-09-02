@@ -6,13 +6,13 @@ import typing as t
 import yaml
 
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ConfigLoader:
     @staticmethod
     def load(f_path: str) -> t.Any:
-        log.info("Loading configuration file")
+        logger.info("Loading configuration file")
         default_ext = ".json"
         file_ext = pathlib.Path(f_path).suffix
         with open(f_path, "r", encoding="utf-8") as f:
