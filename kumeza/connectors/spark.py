@@ -2,7 +2,9 @@ import logging
 
 from pyspark.sql import SparkSession
 
+
 log = logging.getLogger(__name__)
+
 
 class SparkManager:
 

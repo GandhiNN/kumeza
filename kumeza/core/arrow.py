@@ -1,11 +1,11 @@
-from typing import Any
-
 import logging
+from typing import Any
 
 import pyarrow as pa
 import pyarrow.parquet as pq
 
 from kumeza.core.data import ArrowToHiveMapping
+
 
 log = logging.getLogger(__name__)
 
