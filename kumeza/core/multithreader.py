@@ -4,12 +4,13 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Callable
 
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class MultithreadingManager:
 
     def __init__(self, worker_numbers: int = 10):
+        logger.info("Setting up Multithreading manager with %s workers", worker_numbers)
         self.worker_numbers = worker_numbers
 
     def execute(self, func: Callable, func_args: list) -> list:
@@ -18,7 +19,7 @@ class MultithreadingManager:
             future_to_result_set = {
                 executor.submit(func, arg): arg for arg in func_args
             }
-            log.info(
+            logger.info(
                 "Submitted task with the arguments = %s to executors - waiting for threads to finish",
                 func_args,
             )
