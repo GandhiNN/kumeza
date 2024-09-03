@@ -1,0 +1,17 @@
+import logging
+
+from kumeza.extractors.wrappers.mssql_tds.runner import MSSQLRunner
+
+
+logger = logging.getLogger(__name__)
+
+
+class MSSQLSequentialRunner(MSSQLRunner):
+
+    def execute(self, task: str, ingestion_objects: list[dict]):
+        if task == "schema":
+            for t_object in ingestion_objects:
+                self.ingest_schema(t_object)
+        if task == "raw":
+            for t_object in ingestion_objects:
+                self.ingest_raw(t_object)
