@@ -30,30 +30,34 @@ class ConfigInstanceMetadata:
 class MetadataConfigTest(unittest.TestCase, SetUp):
     def setUp(self) -> None:
         self.setup()
+        self.base_config = ConfigInstanceMetadata()
+        self.keys_yaml = list(self.base_config.metadata_yaml[0].keys())
+        self.keys_json = list(self.base_config.metadata_json[0].keys())
+        self.metadata_config_yaml = MetadataConfig.marshal(self.yml_config["metadata"])
+        self.metadata_config_json = MetadataConfig.marshal(self.json_config["metadata"])
 
     def test(self):
-        base_config = ConfigInstanceMetadata()
-        keys_yaml = list(base_config.metadata_yaml.keys())
-        keys_json = list(base_config.metadata_json.keys())
+
+        print(self.metadata_config_yaml)
 
         # Keys sameness assertion
         self.assertEqual(
-            MetadataConfig.marshal(self.yml_config["metadata"]).get_field_name(),
-            keys_yaml,
+            self.metadata_config_yaml.metadata_targets[0].get_field_name(),
+            self.keys_yaml,
         )
         self.assertEqual(
-            MetadataConfig.marshal(self.json_config["metadata"]).get_field_name(),
-            keys_json,
+            self.metadata_config_json.metadata_targets[0].get_field_name(),
+            self.keys_json,
         )
 
         # Object length assertion
         self.assertEqual(
-            MetadataConfig.marshal(self.yml_config["metadata"]).get_length(),
-            len(keys_yaml),
+            self.metadata_config_yaml.metadata_targets[0].get_length(),
+            len(self.keys_yaml),
         )
         self.assertEqual(
-            MetadataConfig.marshal(self.json_config["metadata"]).get_length(),
-            len(keys_json),
+            self.metadata_config_json.metadata_targets[0].get_length(),
+            len(self.keys_json),
         )
 
 

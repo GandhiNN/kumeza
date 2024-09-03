@@ -33,10 +33,22 @@
         "mount_point": "static-secret",
         "path": "data/custdb"
     },
-    "metadata": {
-        "sink_type": "dynamodb",
-        "table_name": "ingestion-status-dev"
-    },
+    "metadata": [
+        {   
+            "metadata_type": "ingestion_status",
+            "sink_target": "dynamodb",
+            "table_name": "ingestion-status-dev",
+            "partition_key": "ingestor_name",
+            "sort_key": "execution_time"
+        },
+        {
+            "metadata_type": "schema_registrar",
+            "sink_target": "dynamodb",
+            "table_name": "schema-status-dev",
+            "partition_key": "ingestor_name",
+            "sort_key": "execution_time"
+        }
+    ],
     "sinks": [
         {
             "sink_type": "raw",

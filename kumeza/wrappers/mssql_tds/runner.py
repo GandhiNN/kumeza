@@ -56,6 +56,7 @@ class MSSQLRunner:
         schema_sink: Sinks = self.ingestion_config.sinks.get_sink("schema")
         schema_bucket: str = schema_sink.get_sink_target(schema_sink_id).path
 
+        # Schema check
         rs_schema: list = self.mssql_tds_extractor.read(
             db_name, sql_schema, self.domain, self.username, self.password
         )
@@ -64,9 +65,14 @@ class MSSQLRunner:
         schema: list[dict] = ArrowManager.get_schema(
             arrow_rs_schema, hive=True
         )  # Convert Arrow schema to Hive
+
         # Get schema hash
         schema_hash: str = get_schema_hash(schema)
         logger.info("Schema hash is %s", schema_hash)
+
+        # Get the previously registered schema in DDB
+        # TODO
+
         # Write schema to schema bucket
         schema_key = (
             f"""{self.source_system_id}/{self.source_system_physical_location}/"""
@@ -100,7 +106,7 @@ class MSSQLRunner:
             arrow_result_sets_raw, f"s3://{raw_data_bucket}/{raw_key}"
         )
 
-    def get_last_ingestion_status(
+    def _get_last_ingestion_status(
         self, table_name: str, partition_key: str, sort_key: str
     ):
         # Partition key = {source_system_id}-{physical_location}-{table_name}

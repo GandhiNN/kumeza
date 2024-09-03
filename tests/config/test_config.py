@@ -10,7 +10,7 @@ from kumeza.config.data_assets.data_assets_config import (
 from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.config.integration.integration_config import IntegrationConfig
 from kumeza.config.loader import ConfigLoader
-from kumeza.config.metadata.metadata_config import MetadataConfig
+from kumeza.config.metadata.metadata_config import Metadata, MetadataConfig
 from kumeza.config.runtime_environment.runtime_environment_config import (
     RuntimeEnvironmentConfig,
 )
@@ -59,8 +59,22 @@ class ConfigInstance:
             path="data/custdb",
         )
         self.metadata = MetadataConfig(
-            sink_type="dynamodb",
-            table_name="ingestion-status-dev",
+            metadata_targets=[
+                Metadata(
+                    metadata_type="ingestion_status",
+                    sink_target="dynamodb",
+                    table_name="ingestion-status-dev",
+                    partition_key="ingestor_name",
+                    sort_key="execution_time",
+                ),
+                Metadata(
+                    metadata_type="schema_registrar",
+                    sink_target="dynamodb",
+                    table_name="schema-status-dev",
+                    partition_key="ingestor_name",
+                    sort_key="execution_time",
+                ),
+            ]
         )
         self.sinks = SinksConfig(
             [
