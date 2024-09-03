@@ -13,7 +13,7 @@ class MultithreadingManager:
         logger.info("Setting up Multithreading manager with %s workers", worker_numbers)
         self.worker_numbers = worker_numbers
 
-    def execute(self, func: Callable, func_args: list) -> list:
+    def execute(self, func: Callable, func_args: list, *args) -> list:
         result_sets: list = []
         with ThreadPoolExecutor(max_workers=self.worker_numbers) as executor:
             future_to_result_set = {
