@@ -1,5 +1,3 @@
-# pylint: disable-redefined-outer-name
-#
 import json
 import os
 import unittest
@@ -9,6 +7,7 @@ import boto3.session
 from moto import mock_aws
 
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
+from kumeza.utils.common.date_object import DateObject
 
 
 # Constants
@@ -23,10 +22,13 @@ PARAMS = {
         {"AttributeName": "pipeline_name", "AttributeType": "S"},
         {"AttributeName": "execution_time", "AttributeType": "S"},
     ],
-    "ProvisionedThroughput": {"ReadCapacityUnits": 10, "WriteCapacityUnits": 10},
+    "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
 }
 PARTITION_KEY = "pipeline_name"
 SORT_KEY = "execution_time"
+
+# Date object
+date_obj = DateObject()
 
 
 class DynamoDBTestIntegration(unittest.TestCase):
@@ -67,6 +69,46 @@ class DynamoDBTestIntegration(unittest.TestCase):
         )
 
         assert result_get_deserialized == python_json
+
+    @mock_aws
+    def test_get_last_item_from_table(self):
+
+        # Create the mock table
+        self.dynamodb_client.create_table(**PARAMS)
+
+        # Run test on the function
+        dynamodb_client = DynamoDB()
+
+        # Open the local test file
+        test_json_file = os.path.join(os.path.dirname(__file__), "multiple_items.json")
+        with open(test_json_file, "r", encoding="utf8") as json_file:
+            python_json = json.load(json_file)
+
+        for j in python_json:
+            result_put = dynamodb_client.put_item(j, TABLE_NAME)
+            assert result_put["ResponseMetadata"]["HTTPStatusCode"] == 200
+
+        last_item = dynamodb_client.get_last_item_from_table(
+            TABLE_NAME,
+            "pipe-doadi-cvqa-product_family",
+            PARTITION_KEY,
+            SORT_KEY,
+            date_obj.get_current_timestamp(ts_format="epoch"),
+        )["Items"][0]
+
+        expected: dict = {
+            "pipeline_name": "pipe-doadi-cvqa-product_family",
+            "execution_time": "1674019500",
+            "data_load_type": "il",
+            "ingestion_status": "success",
+            "last_exec_as_date": "2023-01-18 05:25:00",
+            "records_processed": 116,
+            "schema_hash": "f2bf8c9800f7c4b1d96f62f918c3e6c8be146d58ae12af844569f2758f401a52",
+            "table_name": "PRODUCT_FAMILY",
+        }
+
+        last_item_deserialized = dynamodb_client.dynamo_to_python_json(last_item)
+        assert last_item_deserialized == expected
 
     @mock_aws
     def test_dynamo_to_python_json(self):
