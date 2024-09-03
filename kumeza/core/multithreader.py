@@ -17,7 +17,7 @@ class MultithreadingManager:
         result_sets: list = []
         with ThreadPoolExecutor(max_workers=self.worker_numbers) as executor:
             future_to_result_set = {
-                executor.submit(func, arg): arg for arg in func_args
+                executor.submit(func, arg, args): arg for arg in func_args
             }
             logger.info(
                 "Submitted task with the arguments = %s to executors - waiting for threads to finish",

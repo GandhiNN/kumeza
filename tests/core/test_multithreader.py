@@ -5,8 +5,9 @@ import pytest
 from kumeza.core.multithreader import MultithreadingManager
 
 
-def add_ten(n: int):
+def add_ten(n: int, *args):
     # Return the input integer + 10.
+    print(*args)
     return n + 10
 
 
@@ -32,4 +33,4 @@ class MultithreadingManagerTest(unittest.TestCase):
         # Test for exceptions
         # Multithreading Manager will raise SystemExit upon executors' failure
         with pytest.raises(SystemExit):
-            self.mt_manager.execute(add_ten, [1, 2, 3, "faultyinput"])
+            self.mt_manager.execute(add_ten, [1, 2, 3, "faultyinput"], "dummy")
