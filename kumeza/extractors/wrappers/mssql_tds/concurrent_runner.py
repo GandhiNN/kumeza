@@ -7,6 +7,7 @@ from kumeza.config.sinks.sinks_config import Sinks
 from kumeza.connectors.tds import TDSManager
 from kumeza.core.arrow import ArrowConverter, ArrowManager
 from kumeza.core.data import get_schema_hash
+from kumeza.core.multithreader import MultithreadingManager
 from kumeza.extractors.mssql import MSSQLExtractor
 from kumeza.utils.aws.s3.s3 import S3
 from kumeza.utils.common.date_object import DateObject
@@ -17,7 +18,12 @@ logger = logging.getLogger(__name__)
 
 class MSSQLConcurrentRunner:
 
-    def __init__(self, ingestion_config: IngestionConfig, credentials: dict):
+    def __init__(
+        self,
+        multithreading_manager: MultithreadingManager,
+        ingestion_config: IngestionConfig,
+        credentials: dict,
+    ):
         self.ingestion_config = ingestion_config
         self.credentials = credentials
         self.domain = self.ingestion_config.source_system.domain
@@ -33,13 +39,14 @@ class MSSQLConcurrentRunner:
         self.dateobj: DateObject = DateObject()
         self.username = self.credentials["username"]
         self.password = self.credentials["password"]
+        self.multithreading_manager = multithreading_manager
 
-    def ingest_schema_concurrent(self, ingestion_objects: dict):
+    def ingest_schema(self, ingestion_object: dict):
 
         # Variable expansion
-        table_name = ingestion_objects["table_name"].lower()
-        db_name = ingestion_objects["db_name"]
-        sql_schema = ingestion_objects["sql_statement_schema"]
+        table_name = ingestion_object["table_name"].lower()
+        db_name = ingestion_object["db_name"]
+        sql_schema = ingestion_object["sql_statement_schema"]
 
         source_system_id: str = self.ingestion_config.source_system.id
         source_system_physical_location: str = (
@@ -72,10 +79,10 @@ class MSSQLConcurrentRunner:
         )
 
     # Raw data ingestion phase
-    def ingest_raw_concurrent(self, ingestion_objects: dict):
-        table_name = ingestion_objects["table_name"].lower()
-        db_name = ingestion_objects["db_name"]
-        sql_raw = ingestion_objects["sql_statement_raw"]
+    def ingest_raw(self, ingestion_object: dict):
+        table_name = ingestion_object["table_name"].lower()
+        db_name = ingestion_object["db_name"]
+        sql_raw = ingestion_object["sql_statement_raw"]
         # Get raw data sink
         raw_data_sink: Sinks = self.ingestion_config.sinks.get_sink("raw")
         raw_data_bucket: str = raw_data_sink.get_sink_target("daas_raw_bucket").path
@@ -98,3 +105,9 @@ class MSSQLConcurrentRunner:
         ArrowManager.write_to_s3(
             arrow_result_sets_raw, f"s3://{raw_data_bucket}/{raw_key}"
         )
+
+    def execute(self, task: str, ingestion_objects: list[dict]):
+        if task == "schema":
+            self.multithreading_manager.execute(self.ingest_schema, ingestion_objects)
+        if task == "raw":
+            self.multithreading_manager.execute(self.ingest_raw, ingestion_objects)
