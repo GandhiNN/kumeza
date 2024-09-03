@@ -18,7 +18,7 @@ class MultithreadingManagerTest(unittest.TestCase):
 
     def test_multithreaded_execution(self):
         iterables_input = [1, 2, 3, 4, 5]
-        result_sets = self.mt_manager.execute(add_ten, iterables_input)
+        result_sets = self.mt_manager.execute(add_ten, iterables_input, "dummy")
 
         # Assert that all threads have completed successfully
         # Length of result sets should be the same of
