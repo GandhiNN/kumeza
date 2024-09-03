@@ -20,8 +20,9 @@ class MultithreadingManager:
                 executor.submit(func, arg, args[0]): arg for arg in func_args
             }
             logger.info(
-                "Submitted task with the arguments = %s to executors - waiting for threads to finish",
-                func_args
+                "Submitted task with the arguments = %s & %s to executors - waiting for threads to finish",
+                func_args,
+                args[0],
             )
 
             for future in as_completed(future_to_result_set):
