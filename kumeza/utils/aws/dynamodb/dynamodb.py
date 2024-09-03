@@ -30,6 +30,35 @@ class DynamoDB(BaseAwsUtil):
             TableName=table_name, Key=keys_in_ddb_json
         )
 
+    @boto_error_handler(logger)
+    def get_last_item_from_table(
+        self,
+        table_name: str,
+        item_name: str,
+        partition_key: str,
+        sort_key: str,
+        current_epoch: str,
+    ):
+        # Limitation: Primary Key and Sort Key of the Table should be defined as String Type
+        logger.info(
+            "Table name: %s | Item name: %s | Primary key: %s | Sort key: %s | Current epoch: %s",
+            table_name,
+            item_name,
+            partition_key,
+            sort_key,
+            current_epoch,
+        )
+        return self._create_boto_client().query(
+            TableName=table_name,
+            KeyConditionExpression=f"{partition_key} = :{partition_key} AND {sort_key} <= :{sort_key}",
+            ExpressionAttributeValues={
+                f":{partition_key}": {"S": f"{item_name}"},
+                f":{sort_key}": {"S": f"{current_epoch}"},
+            },
+            ScanIndexForward=False,
+            Limit=1,
+        )
+
     def python_to_dynamo_json(self, obj: dict) -> dict:
         logger.info("Serializing Python object into DynamoDB JSON object")
         serializer = TypeSerializer()
