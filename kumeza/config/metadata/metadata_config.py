@@ -32,3 +32,9 @@ class MetadataConfig:
         return cls(
             metadata_targets=[Metadata.marshal(item) for item in obj],
         )
+
+    def get_sink_target(self, metadata_type: str) -> Metadata:
+        for target in self.metadata_targets:
+            if target.metadata_type == metadata_type:
+                return target
+        raise ValueError("Metadata type not recognized!")
