@@ -2,7 +2,7 @@ import logging
 
 from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.core.multithreader import MultithreadingManager
-from kumeza.extractors.wrappers.mssql_tds.runner import MSSQLRunner
+from kumeza.pipeline.mssql_tds.runner import MSSQLRunner
 
 
 logger = logging.getLogger(__name__)

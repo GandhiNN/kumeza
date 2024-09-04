@@ -1,6 +1,6 @@
 import logging
 
-from kumeza.extractors.wrappers.mssql_tds.runner import MSSQLRunner
+from kumeza.pipeline.mssql_tds.runner import MSSQLRunner
 
 
 logger = logging.getLogger(__name__)
