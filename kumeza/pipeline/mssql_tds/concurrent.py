@@ -25,10 +25,11 @@ class MSSQLConcurrentRunner(MSSQLRunner):
         ingestion_objects: list[dict],
         schema_sink_id: str,
         raw_sink_id: str,
+        ing_metadata_id: str,
     ):
         if task == "schema":
             self.multithreading_manager.execute(
-                self.ingest_schema, ingestion_objects, schema_sink_id
+                self.ingest_schema, ingestion_objects, schema_sink_id, ing_metadata_id
             )
         if task == "raw":
             self.multithreading_manager.execute(

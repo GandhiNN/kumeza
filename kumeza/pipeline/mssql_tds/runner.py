@@ -45,12 +45,25 @@ class MSSQLRunner:
         )
         self.metadata = ingestion_config.metadata
 
-    def ingest_schema(self, ingestion_object: dict, schema_sink_id: str):
+    def ingest_schema(
+        self, ingestion_object: dict, schema_sink_id: str, ing_metadata_id: str
+    ):
 
         # Variable expansion
         table_name = ingestion_object["table_name"].lower()
         db_name = ingestion_object["db_name"]
         sql_schema = ingestion_object["sql_statement_schema"]
+
+        # Ingestion status metadata
+        ing_table = self.ingestion_config.metadata.get_sink_target(
+            ing_metadata_id
+        ).table_name
+        ing_table_partition_key = self.ingestion_config.metadata.get_sink_target(
+            ing_metadata_id
+        ).partition_key
+        ing_table_sort_key = self.ingestion_config.metadata.get_sink_target(
+            ing_metadata_id
+        ).sort_key
 
         # Schema phase
         # Get schema sink
@@ -71,7 +84,13 @@ class MSSQLRunner:
         schema_hash: str = get_schema_hash(schema)
         logger.info("Schema hash is %s", schema_hash)
 
-        # Get the previously registered schema in DDB
+        # Get the last ingestion status
+        last_ing_status = self._get_last_ingestion_status(
+            ing_table,
+            ing_table_partition_key,
+            ing_table_sort_key,
+        )
+        logger.info(last_ing_status)
 
         # Write schema to schema bucket
         schema_key = (
