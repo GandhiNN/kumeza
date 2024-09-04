@@ -43,6 +43,7 @@ class MSSQLRunner:
         self.source_system_physical_location = (
             self.ingestion_config.source_system.physical_location
         )
+        self.metadata = ingestion_config.metadata
 
     def ingest_schema(self, ingestion_object: dict, schema_sink_id: str):
 
@@ -71,7 +72,6 @@ class MSSQLRunner:
         logger.info("Schema hash is %s", schema_hash)
 
         # Get the previously registered schema in DDB
-        # TODO
 
         # Write schema to schema bucket
         schema_key = (
