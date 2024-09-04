@@ -92,6 +92,15 @@ class MSSQLRunner:
             ing_table_sort_key,
         )
         logger.info(last_ing_status)
+        if last_ing_status is None:
+            logger.info("Object: %s has never been ingested", table_name)
+            item = {
+                "ingestor_name": f"{self.source_system_id}-{self.source_system_physical_location}-{table_name}",
+                "schema": schema,
+                "schema_hash": {schema_hash},
+            }
+            logger.info("Registering schema of table: %s => %s", table_name, item)
+            self.dynamodb.put_item(item, ing_table)
 
         # Write schema to schema bucket
         schema_key = (
@@ -137,6 +146,7 @@ class MSSQLRunner:
         # Sort key = execution time in epoch
         item_name = f"{self.source_system_id}-{self.source_system_physical_location}-{table_name}"
         cur_epoch = self.dateobj.get_current_timestamp(ts_format="epoch")
-        return self.dynamodb.get_last_item_from_table(
+        result = self.dynamodb.get_last_item_from_table(
             metadata_table_name, item_name, partition_key, sort_key, cur_epoch
         )
+        return result
