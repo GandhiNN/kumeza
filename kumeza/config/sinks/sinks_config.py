@@ -33,10 +33,11 @@ class Sinks(BaseConfig):
             sink_targets=[SinkTargets.marshal(item) for item in obj["sink_targets"]],
         )
 
-    def get_sink_target(self, target_id: str):
+    def get_sink_target(self, target_id: str) -> SinkTargets:
         for target in self.sink_targets:
             if target.id == target_id:
                 return target
+        raise ValueError("Sink target ID not recognized!")
 
 
 @dataclass
@@ -47,7 +48,8 @@ class SinksConfig:
     def marshal(cls: t.Type["SinksConfig"], obj: list):
         return cls(sink_type=[Sinks.marshal(item) for item in obj])
 
-    def get_sink(self, sink_type: str):
+    def get_sink(self, sink_type: str) -> Sinks:
         for sink in self.sink_type:
             if sink.sink_type == sink_type:
                 return sink
+        raise ValueError("Sink type not recognized!")

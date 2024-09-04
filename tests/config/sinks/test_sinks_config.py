@@ -1,6 +1,8 @@
 import os
 import unittest
 
+import pytest
+
 from kumeza.config.loader import ConfigLoader
 from kumeza.config.sinks.sinks_config import Sinks, SinksConfig, SinkTargets
 
@@ -97,6 +99,7 @@ class SinksConfigTest(unittest.TestCase, SetUp):
         assert self.sinks_config_json.get_sink("schema") == expected_schema
 
     def test_get_sink_target(self):
+
         assert (
             self.sinks_config_yaml.get_sink("raw").get_sink_target("staging").path
             == "staging-bucket-dev"
@@ -105,6 +108,24 @@ class SinksConfigTest(unittest.TestCase, SetUp):
             self.sinks_config_json.get_sink("raw").get_sink_target("staging").path
             == "staging-bucket-dev"
         )
+
+    def test_get_sink_failure(self):
+        # Test for exceptions
+        # get_sink will raise ValueError upon failure
+        with pytest.raises(ValueError):
+            self.sinks_config_yaml.get_sink("faulty_target")
+
+        with pytest.raises(ValueError):
+            self.sinks_config_json.get_sink("faulty_target")
+
+    def test_get_sink_target_failure(self):
+        # Test for exceptions
+        # get_sink_target will raise ValueError upon failure
+        with pytest.raises(ValueError):
+            self.sinks_config_yaml.get_sink("raw").get_sink_target("faulty_target")
+
+        with pytest.raises(ValueError):
+            self.sinks_config_json.get_sink("raw").get_sink_target("faulty_target")
 
 
 def testSuite():
