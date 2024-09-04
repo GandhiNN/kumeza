@@ -1,8 +1,10 @@
 import os
 import unittest
 
+import pytest
+
 from kumeza.config.loader import ConfigLoader
-from kumeza.config.metadata.metadata_config import MetadataConfig
+from kumeza.config.metadata.metadata_config import Metadata, MetadataConfig
 
 
 # Config files to be referenced
@@ -36,9 +38,7 @@ class MetadataConfigTest(unittest.TestCase, SetUp):
         self.metadata_config_yaml = MetadataConfig.marshal(self.yml_config["metadata"])
         self.metadata_config_json = MetadataConfig.marshal(self.json_config["metadata"])
 
-    def test(self):
-
-        print(self.metadata_config_yaml)
+    def test_key_sameness(self):
 
         # Keys sameness assertion
         self.assertEqual(
@@ -50,6 +50,7 @@ class MetadataConfigTest(unittest.TestCase, SetUp):
             self.keys_json,
         )
 
+    def test_object_length(self):
         # Object length assertion
         self.assertEqual(
             self.metadata_config_yaml.metadata_targets[0].get_length(),
@@ -59,6 +60,28 @@ class MetadataConfigTest(unittest.TestCase, SetUp):
             self.metadata_config_json.metadata_targets[0].get_length(),
             len(self.keys_json),
         )
+
+    def test_get_sink_target(self):
+
+        # Set expected output
+        expected = Metadata(
+            metadata_type="ingestion_status",
+            sink_target="dynamodb",
+            table_name="ingestion-status-dev",
+            partition_key="ingestor_name",
+            sort_key="execution_time",
+        )
+
+        assert self.metadata_config_yaml.get_sink_target("ingestion_status") == expected
+        assert self.metadata_config_json.get_sink_target("ingestion_status") == expected
+
+        # Test for exceptions
+        # get_sink_target will raise ValueError upon failure
+        with pytest.raises(ValueError):
+            self.metadata_config_yaml.get_sink_target("faulty_target")
+
+        with pytest.raises(ValueError):
+            self.metadata_config_json.get_sink_target("faulty_target")
 
 
 def testSuite():
