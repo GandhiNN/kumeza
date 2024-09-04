@@ -87,6 +87,7 @@ class MSSQLRunner:
         # Get the last ingestion status
         last_ing_status = self._get_last_ingestion_status(
             ing_table,
+            table_name,
             ing_table_partition_key,
             ing_table_sort_key,
         )
@@ -126,12 +127,16 @@ class MSSQLRunner:
         )
 
     def _get_last_ingestion_status(
-        self, table_name: str, partition_key: str, sort_key: str
+        self,
+        metadata_table_name: str,
+        table_name: str,
+        partition_key: str,
+        sort_key: str,
     ):
         # Partition key = {source_system_id}-{physical_location}-{table_name}
         # Sort key = execution time in epoch
         item_name = f"{self.source_system_id}-{self.source_system_physical_location}-{table_name}"
         cur_epoch = self.dateobj.get_current_timestamp(ts_format="epoch")
         return self.dynamodb.get_last_item_from_table(
-            table_name, item_name, partition_key, sort_key, cur_epoch
+            metadata_table_name, item_name, partition_key, sort_key, cur_epoch
         )
