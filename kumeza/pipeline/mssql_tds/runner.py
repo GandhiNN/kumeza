@@ -100,7 +100,7 @@ class MSSQLRunner:
                 "schema_hash": {schema_hash},
             }
             logger.info("Registering schema of table: %s => %s", table_name, item)
-            self.dynamodb.put_item(item, ing_table)
+            logger.info(self.dynamodb.put_item(item, ing_table))
 
         # Write schema to schema bucket
         schema_key = (
