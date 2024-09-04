@@ -92,7 +92,7 @@ class MSSQLRunner:
             ing_table_sort_key,
         )
         logger.info(last_ing_status)
-        if last_ing_status is None:
+        if len(last_ing_status["Items"]) == 0:
             logger.info("Object: %s has never been ingested", table_name)
             item = {
                 "ingestor_name": f"{self.source_system_id}-{self.source_system_physical_location}-{table_name}",
