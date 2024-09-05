@@ -95,7 +95,10 @@ class MSSQLRunner:
         if len(last_ing_status["Items"]) == 0:
             logger.info("Object: %s has never been ingested", table_name)
             item = {
-                "ingestor_name": f"{self.source_system_id}-{self.source_system_physical_location}-{table_name}",
+                f"{ing_table_partition_key}": f"{self.source_system_id}-{self.source_system_physical_location}-{table_name}",
+                f"{ing_table_sort_key}": self.dateobj.get_current_timestamp(
+                    ts_format="epoch"
+                ),
                 "schema": schema,
                 "schema_hash": {schema_hash},
             }
