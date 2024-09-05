@@ -123,6 +123,8 @@ class Pipeline:
                     "Table: %s structure has changed, triggering Initial Load",
                     table_name,
                 )
+            else:
+                logger.info("Table: %s structure has not changed, continuing...")
 
     # Raw data ingestion phase
     def ingest_raw(self, ingestion_object: dict, raw_sink_id: str):
