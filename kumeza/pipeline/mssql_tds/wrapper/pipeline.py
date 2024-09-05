@@ -81,8 +81,8 @@ class Pipeline:
         )  # Convert Arrow schema to Hive
 
         # Get schema hash
-        schema_hash: str = get_schema_hash(schema)
-        logger.info("Schema hash is %s", schema_hash)
+        cur_schema: str = get_schema_hash(schema)
+        logger.info("Schema hash is %s", cur_schema)
 
         # Get the last ingestion status
         last_ing_status = self._get_last_ingestion_status(
@@ -100,7 +100,7 @@ class Pipeline:
                     ts_format="epoch"
                 ),
                 "schema": schema,
-                "schema_hash": schema_hash,
+                "schema_hash": cur_schema,
             }
             logger.info("Registering schema of table: %s => %s", table_name, item)
             logger.info(self.dynamodb.put_item(item, ing_table))
@@ -117,7 +117,12 @@ class Pipeline:
             logger.info("Object: %s has been ingested before", table_name)
             # Comparing schema hash
             logger.info("Comparing schema hash for object: %s", table_name)
-            print(last_ing_status["Items"])
+            prev_schema = last_ing_status["Items"][0]["schema_hash"]
+            if cur_schema != prev_schema:
+                logger.info(
+                    "Table: %s structure has changed, triggering Initial Load",
+                    table_name,
+                )
 
     # Raw data ingestion phase
     def ingest_raw(self, ingestion_object: dict, raw_sink_id: str):
