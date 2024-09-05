@@ -16,7 +16,7 @@ from kumeza.utils.common.date_object import DateObject
 logger = logging.getLogger(__name__)
 
 
-class Pipeline:
+class PipelineFunction:
 
     def __init__(
         self,
@@ -47,7 +47,9 @@ class Pipeline:
 
     def ingest_schema(
         self, ingestion_object: dict, schema_sink_id: str, ing_metadata_id: str
-    ):
+    ) -> str:
+        # Set raw data flag
+        raw_data_flag: str = "delta"
 
         # Variable expansion
         table_name = ingestion_object["table_name"].lower()
@@ -85,7 +87,7 @@ class Pipeline:
         logger.info("Schema hash is %s", cur_schema)
 
         # Get the last ingestion status
-        last_ing_status = self._get_last_ingestion_status(
+        last_ing_status = self.get_last_ingestion_status(
             ing_table,
             table_name,
             ing_table_partition_key,
@@ -117,15 +119,19 @@ class Pipeline:
             logger.info("Object: %s has been ingested before", table_name)
             # Comparing schema hash
             logger.info("Comparing schema hash for object: %s", table_name)
-            prev_schema = last_ing_status["Items"][0]["schema_hash"]['S']
-            print(f"Previous schema: {prev_schema}\nCurrent schema: {cur_schema}")
+            prev_schema = last_ing_status["Items"][0]["schema_hash"]["S"]
+            logger.info(
+                "Previous schema: %s | Current schema: %s", prev_schema, cur_schema
+            )
             if cur_schema != prev_schema:
                 logger.info(
-                    "Table: %s structure has changed, triggering Initial Load",
+                    "Table: %s structure has changed",
                     table_name,
                 )
-            else:
-                logger.info("Table: %s structure has not changed, continuing...")
+                raw_data_flag = "init"
+                return raw_data_flag
+            logger.info("Table: %s structure has not changed, continuing...")
+        return raw_data_flag
 
     # Raw data ingestion phase
     def ingest_raw(self, ingestion_object: dict, raw_sink_id: str):
@@ -151,7 +157,7 @@ class Pipeline:
             arrow_result_sets_raw, f"s3://{raw_data_bucket}/{raw_key}"
         )
 
-    def _get_last_ingestion_status(
+    def get_last_ingestion_status(
         self,
         metadata_table_name: str,
         table_name: str,
