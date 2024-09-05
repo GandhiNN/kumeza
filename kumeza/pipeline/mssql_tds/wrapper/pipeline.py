@@ -22,6 +22,8 @@ class PipelineFunction:
         self,
         ingestion_config: IngestionConfig,
         credentials: dict,
+        schema_metadata_sink_id: str,
+        rawdata_metadata_sink_id: str,
     ):
         self.ingestion_config = ingestion_config
         self.credentials = credentials
@@ -29,6 +31,12 @@ class PipelineFunction:
         self.port = self.ingestion_config.source_system.port
         self.db_instance: str = self.ingestion_config.source_system.database_instance
         self.hostname = self.ingestion_config.source_system.hostname
+        self.username = self.credentials["username"]
+        self.password = self.credentials["password"]
+        self.source_system_id = self.ingestion_config.source_system.id
+        self.source_system_physical_location = (
+            self.ingestion_config.source_system.physical_location
+        )
         self.tds_manager: TDSManager = TDSManager(
             self.hostname, self.port, self.db_instance
         )
@@ -37,35 +45,49 @@ class PipelineFunction:
         self.dynamodb = DynamoDB()
         self.arrow_converter: ArrowConverter = ArrowConverter()
         self.dateobj: DateObject = DateObject()
-        self.username = self.credentials["username"]
-        self.password = self.credentials["password"]
-        self.source_system_id = self.ingestion_config.source_system.id
-        self.source_system_physical_location = (
-            self.ingestion_config.source_system.physical_location
-        )
-        self.metadata = ingestion_config.metadata
 
-    def ingest_schema(
-        self, ingestion_object: dict, schema_sink_id: str, ing_metadata_id: str
-    ) -> str:
+        # Metadata section
+        self.metadata = ingestion_config.metadata
+        self.schema_metadata_sink_id = schema_metadata_sink_id
+        self.rawdata_metadata_sink_id = rawdata_metadata_sink_id
+
+        # Schema metadata section
+        self.schema_metadata_table = self.ingestion_config.metadata.get_sink_target(
+            self.schema_metadata_sink_id
+        ).table_name
+        self.schema_metadata_table_partition_key = (
+            self.ingestion_config.metadata.get_sink_target(
+                self.schema_metadata_sink_id
+            ).partition_key
+        )
+        self.schema_metadata_table_sort_key = (
+            self.ingestion_config.metadata.get_sink_target(
+                schema_metadata_sink_id
+            ).sort_key
+        )
+        # rawdata metadata section
+        self.rawdata_metadata_table = self.ingestion_config.metadata.get_sink_target(
+            self.rawdata_metadata_sink_id
+        ).table_name
+        self.rawdata_metadata_table_partition_key = (
+            self.ingestion_config.metadata.get_sink_target(
+                self.rawdata_metadata_sink_id
+            ).partition_key
+        )
+        self.rawdata_metadata_table_sort_key = (
+            self.ingestion_config.metadata.get_sink_target(
+                self.rawdata_metadata_sink_id
+            ).sort_key
+        )
+
+    def ingest_schema(self, ingestion_object: dict, schema_sink_id: str) -> str:
         # Set raw data flag
         raw_data_flag: str = "delta"
 
         # Variable expansion
-        table_name = ingestion_object["table_name"].lower()
+        object_name = ingestion_object["table_name"].lower()
         db_name = ingestion_object["db_name"]
         sql_schema = ingestion_object["sql_statement_schema"]
-
-        # Ingestion status metadata
-        ing_table = self.ingestion_config.metadata.get_sink_target(
-            ing_metadata_id
-        ).table_name
-        ing_table_partition_key = self.ingestion_config.metadata.get_sink_target(
-            ing_metadata_id
-        ).partition_key
-        ing_table_sort_key = self.ingestion_config.metadata.get_sink_target(
-            ing_metadata_id
-        ).sort_key
 
         # Schema phase
         # Get schema sink
@@ -88,37 +110,37 @@ class PipelineFunction:
 
         # Get the last ingestion status
         last_ing_status = self.get_last_ingestion_status(
-            ing_table,
-            table_name,
-            ing_table_partition_key,
-            ing_table_sort_key,
+            self.schema_metadata_table,
+            object_name,
+            self.schema_metadata_table_partition_key,
+            self.schema_metadata_table_sort_key,
         )
         logger.info(last_ing_status)
         if len(last_ing_status["Items"]) == 0:
-            logger.info("Object: %s has never been ingested", table_name)
+            logger.info("Object: %s has never been ingested", object_name)
             item = {
-                f"{ing_table_partition_key}": f"{self.source_system_id}-{self.source_system_physical_location}-{table_name}",
-                f"{ing_table_sort_key}": self.dateobj.get_current_timestamp(
+                f"{self.schema_metadata_table_partition_key}": f"{self.source_system_id}-{self.source_system_physical_location}-{object_name}",
+                f"{self.schema_metadata_table_sort_key}": self.dateobj.get_current_timestamp(
                     ts_format="epoch"
                 ),
                 "schema": schema,
                 "schema_hash": cur_schema,
             }
-            logger.info("Registering schema of table: %s => %s", table_name, item)
-            logger.info(self.dynamodb.put_item(item, ing_table))
+            logger.info("Registering schema of table: %s => %s", object_name, item)
+            logger.info(self.dynamodb.put_item(item, self.schema_metadata_table))
 
             # Write schema to schema bucket
             schema_key = (
                 f"""{self.source_system_id}/{self.source_system_physical_location}/"""
-                f"""{table_name}/{table_name}-{self.dateobj.get_current_timestamp(ts_format="date_only")}.json"""
+                f"""{object_name}/{object_name}-{self.dateobj.get_current_timestamp(ts_format="date_only")}.json"""
             )
             self.s3.write_to_bucket(
                 content=schema, bucket_name=schema_bucket, key_name=schema_key
             )
         else:
-            logger.info("Object: %s has been ingested before", table_name)
+            logger.info("Object: %s has been ingested before", object_name)
             # Comparing schema hash
-            logger.info("Comparing schema hash for object: %s", table_name)
+            logger.info("Comparing schema hash for object: %s", object_name)
             prev_schema = last_ing_status["Items"][0]["schema_hash"]["S"]
             logger.info(
                 "Previous schema: %s | Current schema: %s", prev_schema, cur_schema
@@ -126,11 +148,13 @@ class PipelineFunction:
             if cur_schema != prev_schema:
                 logger.info(
                     "Table: %s structure has changed",
-                    table_name,
+                    object_name,
                 )
                 raw_data_flag = "init"
                 return raw_data_flag
-            logger.info("Table: %s structure has not changed, continuing...")
+            logger.info(
+                "Table: %s structure has not changed, continuing...", object_name
+            )
         return raw_data_flag
 
     # Raw data ingestion phase
