@@ -12,7 +12,6 @@ class MSSQLConcurrentRunner(PipelineFunction):
 
     def __init__(
         self,
-        multithreading_manager: MultithreadingManager,
         ingestion_config: IngestionConfig,
         credentials: dict,
         schema_metadata_sink_id: str,
@@ -21,7 +20,7 @@ class MSSQLConcurrentRunner(PipelineFunction):
         super().__init__(
             ingestion_config, credentials, schema_metadata_sink_id, raw_metadata_sink_id
         )
-        self.multithreading_manager = multithreading_manager
+        self.multithreading_manager = MultithreadingManager(worker_numbers=10)
 
     def execute(
         self,
