@@ -16,7 +16,7 @@ from kumeza.utils.common.date_object import DateObject
 logger = logging.getLogger(__name__)
 
 
-class MSSQLRunner:
+class Func:
 
     def __init__(
         self,
