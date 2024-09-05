@@ -16,7 +16,7 @@ from kumeza.utils.common.date_object import DateObject
 logger = logging.getLogger(__name__)
 
 
-class Func:
+class Pipeline:
 
     def __init__(
         self,
@@ -115,6 +115,9 @@ class Func:
             )
         else:
             logger.info("Object: %s has been ingested before", table_name)
+            # Comparing schema hash
+            logger.info("Comparing schema hash for object: %s", table_name)
+            print(last_ing_status["Items"])
 
     # Raw data ingestion phase
     def ingest_raw(self, ingestion_object: dict, raw_sink_id: str):

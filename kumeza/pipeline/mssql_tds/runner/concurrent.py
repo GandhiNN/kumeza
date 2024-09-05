@@ -2,13 +2,13 @@ import logging
 
 from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.core.multithreader import MultithreadingManager
-from kumeza.pipeline.mssql_tds.wrapper.func import Func
+from kumeza.pipeline.mssql_tds.wrapper.pipeline import Pipeline
 
 
 logger = logging.getLogger(__name__)
 
 
-class MSSQLConcurrentRunner(Func):
+class MSSQLConcurrentRunner(Pipeline):
 
     def __init__(
         self,

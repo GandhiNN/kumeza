@@ -1,12 +1,12 @@
 import logging
 
-from kumeza.pipeline.mssql_tds.wrapper.func import Func
+from kumeza.pipeline.mssql_tds.wrapper.pipeline import Pipeline
 
 
 logger = logging.getLogger(__name__)
 
 
-class MSSQLSequentialRunner(Func):
+class MSSQLSequentialRunner(Pipeline):
 
     def execute(
         self,
