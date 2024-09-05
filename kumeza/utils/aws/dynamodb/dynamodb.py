@@ -2,6 +2,7 @@ import logging
 from typing import Union
 
 from boto3.dynamodb.types import TypeDeserializer, TypeSerializer
+from botocore.exceptions import ClientError
 
 from kumeza.utils.aws import BaseAwsUtil, boto_error_handler
 
@@ -18,9 +19,17 @@ class DynamoDB(BaseAwsUtil):
     def put_item(self, item: dict, table_name: str):
         logger.info("Putting item into %s", table_name)
         dynamojson = self.python_to_dynamo_json(item)
-        return self._create_boto_client().put_item(
-            TableName=table_name, Item=dynamojson
-        )
+        try:
+            resp = self._create_boto_client().put_item(
+                TableName=table_name, Item=dynamojson
+            )
+            return resp
+        except ClientError as e:
+            logger.error(
+                "Operation failed with code: %s",
+                e.response["Error"]["Code"],
+            )
+            raise e.response["Error"]["Code"]
 
     @boto_error_handler(logger)
     def get_item(self, keys: dict, table_name: str):
@@ -48,16 +57,24 @@ class DynamoDB(BaseAwsUtil):
             sort_key,
             current_epoch,
         )
-        return self._create_boto_client().query(
-            TableName=table_name,
-            KeyConditionExpression=f"{partition_key} = :{partition_key} AND {sort_key} <= :{sort_key}",
-            ExpressionAttributeValues={
-                f":{partition_key}": {"S": f"{item_name}"},
-                f":{sort_key}": {"S": f"{current_epoch}"},
-            },
-            ScanIndexForward=False,
-            Limit=1,
-        )
+        try:
+            resp = self._create_boto_client().query(
+                TableName=table_name,
+                KeyConditionExpression=f"{partition_key} = :{partition_key} AND {sort_key} <= :{sort_key}",
+                ExpressionAttributeValues={
+                    f":{partition_key}": {"S": f"{item_name}"},
+                    f":{sort_key}": {"S": f"{current_epoch}"},
+                },
+                ScanIndexForward=False,
+                Limit=1,
+            )
+            return resp
+        except ClientError as e:
+            logger.error(
+                "Error when getting last execution: %s",
+                {e.response["Error"]["Message"]},
+            )
+            raise e
 
     def python_to_dynamo_json(self, obj: dict) -> dict:
         logger.info("Serializing Python object into DynamoDB JSON object")

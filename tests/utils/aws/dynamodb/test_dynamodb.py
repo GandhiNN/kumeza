@@ -4,6 +4,8 @@ import unittest
 
 import boto3
 import boto3.session
+import pytest
+from botocore.exceptions import ClientError
 from moto import mock_aws
 
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
@@ -71,6 +73,25 @@ class DynamoDBTestIntegration(unittest.TestCase):
         assert result_get_deserialized == python_json
 
     @mock_aws
+    def test_failed_to_put_item(self):
+        # Simulate failure to put item due to mismatch of input and the required keys
+        # DynamoDB client will raise ValidationException
+        # Create the mock table
+        self.dynamodb_client.create_table(**PARAMS)
+
+        # Run test on the function
+        dynamodb_client = DynamoDB()
+
+        # put faulty item into the table
+        with pytest.raises(Exception):
+            faulty_item = {
+                "pipeline_name": 1234,
+                "faulty_sort_key": "1674019243",
+            }
+            resp = dynamodb_client.put_item(faulty_item, TABLE_NAME)
+            assert resp == "ValidationException"
+
+    @mock_aws
     def test_get_last_item_from_table(self):
 
         # Create the mock table
@@ -109,6 +130,19 @@ class DynamoDBTestIntegration(unittest.TestCase):
 
         last_item_deserialized = dynamodb_client.dynamo_to_python_json(last_item)
         assert last_item_deserialized == expected
+
+    @mock_aws
+    def test_fail_get_last_item_from_table(self):
+        # simulate failure because of unknown table
+        dynamodb_client = DynamoDB()
+        with pytest.raises(ClientError):
+            _ = dynamodb_client.get_last_item_from_table(
+                "unknown_table",
+                "unknown_item",
+                "unknown_partition_key",
+                "unknown_sort_key",
+                date_obj.get_current_timestamp(ts_format="epoch"),
+            )
 
     @mock_aws
     def test_dynamo_to_python_json(self):
