@@ -100,19 +100,21 @@ class MSSQLRunner:
                     ts_format="epoch"
                 ),
                 "schema": schema,
-                "schema_hash": {schema_hash},
+                "schema_hash": schema_hash,
             }
             logger.info("Registering schema of table: %s => %s", table_name, item)
             logger.info(self.dynamodb.put_item(item, ing_table))
 
-        # Write schema to schema bucket
-        schema_key = (
-            f"""{self.source_system_id}/{self.source_system_physical_location}/"""
-            f"""{table_name}/{table_name}-{self.dateobj.get_current_timestamp(ts_format="date_only")}.json"""
-        )
-        self.s3.write_to_bucket(
-            content=schema, bucket_name=schema_bucket, key_name=schema_key
-        )
+            # Write schema to schema bucket
+            schema_key = (
+                f"""{self.source_system_id}/{self.source_system_physical_location}/"""
+                f"""{table_name}/{table_name}-{self.dateobj.get_current_timestamp(ts_format="date_only")}.json"""
+            )
+            self.s3.write_to_bucket(
+                content=schema, bucket_name=schema_bucket, key_name=schema_key
+            )
+        else:
+            logger.info("Object: %s has been ingested before", table_name)
 
     # Raw data ingestion phase
     def ingest_raw(self, ingestion_object: dict, raw_sink_id: str):
