@@ -117,7 +117,8 @@ class Pipeline:
             logger.info("Object: %s has been ingested before", table_name)
             # Comparing schema hash
             logger.info("Comparing schema hash for object: %s", table_name)
-            prev_schema = last_ing_status["Items"][0]["schema_hash"]
+            prev_schema = last_ing_status["Items"][0]["schema_hash"]['S']
+            print(f"Previous schema: {prev_schema}\nCurrent schema: {cur_schema}")
             if cur_schema != prev_schema:
                 logger.info(
                     "Table: %s structure has changed, triggering Initial Load",
