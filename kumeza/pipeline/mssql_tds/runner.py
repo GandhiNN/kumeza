@@ -114,6 +114,9 @@ class Runner:
                     )
                     obj["initial_load_flag"] = True
                     self.write_schema_to_s3(schema, object_name)
+                    self.register_schema_to_metadata(
+                        object_name, schema, current_schema_hash
+                    )
                 else:
                     logger.info(
                         "Table: %s structure has not changed, continuing...",
