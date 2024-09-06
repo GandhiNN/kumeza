@@ -66,17 +66,12 @@ class Runner:
             self.pipeline.dynamodb.put_item(item, self.pipeline.schema_metadata_table)
         )
 
-    def ingest_schema_sequential_wrapper(
-        self, schema_sink_id, schema_metadata_sink_id
-    ) -> list:
+    def ingest_schema_sequential_wrapper(self, schema_sink_id, schema_metadata_sink_id):
 
         # Setup metadata attributes
         self.pipeline.setup_schema_metadata_attributes(
             schema_sink_id, schema_metadata_sink_id
         )
-
-        # Setup retuned, furnished ingestion objects
-        ingestion_objects_new = []
 
         # loop through ingestion object
         for obj in self.pipeline.ingestion_objects:
@@ -84,7 +79,6 @@ class Runner:
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
             sql_schema = obj["sql_statement_schema"]
-            print(object_name, db_name, sql_schema)
 
             # ingest schema from source
             schema = self.ingest_schema(db_name, sql_schema)
@@ -123,29 +117,24 @@ class Runner:
                         object_name,
                     )
 
-            ingestion_objects_new.append(obj)
-
-        return ingestion_objects_new
+            self.pipeline.ingestion_objects_furnished.append(obj)
 
     def ingest_raw_data_sequential_wrapper(
         self, raw_data_sink_id, raw_data_metadata_sink_id
-    ) -> list:
+    ):
 
         # Setup metadata attributes
         self.pipeline.setup_raw_data_metadata_attributes(
             raw_data_sink_id, raw_data_metadata_sink_id
         )
 
-        # Setup retuned, furnished ingestion objects
-        ingestion_objects_new: list = []
-
-        # # loop through ingestion object
-        # for obj in self.pipeline.ingestion_objects:
-        #     obj["initial_load_flag"] = False
-        #     object_name = obj["table_name"].lower()
-        #     db_name = obj["db_name"]
-        #     sql_schema = obj["sql_statement_schema"]
-        #     print(object_name, db_name, sql_schema)
+        # loop through ingestion object
+        for obj in self.pipeline.ingestion_objects_furnished:
+            object_name = obj["table_name"].lower()
+            db_name = obj["db_name"]
+            sql_schema = obj["sql_statement_schema"]
+            il_flag = obj["initial_load_flag"]
+            print(object_name, db_name, sql_schema, il_flag)
 
         #     # ingest schema from source
         #     schema = self.ingest_schema(db_name, sql_schema)
@@ -183,8 +172,6 @@ class Runner:
 
         #     ingestion_objects_new.append(obj)
 
-        return ingestion_objects_new
-
     def run(
         self,
         ingestion_config,
@@ -204,10 +191,10 @@ class Runner:
             len(self.pipeline.ingestion_objects),
         )
         if concurrent is False:
-            _ = self.ingest_schema_sequential_wrapper(
+            self.ingest_schema_sequential_wrapper(
                 schema_sink_id, schema_metadata_sink_id
             )
-            _ = self.ingest_raw_data_sequential_wrapper(
+            self.ingest_raw_data_sequential_wrapper(
                 raw_data_sink_id, raw_data_metadata_sink_id
             )
         print("Done")

@@ -43,6 +43,7 @@ class Pipeline:
     def setup_ingestion_objects(self):
         self.data_assets = self.ingestion_config.data_assets
         self.ingestion_objects = []
+        self.ingestion_objects_furnished = []
         for asset_id in self.data_assets.id:
             for asset in asset_id.assets:
                 mssql_query_templater = MSSQLQueryTemplater(
