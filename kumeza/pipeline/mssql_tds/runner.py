@@ -66,6 +66,29 @@ class Runner:
             self.pipeline.dynamodb.put_item(item, self.pipeline.schema_metadata_table)
         )
 
+    def ingest_raw_data(self, db_name, sql):
+        # Raw data phase
+        rs_raw: list = self.extractor.read(
+            db_name,
+            sql,
+            self.pipeline.domain,
+            self.pipeline.username,
+            self.pipeline.password,
+        )
+        arrow_result_sets_raw = self.arrow_converter.from_python_list(rs_raw)
+        return arrow_result_sets_raw
+
+    def write_raw_data_to_s3(self, result_set, object_name):
+
+        # Write raw to raw bucket
+        raw_key = (
+            f"""{self.pipeline.source_system_id}/{self.pipeline.source_system_physical_location}/"""
+            f"""{object_name}/{self.pipeline.dateobj.get_current_timestamp(ts_format="date_only")}/"""
+        )
+        ArrowManager.write_to_s3(
+            result_set, f"s3://{self.pipeline.raw_data_bucket}/{raw_key}"
+        )
+
     def ingest_schema_sequential_wrapper(self, schema_sink_id, schema_metadata_sink_id):
 
         # Setup metadata attributes
@@ -78,10 +101,10 @@ class Runner:
             obj["initial_load_flag"] = False
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
-            sql_schema = obj["sql_statement_schema"]
+            sql = obj["sql_statement_schema"]
 
             # ingest schema from source
-            schema = self.ingest_schema(db_name, sql_schema)
+            schema = self.ingest_schema(db_name, sql)
 
             # Get schema hash
             current_schema_hash: str = get_schema_hash(schema)
@@ -132,45 +155,13 @@ class Runner:
         for obj in self.pipeline.ingestion_objects_furnished:
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
-            sql_schema = obj["sql_statement_schema"]
+            sql = obj["sql_statement_raw"]
             il_flag = obj["initial_load_flag"]
-            print(object_name, db_name, sql_schema, il_flag)
+            print(object_name, db_name, sql, il_flag)
 
-        #     # ingest schema from source
-        #     schema = self.ingest_schema(db_name, sql_schema)
-
-        #     # Get schema hash
-        #     current_schema_hash: str = get_schema_hash(schema)
-        #     logger.info("Schema hash is %s", current_schema_hash)
-
-        #     last_ing_status = self.pipeline.get_last_ingestion_status(object_name)
-        #     if len(last_ing_status["Items"]) == 0:
-        #         logger.info("Object: %s has never been ingested", object_name)
-        #         obj["initial_load_flag"] = True
-        #         self.write_schema_to_s3(schema, object_name)
-        #         self.register_schema_to_metadata(
-        #             object_name, schema, current_schema_hash
-        #         )
-
-        #     else:
-        #         logger.info("Object %s has been ingested before", object_name)
-        #         # compare schema hash
-        #         logger.info("Comparing schema hash for object: %s", object_name)
-        #         prev_schema_hash = last_ing_status["Items"][0]["schema_hash"]["S"]
-        #         if current_schema_hash != prev_schema_hash:
-        #             logger.info(
-        #                 "Table: %s structure has changed",
-        #                 object_name,
-        #             )
-        #             obj["initial_load_flag"] = True
-        #             self.write_schema_to_s3(schema, object_name)
-        #         else:
-        #             logger.info(
-        #                 "Table: %s structure has not changed, continuing...",
-        #                 object_name,
-        #             )
-
-        #     ingestion_objects_new.append(obj)
+            # ingest raw data
+            rs = self.ingest_raw_data(db_name, sql)
+            self.write_raw_data_to_s3(rs, object_name)
 
     def run(
         self,
