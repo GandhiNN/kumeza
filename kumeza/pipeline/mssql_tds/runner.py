@@ -11,7 +11,7 @@ class Runner:
         self.tds_manager = TDSManager(hostname, port, db_instance)
         self.extractor: MSSQLExtractor = MSSQLExtractor(self.tds_manager)
 
-    def ingest(self, ingestion_object, schema_sink_id, schema_metadata_sink_id):
+    def get_schema(self, ingestion_object, schema_sink_id, schema_metadata_sink_id):
         # Variable expansion
         object_name = ingestion_object["table_name"].lower()
         db_name = ingestion_object["db_name"]
@@ -37,7 +37,7 @@ class Runner:
         # Setup basic pipeline attributes
         self.pipeline = Pipeline(ingestion_config, credentials)
         self.pipeline.setup()
-        self.ingest(ingestion_object, schema_sink_id, schema_metadata_sink_id)
+        self.get_schema(ingestion_object, schema_sink_id, schema_metadata_sink_id)
 
         # Conditionals if concurrent runner or not
         if concurrent:
