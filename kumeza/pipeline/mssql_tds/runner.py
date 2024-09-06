@@ -46,6 +46,26 @@ class Runner:
             content=schema, bucket_name=self.pipeline.schema_bucket, key_name=schema_key
         )
 
+    def register_schema_to_metadata(
+        self, object_name, object_schema, object_schema_hash
+    ):
+        partition_key_value = (
+            f"""{self.pipeline.source_system_id}-"""
+            f"""{self.pipeline.source_system_physical_location}-{object_name}"""
+        )
+        item = {
+            f"{self.pipeline.schema_metadata_table_partition_key}": partition_key_value,
+            f"{self.pipeline.schema_metadata_table_sort_key}": self.pipeline.dateobj.get_current_timestamp(
+                ts_format="epoch"
+            ),
+            "schema": object_schema,
+            "schema_hash": object_schema_hash,
+        }
+        logger.info("Registering schema of table: %s => %s", object_name, item)
+        logger.info(
+            self.pipeline.dynamodb.put_item(item, self.pipeline.schema_metadata_table)
+        )
+
     def ingest_schema_sequential_wrapper(
         self, schema_sink_id, schema_metadata_sink_id
     ) -> list:
@@ -68,21 +88,24 @@ class Runner:
             schema = self.ingest_schema(db_name, sql_schema)
 
             # Get schema hash
-            current_schema: str = get_schema_hash(schema)
-            logger.info("Schema hash is %s", current_schema)
+            current_schema_hash: str = get_schema_hash(schema)
+            logger.info("Schema hash is %s", current_schema_hash)
 
             last_ing_status = self.pipeline.get_last_ingestion_status(object_name)
             if len(last_ing_status["Items"]) == 0:
                 logger.info("Object: %s has never been ingested", object_name)
                 obj["initial_load_flag"] = True
                 self.write_schema_to_s3(schema, object_name)
+                self.register_schema_to_metadata(
+                    object_name, schema, current_schema_hash
+                )
 
             else:
                 logger.info("Object %s has been ingested before", object_name)
                 # compare schema hash
                 logger.info("Comparing schema hash for object: %s", object_name)
-                prev_schema = last_ing_status["Items"][0]["schema_hash"]["S"]
-                if current_schema != prev_schema:
+                prev_schema_hash = last_ing_status["Items"][0]["schema_hash"]["S"]
+                if current_schema_hash != prev_schema_hash:
                     obj["initial_load_flag"] = True
                     self.write_schema_to_s3(schema, object_name)
 
