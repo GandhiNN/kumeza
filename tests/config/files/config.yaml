@@ -75,7 +75,7 @@ data_assets:
         database_schema: dbo
         query_type: standard
         incremental: true
-        incremental_columns: []
+        incremental_column: updated_at
         reload: false
         partition_columns: []
         columns_to_anonymize: []
@@ -89,7 +89,7 @@ data_assets:
         database_schema: dbo
         query_type: standard
         incremental: false
-        incremental_columns: []
+        incremental_column: ''
         reload: false
         partition_columns: []
         columns_to_anonymize: []
@@ -105,7 +105,7 @@ data_assets:
         database_schema: dbo
         query_type: standard
         incremental: false
-        incremental_columns: []
+        incremental_column: created_at
         reload: false
         partition_columns: []
         columns_to_anonymize: []
