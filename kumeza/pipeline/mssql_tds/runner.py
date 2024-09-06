@@ -71,7 +71,9 @@ class Runner:
     ) -> list:
 
         # Setup metadata attributes
-        self.pipeline.setup_metadata_attributes(schema_sink_id, schema_metadata_sink_id)
+        self.pipeline.setup_schema_metadata_attributes(
+            schema_sink_id, schema_metadata_sink_id
+        )
 
         # Setup retuned, furnished ingestion objects
         ingestion_objects_new = []
@@ -120,8 +122,63 @@ class Runner:
 
             ingestion_objects_new.append(obj)
 
-            # self.pipeline.ingest_schema()
-            # self.pipeline.ingest_raw_data()
+        return ingestion_objects_new
+
+    def ingest_raw_data_sequential_wrapper(
+        self, raw_data_sink_id, raw_data_metadata_sink_id
+    ) -> list:
+
+        # Setup metadata attributes
+        self.pipeline.setup_raw_data_metadata_attributes(
+            raw_data_sink_id, raw_data_metadata_sink_id
+        )
+
+        # Setup retuned, furnished ingestion objects
+        ingestion_objects_new: list = []
+
+        # # loop through ingestion object
+        # for obj in self.pipeline.ingestion_objects:
+        #     obj["initial_load_flag"] = False
+        #     object_name = obj["table_name"].lower()
+        #     db_name = obj["db_name"]
+        #     sql_schema = obj["sql_statement_schema"]
+        #     print(object_name, db_name, sql_schema)
+
+        #     # ingest schema from source
+        #     schema = self.ingest_schema(db_name, sql_schema)
+
+        #     # Get schema hash
+        #     current_schema_hash: str = get_schema_hash(schema)
+        #     logger.info("Schema hash is %s", current_schema_hash)
+
+        #     last_ing_status = self.pipeline.get_last_ingestion_status(object_name)
+        #     if len(last_ing_status["Items"]) == 0:
+        #         logger.info("Object: %s has never been ingested", object_name)
+        #         obj["initial_load_flag"] = True
+        #         self.write_schema_to_s3(schema, object_name)
+        #         self.register_schema_to_metadata(
+        #             object_name, schema, current_schema_hash
+        #         )
+
+        #     else:
+        #         logger.info("Object %s has been ingested before", object_name)
+        #         # compare schema hash
+        #         logger.info("Comparing schema hash for object: %s", object_name)
+        #         prev_schema_hash = last_ing_status["Items"][0]["schema_hash"]["S"]
+        #         if current_schema_hash != prev_schema_hash:
+        #             logger.info(
+        #                 "Table: %s structure has changed",
+        #                 object_name,
+        #             )
+        #             obj["initial_load_flag"] = True
+        #             self.write_schema_to_s3(schema, object_name)
+        #         else:
+        #             logger.info(
+        #                 "Table: %s structure has not changed, continuing...",
+        #                 object_name,
+        #             )
+
+        #     ingestion_objects_new.append(obj)
 
         return ingestion_objects_new
 
@@ -131,6 +188,8 @@ class Runner:
         credentials,
         schema_sink_id,
         schema_metadata_sink_id,
+        raw_data_sink_id,
+        raw_data_metadata_sink_id,
         concurrent=False,
     ):
         # Setup basic pipeline attributes
@@ -142,8 +201,10 @@ class Runner:
             len(self.pipeline.ingestion_objects),
         )
         if concurrent is False:
-            resp = self.ingest_schema_sequential_wrapper(
+            _ = self.ingest_schema_sequential_wrapper(
                 schema_sink_id, schema_metadata_sink_id
             )
-            print(resp, type(resp))
+            _ = self.ingest_raw_data_sequential_wrapper(
+                raw_data_sink_id, raw_data_metadata_sink_id
+            )
         print("Done")

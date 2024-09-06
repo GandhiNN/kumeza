@@ -38,6 +38,7 @@ class Pipeline:
         self.source_system_physical_location = (
             self.ingestion_config.source_system.physical_location
         )
+        self.metadata = self.ingestion_config.metadata
 
     def setup_ingestion_objects(self):
         self.data_assets = self.ingestion_config.data_assets
@@ -60,9 +61,8 @@ class Pipeline:
                     }
                 )
 
-    def setup_metadata_attributes(self, schema_sink_id, schema_metadata_sink_id):
+    def setup_schema_metadata_attributes(self, schema_sink_id, schema_metadata_sink_id):
         # Metadata section
-        self.metadata = self.ingestion_config.metadata
         self.schema_sink: Sinks = self.ingestion_config.sinks.get_sink("schema")
         self.schema_bucket: str = self.schema_sink.get_sink_target(schema_sink_id).path
 
@@ -78,6 +78,30 @@ class Pipeline:
         self.schema_metadata_table_sort_key = (
             self.ingestion_config.metadata.get_sink_target(
                 schema_metadata_sink_id
+            ).sort_key
+        )
+
+    def setup_raw_data_metadata_attributes(
+        self, raw_data_sink_id, raw_data_metadata_sink_id
+    ):
+        # Metadata section
+        self.raw_data_sink: Sinks = self.ingestion_config.sinks.get_sink("raw")
+        self.raw_data_bucket: str = self.raw_data_sink.get_sink_target(
+            raw_data_sink_id
+        ).path
+
+        # raw data metadata section
+        self.raw_data_metadata_table = self.ingestion_config.metadata.get_sink_target(
+            raw_data_metadata_sink_id
+        ).table_name
+        self.raw_data_metadata_table_partition_key = (
+            self.ingestion_config.metadata.get_sink_target(
+                raw_data_metadata_sink_id
+            ).partition_key
+        )
+        self.raw_data_metadata_table_sort_key = (
+            self.ingestion_config.metadata.get_sink_target(
+                raw_data_metadata_sink_id
             ).sort_key
         )
 
