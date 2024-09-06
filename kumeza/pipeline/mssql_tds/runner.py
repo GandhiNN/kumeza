@@ -28,9 +28,10 @@ class Runner:
             sql_schema = obj["sql_statement_schema"]
             print(object_name, db_name, sql_schema)
 
-        # self.pipeline.get_last_ingestion_status(object_name)
-        # self.pipeline.ingest_schema()
-        # self.pipeline.ingest_raw_data()
+            resp = self.pipeline.get_last_ingestion_status(object_name)
+            print(resp, type(resp))
+            # self.pipeline.ingest_schema()
+            # self.pipeline.ingest_raw_data()
 
     def run(
         self,
