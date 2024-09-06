@@ -1,8 +1,13 @@
 # pylint: disable=attribute-defined-outside-init
 
+import logging
+
 from kumeza.connectors.tds import TDSManager
 from kumeza.extractors.mssql import MSSQLExtractor
 from kumeza.pipeline.mssql_tds.pipeline import Pipeline
+
+
+logger = logging.getLogger(__name__)
 
 
 class Runner:
@@ -11,15 +16,13 @@ class Runner:
         self.tds_manager = TDSManager(hostname, port, db_instance)
         self.extractor: MSSQLExtractor = MSSQLExtractor(self.tds_manager)
 
-    def get_schema_sequential(
-        self, ingestion_object, schema_sink_id, schema_metadata_sink_id
-    ):
+    def get_schema_sequential(self, schema_sink_id, schema_metadata_sink_id):
 
         # Setup metadata attributes
         self.pipeline.setup_metadata_attributes(schema_sink_id, schema_metadata_sink_id)
 
         # loop through ingestion object
-        for obj in ingestion_object:
+        for obj in self.pipeline.ingestion_objects:
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
             sql_schema = obj["sql_statement_schema"]
@@ -33,7 +36,6 @@ class Runner:
         self,
         ingestion_config,
         credentials,
-        ingestion_object,
         schema_sink_id,
         schema_metadata_sink_id,
         concurrent=False,
@@ -41,8 +43,11 @@ class Runner:
         # Setup basic pipeline attributes
         self.pipeline = Pipeline(ingestion_config, credentials)
         self.pipeline.setup()
+        self.pipeline.setup_ingestion_objects()
+        logger.info(
+            "Processing %s numbers of ingestion objects",
+            len(self.pipeline.ingestion_objects),
+        )
         if concurrent is False:
-            self.get_schema_sequential(
-                ingestion_object, schema_sink_id, schema_metadata_sink_id
-            )
+            self.get_schema_sequential(schema_sink_id, schema_metadata_sink_id)
         print("Done")

@@ -8,6 +8,7 @@ from kumeza.core.arrow import ArrowConverter
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
 from kumeza.utils.aws.s3.s3 import S3
 from kumeza.utils.common.date_object import DateObject
+from kumeza.utils.query.mssql import MSSQLQueryTemplater
 
 
 logger = logging.getLogger(__name__)
@@ -37,6 +38,27 @@ class Pipeline:
         self.source_system_physical_location = (
             self.ingestion_config.source_system.physical_location
         )
+
+    def setup_ingestion_objects(self):
+        self.data_assets = self.ingestion_config.data_assets
+        self.ingestion_objects = []
+        for asset_id in self.data_assets.id:
+            for asset in asset_id.assets:
+                mssql_query_templater = MSSQLQueryTemplater(
+                    self.ingestion_config.source_system, asset
+                )
+                sql_statement_schema = mssql_query_templater.get_sql_query(
+                    mode="schema"
+                )
+                sql_statement_raw = mssql_query_templater.get_sql_query(mode="standard")
+                self.ingestion_objects.append(
+                    {
+                        "table_name": asset.asset_name,
+                        "db_name": asset.database_name,
+                        "sql_statement_schema": sql_statement_schema,
+                        "sql_statement_raw": sql_statement_raw,
+                    }
+                )
 
     def setup_metadata_attributes(self, schema_sink_id, schema_metadata_sink_id):
         # Metadata section
