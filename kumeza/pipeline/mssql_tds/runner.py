@@ -106,8 +106,17 @@ class Runner:
                 logger.info("Comparing schema hash for object: %s", object_name)
                 prev_schema_hash = last_ing_status["Items"][0]["schema_hash"]["S"]
                 if current_schema_hash != prev_schema_hash:
+                    logger.info(
+                        "Table: %s structure has changed",
+                        object_name,
+                    )
                     obj["initial_load_flag"] = True
                     self.write_schema_to_s3(schema, object_name)
+                else:
+                    logger.info(
+                        "Table: %s structure has not changed, continuing...",
+                        object_name,
+                    )
 
             ingestion_objects_new.append(obj)
 
