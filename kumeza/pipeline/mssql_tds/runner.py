@@ -21,7 +21,34 @@ class Runner:
         self.extractor: MSSQLExtractor = MSSQLExtractor(self.tds_manager)
         self.arrow_converter: ArrowConverter = ArrowConverter()
 
-    def get_schema_sequential(self, schema_sink_id, schema_metadata_sink_id) -> list:
+    def ingest_schema(self, db_name, sql_schema):
+        # ingest schema from source
+        rs_schema: list = self.extractor.read(
+            db_name,
+            sql_schema,
+            self.pipeline.domain,
+            self.pipeline.username,
+            self.pipeline.password,
+        )
+        arrow_rs_schema: pa.lib.Table = self.arrow_converter.from_python_list(rs_schema)
+        # Get schema of the table
+        # Convert Arrow schema to Hive
+        schema: list[dict] = ArrowManager.get_schema(arrow_rs_schema, hive=True)
+        return schema
+
+    def write_schema_to_s3(self, schema, object_name):
+
+        schema_key = (
+            f"""{self.pipeline.source_system_id}/{self.pipeline.source_system_physical_location}/"""
+            f"""{object_name}/{object_name}-{self.pipeline.dateobj.get_current_timestamp(ts_format="date_only")}.json"""
+        )
+        self.pipeline.s3.write_to_bucket(
+            content=schema, bucket_name=self.pipeline.schema_bucket, key_name=schema_key
+        )
+
+    def ingest_schema_sequential_wrapper(
+        self, schema_sink_id, schema_metadata_sink_id
+    ) -> list:
 
         # Setup metadata attributes
         self.pipeline.setup_metadata_attributes(schema_sink_id, schema_metadata_sink_id)
@@ -38,19 +65,7 @@ class Runner:
             print(object_name, db_name, sql_schema)
 
             # ingest schema from source
-            rs_schema: list = self.extractor.read(
-                db_name,
-                sql_schema,
-                self.pipeline.domain,
-                self.pipeline.username,
-                self.pipeline.password,
-            )
-            arrow_rs_schema: pa.lib.Table = self.arrow_converter.from_python_list(
-                rs_schema
-            )
-            # Get schema of the table
-            # Convert Arrow schema to Hive
-            schema: list[dict] = ArrowManager.get_schema(arrow_rs_schema, hive=True)
+            schema = self.ingest_schema(db_name, sql_schema)
 
             # Get schema hash
             current_schema: str = get_schema_hash(schema)
@@ -60,6 +75,7 @@ class Runner:
             if len(last_ing_status["Items"]) == 0:
                 logger.info("Object: %s has never been ingested", object_name)
                 obj["initial_load_flag"] = True
+                self.write_schema_to_s3(schema, object_name)
 
             else:
                 logger.info("Object %s has been ingested before", object_name)
@@ -68,6 +84,7 @@ class Runner:
                 prev_schema = last_ing_status["Items"][0]["schema_hash"]["S"]
                 if current_schema != prev_schema:
                     obj["initial_load_flag"] = True
+                    self.write_schema_to_s3(schema, object_name)
 
             ingestion_objects_new.append(obj)
 
@@ -93,6 +110,8 @@ class Runner:
             len(self.pipeline.ingestion_objects),
         )
         if concurrent is False:
-            resp = self.get_schema_sequential(schema_sink_id, schema_metadata_sink_id)
+            resp = self.ingest_schema_sequential_wrapper(
+                schema_sink_id, schema_metadata_sink_id
+            )
             print(resp, type(resp))
         print("Done")
