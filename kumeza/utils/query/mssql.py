@@ -34,17 +34,28 @@ class MSSQLQueryTemplater(MSSQLQueryManager):
             source=f"{self.assets.database_name}.{self.assets.database_schema}.{self.assets.asset_name}"
         )
 
+    def _render_incremental_query(self, **render_opt):
+        template = pkgutil.get_data(__package__, "models/mssql/incremental.sql")
+        return Template(template.decode("utf-8")).render(
+            source=f"{self.assets.database_name}.{self.assets.database_schema}.{self.assets.asset_name}",
+            incremental_col=f"{self.assets.incremental_column}",
+            start_time=render_opt["start_time"],
+            end_time=render_opt["end_time"],
+        )
+
     def _render_schema_query(self):
         template = pkgutil.get_data(__package__, "models/mssql/schema.sql")
         return Template(template.decode("utf-8")).render(
             source=f"{self.assets.database_name}.{self.assets.database_schema}.{self.assets.asset_name}"
         )
 
-    def get_sql_query(self, mode: str = "standard") -> str:
+    def get_sql_query(self, mode: str = "standard", **render_opt) -> str:
         if mode == "schema":
             return self._render_schema_query()
         if mode == "standard":
             return self._render_standard_query()
         if mode == "custom":
             return self._render_custom_query()
+        if mode == "incremental":
+            return self._render_incremental_query(**render_opt)
         raise ValueError("Query logic not implemented yet!")
