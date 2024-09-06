@@ -2,7 +2,11 @@
 
 import logging
 
+import pyarrow as pa
+
 from kumeza.connectors.tds import TDSManager
+from kumeza.core.arrow import ArrowConverter, ArrowManager
+from kumeza.core.data import get_schema_hash
 from kumeza.extractors.mssql import MSSQLExtractor
 from kumeza.pipeline.mssql_tds.pipeline import Pipeline
 
@@ -15,23 +19,62 @@ class Runner:
     def __init__(self, hostname, port, db_instance):
         self.tds_manager = TDSManager(hostname, port, db_instance)
         self.extractor: MSSQLExtractor = MSSQLExtractor(self.tds_manager)
+        self.arrow_converter: ArrowConverter = ArrowConverter()
 
-    def get_schema_sequential(self, schema_sink_id, schema_metadata_sink_id):
+    def get_schema_sequential(self, schema_sink_id, schema_metadata_sink_id) -> list:
 
         # Setup metadata attributes
         self.pipeline.setup_metadata_attributes(schema_sink_id, schema_metadata_sink_id)
 
+        # Setup retuned, furnished ingestion objects
+        ingestion_objects_new = []
+
         # loop through ingestion object
         for obj in self.pipeline.ingestion_objects:
+            obj["initial_load_flag"] = False
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
             sql_schema = obj["sql_statement_schema"]
             print(object_name, db_name, sql_schema)
 
-            resp = self.pipeline.get_last_ingestion_status(object_name)
-            print(resp, type(resp))
+            # ingest schema from source
+            rs_schema: list = self.extractor.read(
+                db_name,
+                sql_schema,
+                self.pipeline.domain,
+                self.pipeline.username,
+                self.pipeline.password,
+            )
+            arrow_rs_schema: pa.lib.Table = self.arrow_converter.from_python_list(
+                rs_schema
+            )
+            # Get schema of the table
+            # Convert Arrow schema to Hive
+            schema: list[dict] = ArrowManager.get_schema(arrow_rs_schema, hive=True)
+
+            # Get schema hash
+            current_schema: str = get_schema_hash(schema)
+            logger.info("Schema hash is %s", current_schema)
+
+            last_ing_status = self.pipeline.get_last_ingestion_status(object_name)
+            if len(last_ing_status["Items"]) == 0:
+                logger.info("Object: %s has never been ingested", object_name)
+                obj["initial_load_flag"] = True
+
+            else:
+                logger.info("Object %s has been ingested before", object_name)
+                # compare schema hash
+                logger.info("Comparing schema hash for object: %s", object_name)
+                prev_schema = last_ing_status["Items"][0]["schema_hash"]["S"]
+                if current_schema != prev_schema:
+                    obj["initial_load_flag"] = True
+
+            ingestion_objects_new.append(obj)
+
             # self.pipeline.ingest_schema()
             # self.pipeline.ingest_raw_data()
+
+        return ingestion_objects_new
 
     def run(
         self,
@@ -50,5 +93,6 @@ class Runner:
             len(self.pipeline.ingestion_objects),
         )
         if concurrent is False:
-            self.get_schema_sequential(schema_sink_id, schema_metadata_sink_id)
+            resp = self.get_schema_sequential(schema_sink_id, schema_metadata_sink_id)
+            print(resp, type(resp))
         print("Done")
