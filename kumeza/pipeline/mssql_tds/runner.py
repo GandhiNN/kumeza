@@ -2,8 +2,6 @@
 
 import logging
 
-import pyarrow as pa
-
 from kumeza.connectors.tds import TDSManager
 from kumeza.core.arrow import ArrowConverter, ArrowManager
 from kumeza.core.data import get_schema_hash
@@ -21,16 +19,17 @@ class Runner:
         self.extractor: MSSQLExtractor = MSSQLExtractor(self.tds_manager)
         self.arrow_converter: ArrowConverter = ArrowConverter()
 
-    def ingest_schema(self, db_name, sql_schema):
+    def ingest_schema(self, db_name, sql):
         # ingest schema from source
+        logger.info("Executing query: %s", sql)
         rs_schema: list = self.extractor.read(
             db_name,
-            sql_schema,
+            sql,
             self.pipeline.domain,
             self.pipeline.username,
             self.pipeline.password,
         )
-        arrow_rs_schema: pa.lib.Table = self.arrow_converter.from_python_list(rs_schema)
+        arrow_rs_schema = self.arrow_converter.from_python_list(rs_schema)
         # Get schema of the table
         # Convert Arrow schema to Hive
         schema: list[dict] = ArrowManager.get_schema(arrow_rs_schema, hive=True)
@@ -67,7 +66,8 @@ class Runner:
         )
 
     def ingest_raw_data(self, db_name, sql):
-        # Raw data phase
+
+        logger.info("Executing query: %s", sql)
         rs_raw: list = self.extractor.read(
             db_name,
             sql,
@@ -188,4 +188,4 @@ class Runner:
             self.ingest_raw_data_sequential_wrapper(
                 raw_data_sink_id, raw_data_metadata_sink_id
             )
-        print("Done")
+        logger.info("Ingestion finished!")
