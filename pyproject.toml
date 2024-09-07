@@ -32,6 +32,7 @@ pymssql = "2.3.0"
 pandas = "2.2.2"
 jinja2 = "3.1.4"
 s3fs = "2024.6.1"
+sqlalchemy = "2.0.34"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -54,6 +55,7 @@ omit = [
     "kumeza/pipeline/*",
     "kumeza/extractors/mssql.py",
     "kumeza/core/data.py",
+    "kumeza/core/sqlalchemy.py",
     "kumeza/integrations/deltalake/delta.py",
 ]
 
