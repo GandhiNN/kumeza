@@ -76,7 +76,12 @@ class Runner:
             self.pipeline.password,
         )
         arrow_result_sets_raw = self.arrow_converter.from_python_list(rs_raw)
+        rc = self.get_row_count(arrow_result_sets_raw)
+        print(rc)
         return arrow_result_sets_raw
+    
+    def get_row_count(self, result_set):
+        return result_set.num_rows
 
     def write_raw_data_to_s3(self, result_set, object_name):
 
