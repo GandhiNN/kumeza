@@ -34,9 +34,9 @@ class MSSQLExtractor:
         try:
             logger.info("Connecting to the database")
             conn = pymssql.connect(
-                server=self.tdsmanager.get_connection_string(), #pragma: allowlist-secret
+                server=self.tdsmanager.get_connection_string(),  # pragma: allowlist-secret
                 user=f"{domain}\\{username}",
-                password=password, #pragma: allowlist-secret
+                password=password,  # pragma: allowlist-secret
                 database=db_name,
             )
             cursor = conn.cursor()
