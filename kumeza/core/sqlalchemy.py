@@ -1,3 +1,6 @@
+import urllib.parse
+
+import sqlalchemy
 from sqlalchemy import URL, create_engine
 
 
@@ -7,16 +10,21 @@ class Engine:
         self.dialect = dialect
         self.driver = driver
 
-    def create_url(
-        self, username: str, password: str, host: str, database_name: str
-    ) -> URL:
-        return URL.create(
+    def create_engine(
+        self,
+        domain: str,
+        username: str,
+        password: str,
+        host: str,
+        port: int,
+        database_name: str,
+    ) -> sqlalchemy.Engine:
+        url = URL.create(
             f"{self.dialect}+{self.driver}",
-            username=username,
-            password=password,  # pragma: allowlist-secret
+            username=f"{domain}\\{username}",
+            password=urllib.parse.quote_plus(password),  # pragma: allowlist-secret
             host=host,
             database=database_name,
+            port=port,
         )
-
-    def create_engine(self, url: URL):
         return create_engine(url)

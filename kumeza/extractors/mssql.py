@@ -5,14 +5,16 @@ from typing import Any, Tuple
 import pymssql
 
 from kumeza.connectors.tds import TDSManager
+from kumeza.core.sqlalchemy import Engine
 
 
 logger = logging.getLogger(__name__)
 
 
-class MSSQLExtractor:
+class MSSQLExtractor(Engine):
 
     def __init__(self, tdsmanager: TDSManager):
+        super().__init__(dialect="mssql", driver="pymssql")
         self.tdsmanager = tdsmanager
 
     def _return_dict_pair(
@@ -51,3 +53,18 @@ class MSSQLExtractor:
         except Exception as e:
             logger.error(e)
             raise e
+
+    def read_using_sqlalchemy(
+        self,
+        db_name: str,
+        sqlquery: str,
+        domain: str,
+        host: str,
+        port: int,
+        username: str,
+        password: str,
+    ):
+        engine = self.create_engine(
+            domain, username, password, host, port, db_name  # pragma: allowlist-secret
+        )
+        print(engine, sqlquery)
