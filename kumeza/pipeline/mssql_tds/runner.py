@@ -79,7 +79,7 @@ class Runner:
         rc = self.get_row_count(arrow_result_sets_raw)
         print(rc)
         return arrow_result_sets_raw
-    
+
     def get_row_count(self, result_set):
         return result_set.num_rows
 
@@ -94,15 +94,20 @@ class Runner:
             result_set, f"s3://{self.pipeline.raw_data_bucket}/{raw_key}"
         )
 
-    def ingest_schema_sequential_wrapper(self, schema_sink_id, schema_metadata_sink_id):
+    def ingest_schema_sequential_wrapper(
+        self, ingestion_objects, schema_sink_id, schema_metadata_sink_id
+    ) -> list:
 
         # Setup metadata attributes
         self.pipeline.setup_schema_metadata_attributes(
             schema_sink_id, schema_metadata_sink_id
         )
 
+        # Setup furnished ingestion objects for raw data ingestion phase
+        ingestion_objects_raw = []
+
         # loop through ingestion object
-        for obj in self.pipeline.ingestion_objects:
+        for obj in ingestion_objects:
             obj["initial_load_flag"] = False
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
@@ -145,10 +150,11 @@ class Runner:
                         object_name,
                     )
 
-            self.pipeline.ingestion_objects_furnished.append(obj)
+            ingestion_objects_raw.append(obj)
+        return ingestion_objects_raw
 
     def ingest_raw_data_sequential_wrapper(
-        self, raw_data_sink_id, raw_data_metadata_sink_id
+        self, ingestion_objects_raw, raw_data_sink_id, raw_data_metadata_sink_id
     ):
 
         # Setup metadata attributes
@@ -157,7 +163,7 @@ class Runner:
         )
 
         # loop through ingestion object
-        for obj in self.pipeline.ingestion_objects_furnished:
+        for obj in ingestion_objects_raw:
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
             sql = obj["sql_statement_raw"]
@@ -181,16 +187,16 @@ class Runner:
         # Setup basic pipeline attributes
         self.pipeline = Pipeline(ingestion_config, credentials)
         self.pipeline.setup()
-        self.pipeline.setup_ingestion_objects()
+        ingestion_objects = self.pipeline.setup_ingestion_objects()
         logger.info(
             "Processing %s numbers of ingestion objects",
-            len(self.pipeline.ingestion_objects),
+            len(ingestion_objects),
         )
         if concurrent is False:
-            self.ingest_schema_sequential_wrapper(
-                schema_sink_id, schema_metadata_sink_id
+            ingestion_objects_raw = self.ingest_schema_sequential_wrapper(
+                ingestion_objects, schema_sink_id, schema_metadata_sink_id
             )
             self.ingest_raw_data_sequential_wrapper(
-                raw_data_sink_id, raw_data_metadata_sink_id
+                ingestion_objects_raw, raw_data_sink_id, raw_data_metadata_sink_id
             )
         logger.info("Ingestion finished!")

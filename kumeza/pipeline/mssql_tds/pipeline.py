@@ -40,10 +40,9 @@ class Pipeline:
         )
         self.metadata = self.ingestion_config.metadata
 
-    def setup_ingestion_objects(self):
+    def setup_ingestion_objects(self) -> list:
         self.data_assets = self.ingestion_config.data_assets
-        self.ingestion_objects = []
-        self.ingestion_objects_furnished = []
+        ingestion_objects = []
         for asset_id in self.data_assets.id:
             for asset in asset_id.assets:
                 mssql_query_templater = MSSQLQueryTemplater(
@@ -53,7 +52,7 @@ class Pipeline:
                     mode="schema"
                 )
                 sql_statement_raw = mssql_query_templater.get_sql_query(mode="standard")
-                self.ingestion_objects.append(
+                ingestion_objects.append(
                     {
                         "table_name": asset.asset_name,
                         "db_name": asset_id.database_name,
@@ -61,6 +60,7 @@ class Pipeline:
                         "sql_statement_raw": sql_statement_raw,
                     }
                 )
+        return ingestion_objects
 
     def setup_schema_metadata_attributes(self, schema_sink_id, schema_metadata_sink_id):
         # Metadata section
