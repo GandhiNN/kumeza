@@ -8,7 +8,7 @@ import pytest
 from botocore.exceptions import ClientError
 from moto import mock_aws
 
-from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
+from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB, InvalidDynamoDBPutItemOperation
 from kumeza.utils.common.date_object import DateObject
 
 
@@ -58,7 +58,7 @@ class DynamoDBTestIntegration(unittest.TestCase):
 
         result_put = dynamodb_client.put_item(python_json, TABLE_NAME)
 
-        assert result_put["ResponseMetadata"]["HTTPStatusCode"] == 200
+        assert result_put == 200
 
         # Test keys
         keys = {
@@ -83,13 +83,12 @@ class DynamoDBTestIntegration(unittest.TestCase):
         dynamodb_client = DynamoDB()
 
         # put faulty item into the table
-        with pytest.raises(Exception):
+        with pytest.raises(InvalidDynamoDBPutItemOperation):
             faulty_item = {
                 "pipeline_name": 1234,
                 "faulty_sort_key": "1674019243",
             }
-            resp = dynamodb_client.put_item(faulty_item, TABLE_NAME)
-            assert resp == "ValidationException"
+            dynamodb_client.put_item(faulty_item, TABLE_NAME)
 
     @mock_aws
     def test_get_last_item_from_table(self):
@@ -107,7 +106,7 @@ class DynamoDBTestIntegration(unittest.TestCase):
 
         for j in python_json:
             result_put = dynamodb_client.put_item(j, TABLE_NAME)
-            assert result_put["ResponseMetadata"]["HTTPStatusCode"] == 200
+            assert result_put == 200
 
         last_item = dynamodb_client.get_last_item_from_table(
             TABLE_NAME,

@@ -10,6 +10,13 @@ from kumeza.utils.aws import BaseAwsUtil, boto_error_handler
 logger = logging.getLogger(__name__)
 
 
+class InvalidDynamoDBPutItemOperation(Exception):
+
+    def __init__(self, message="Failure in DynamoDB PutItem Operation"):
+        self.message = message
+        super().__init__(self.message)
+
+
 class DynamoDB(BaseAwsUtil):
 
     def __init__(self):
@@ -23,13 +30,13 @@ class DynamoDB(BaseAwsUtil):
             resp = self._create_boto_client().put_item(
                 TableName=table_name, Item=dynamojson
             )
-            return resp
+            return resp["ResponseMetadata"]["HTTPStatusCode"]
         except ClientError as e:
             logger.error(
                 "Operation failed with code: %s",
                 e.response["Error"]["Code"],
             )
-            raise e.response["Error"]["Code"]
+            raise InvalidDynamoDBPutItemOperation from e
 
     @boto_error_handler(logger)
     def get_item(self, keys: dict, table_name: str):
