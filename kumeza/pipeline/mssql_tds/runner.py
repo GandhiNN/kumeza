@@ -29,11 +29,16 @@ class Runner:
             self.pipeline.username,
             self.pipeline.password,
         )
-        arrow_rs_schema = self.arrow_converter.from_python_list(rs_schema)
-        # Get schema of the table
-        # Convert Arrow schema to Hive
-        schema: list[dict] = ArrowManager.get_schema(arrow_rs_schema, hive=True)
-        return schema
+        return self.arrow_converter.from_python_list(rs_schema)
+        # rc = self.get_row_count(arrow_rs_schema)
+        # if rc == 0:
+        #     # return early
+        #     logger.info("Table: %s contains 0 records! Skipping...")
+        #     return
+        # # Get schema of the table
+        # # Convert Arrow schema to Hive
+        # schema: list[dict] = ArrowManager.get_schema(arrow_rs_schema, hive=True)
+        # return schema
 
     def write_schema_to_s3(self, schema, object_name):
 
@@ -132,43 +137,50 @@ class Runner:
             sql = obj["sql_statement_schema"]
 
             # ingest schema from source
-            schema = self.ingest_schema(db_name, sql)
+            rs = self.ingest_schema(db_name, sql)
+            rc = self.get_row_count(rs)
+            if rc > 0:
+                # Get schema of the table
+                # Convert Arrow schema to Hive
+                schema: list[dict] = ArrowManager.get_schema(rs, hive=True)
+                # Get schema hash
+                current_schema_hash: str = get_schema_hash(schema)
+                logger.info("Schema hash is %s", current_schema_hash)
 
-            # Get schema hash
-            current_schema_hash: str = get_schema_hash(schema)
-            logger.info("Schema hash is %s", current_schema_hash)
-
-            last_ing_status = self.pipeline.get_last_ingestion_status(object_name)
-            if len(last_ing_status["Items"]) == 0:
-                logger.info("Object: %s has never been ingested", object_name)
-                obj["initial_load_flag"] = True
-                self.write_schema_to_s3(schema, object_name)
-                self.register_schema_to_metadata(
-                    object_name, schema, current_schema_hash
-                )
-
-            else:
-                logger.info("Object %s has been ingested before", object_name)
-                # compare schema hash
-                logger.info("Comparing schema hash for object: %s", object_name)
-                prev_schema_hash = last_ing_status["Items"][0]["schema_hash"]["S"]
-                if current_schema_hash != prev_schema_hash:
-                    logger.info(
-                        "Table: %s structure has changed",
-                        object_name,
-                    )
+                last_ing_status = self.pipeline.get_last_ingestion_status(object_name)
+                if len(last_ing_status["Items"]) == 0:
+                    logger.info("Object: %s has never been ingested", object_name)
                     obj["initial_load_flag"] = True
                     self.write_schema_to_s3(schema, object_name)
                     self.register_schema_to_metadata(
                         object_name, schema, current_schema_hash
                     )
-                else:
-                    logger.info(
-                        "Table: %s structure has not changed, continuing...",
-                        object_name,
-                    )
 
-            ingestion_objects_raw.append(obj)
+                else:
+                    logger.info("Object %s has been ingested before", object_name)
+                    # compare schema hash
+                    logger.info("Comparing schema hash for object: %s", object_name)
+                    prev_schema_hash = last_ing_status["Items"][0]["schema_hash"]["S"]
+                    if current_schema_hash != prev_schema_hash:
+                        logger.info(
+                            "Table: %s structure has changed",
+                            object_name,
+                        )
+                        obj["initial_load_flag"] = True
+                        self.write_schema_to_s3(schema, object_name)
+                        self.register_schema_to_metadata(
+                            object_name, schema, current_schema_hash
+                        )
+                    else:
+                        logger.info(
+                            "Table: %s structure has not changed, continuing...",
+                            object_name,
+                        )
+
+                ingestion_objects_raw.append(obj)
+            else:
+                logger.info("Table: %s contains 0 records! Skipping...")
+                continue
         return ingestion_objects_raw
 
     def ingest_raw_data_sequential_wrapper(
@@ -185,14 +197,17 @@ class Runner:
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
             sql = obj["sql_statement_raw"]
-            il_flag = obj["initial_load_flag"]
-            print(object_name, db_name, sql, il_flag)
+            # il_flag = obj["initial_load_flag"]
 
             # ingest raw data
             rs = self.ingest_raw_data(db_name, sql)
             rc = self.get_row_count(rs)
-            self.write_raw_data_to_s3(rs, object_name)
-            self.register_ingestion_status_to_metadata(object_name, rc)
+            if rc > 0:
+                self.write_raw_data_to_s3(rs, object_name)
+                self.register_ingestion_status_to_metadata(object_name, rc)
+            else:
+                logger.info("Table: %s has no records! Skipping...", object_name)
+                continue
 
     def run(
         self,
