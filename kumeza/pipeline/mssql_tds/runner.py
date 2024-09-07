@@ -76,8 +76,6 @@ class Runner:
             self.pipeline.password,
         )
         arrow_result_sets_raw = self.arrow_converter.from_python_list(rs_raw)
-        rc = self.get_row_count(arrow_result_sets_raw)
-        print(rc)
         return arrow_result_sets_raw
 
     def get_row_count(self, result_set):
@@ -92,6 +90,26 @@ class Runner:
         )
         ArrowManager.write_to_s3(
             result_set, f"s3://{self.pipeline.raw_data_bucket}/{raw_key}"
+        )
+
+    def register_ingestion_status_to_metadata(self, object_name, row_count):
+        partition_key_value = (
+            f"""{self.pipeline.source_system_id}-"""
+            f"""{self.pipeline.source_system_physical_location}-{object_name}"""
+        )
+        item = {
+            f"{self.pipeline.raw_data_metadata_table_partition_key}": partition_key_value,
+            f"{self.pipeline.raw_data_metadata_table_sort_key}": self.pipeline.dateobj.get_current_timestamp(
+                ts_format="epoch"
+            ),
+            "table": object_name,
+            "row_count": row_count,
+        }
+        logger.info(
+            "Registering ingestion status of table: %s => %s", object_name, item
+        )
+        logger.info(
+            self.pipeline.dynamodb.put_item(item, self.pipeline.raw_data_metadata_table)
         )
 
     def ingest_schema_sequential_wrapper(
@@ -172,7 +190,9 @@ class Runner:
 
             # ingest raw data
             rs = self.ingest_raw_data(db_name, sql)
+            rc = self.get_row_count(rs)
             self.write_raw_data_to_s3(rs, object_name)
+            self.register_ingestion_status_to_metadata(object_name, rc)
 
     def run(
         self,
