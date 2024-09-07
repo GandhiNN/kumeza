@@ -4,7 +4,7 @@ import unittest
 
 import pytest
 
-from kumeza.config.data_assets.data_assets_config import Assets
+from kumeza.config.data_assets.data_assets_config import Assets, AssetsId
 from kumeza.config.source_system.source_system_config import SourceSystemConfig
 from kumeza.utils.query.mssql import MSSQLQueryManager, MSSQLQueryTemplater
 
@@ -48,21 +48,41 @@ src_sys_cfg_faulty_db_engine = SourceSystemConfig(
     physical_location="jkt",
 )
 
-assets = Assets(
-    asset_name="CUSTOMER_ID",
-    asset_type="table",
+data_assets = AssetsId(
+    id="group_1",
     database_name="master",
-    database_schema="dbo",
-    query_type="standard",
-    incremental=True,
-    incremental_column="updated_at",
-    reload=False,
-    partition_columns=[],
-    columns_to_anonymize=[],
-    custom_query="SELECT col1, col2 FROM master.dbo.CUSTOMER_ID where col3 = 'testVal'",
-    custom_schema={},
-    cast_timestamp_columns_to_string=False,
+    assets=[
+        Assets(
+            asset_name="CUSTOMER_ID",
+            asset_type="table",
+            database_schema="dbo",
+            query_type="standard",
+            incremental=True,
+            incremental_column="updated_at",
+            reload=False,
+            partition_columns=[],
+            columns_to_anonymize=[],
+            custom_query="SELECT col1, col2 FROM master.dbo.CUSTOMER_ID where col3 = 'testVal'",
+            custom_schema={},
+            cast_timestamp_columns_to_string=False,
+        )
+    ],
 )
+
+# assets = Assets(
+#     asset_name="CUSTOMER_ID",
+#     asset_type="table",
+#     database_schema="dbo",
+#     query_type="standard",
+#     incremental=True,
+#     incremental_column="updated_at",
+#     reload=False,
+#     partition_columns=[],
+#     columns_to_anonymize=[],
+#     custom_query="SELECT col1, col2 FROM master.dbo.CUSTOMER_ID where col3 = 'testVal'",
+#     custom_schema={},
+#     cast_timestamp_columns_to_string=False,
+# )
 
 
 class MSSQLQueryManagerTest(unittest.TestCase):
@@ -81,7 +101,7 @@ class MSSQLQueryManagerTest(unittest.TestCase):
 class MSSQLQueryTemplaterTest(unittest.TestCase):
 
     def setUp(self):
-        self.mssql_query_templater = MSSQLQueryTemplater(src_sys_cfg, assets)
+        self.mssql_query_templater = MSSQLQueryTemplater(src_sys_cfg, data_assets)
 
     def test_generate_schema_query(self):
         expected = "SELECT TOP 1000 * FROM master.dbo.CUSTOMER_ID"

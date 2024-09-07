@@ -112,11 +112,11 @@ class ConfigInstance:
             [
                 AssetsId(
                     id="group_1",
+                    database_name="master",
                     assets=[
                         Assets(
                             asset_name="CUSTOMER_ID",
                             asset_type="table",
-                            database_name="master",
                             database_schema="dbo",
                             query_type="standard",
                             incremental=True,
@@ -131,7 +131,6 @@ class ConfigInstance:
                         Assets(
                             asset_name="CUSTOMER_NAME",
                             asset_type="table",
-                            database_name="master",
                             database_schema="dbo",
                             query_type="standard",
                             incremental=False,
@@ -147,11 +146,11 @@ class ConfigInstance:
                 ),
                 AssetsId(
                     id="group_2",
+                    database_name="master",
                     assets=[
                         Assets(
                             asset_name="ADDRESS",
                             asset_type="table",
-                            database_name="master",
                             database_schema="dbo",
                             query_type="standard",
                             incremental=False,

@@ -83,11 +83,11 @@
     "data_assets": [
         {
             "id": "group_1",
+            "database_name": "master",
             "assets": [
                 {
                     "asset_name": "CUSTOMER_ID",
                     "asset_type": "table",
-                    "database_name": "master",
                     "database_schema": "dbo",
                     "query_type": "standard",
                     "incremental": true,
@@ -102,7 +102,6 @@
                 {
                     "asset_name": "CUSTOMER_NAME",
                     "asset_type": "table",
-                    "database_name": "master",
                     "database_schema": "dbo",
                     "query_type": "standard",
                     "incremental": false,
@@ -118,11 +117,11 @@
         },
         {
             "id": "group_2",
+            "database_name": "master",
             "assets": [
                 {
                     "asset_name": "ADDRESS",
                     "asset_type": "table",
-                    "database_name": "master",
                     "database_schema": "dbo",
                     "query_type": "standard",
                     "incremental": false,

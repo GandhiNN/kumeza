@@ -8,7 +8,6 @@ from kumeza.config import BaseConfig
 class Assets(BaseConfig):
     asset_name: str
     asset_type: str
-    database_name: str
     database_schema: str
     query_type: str
     incremental: bool
@@ -25,7 +24,6 @@ class Assets(BaseConfig):
         return cls(
             asset_name=obj["asset_name"],
             asset_type=obj["asset_type"],
-            database_name=obj["database_name"],
             database_schema=obj["database_schema"],
             query_type=obj["query_type"],
             incremental=obj["incremental"],
@@ -42,12 +40,14 @@ class Assets(BaseConfig):
 @dataclass
 class AssetsId(BaseConfig):
     id: str
+    database_name: str
     assets: t.Sequence[Assets]
 
     @classmethod
     def marshal(cls: t.Type["AssetsId"], obj: dict):
         return cls(
             id=obj["id"],
+            database_name=obj["database_name"],
             assets=[Assets.marshal(item) for item in obj["assets"]],
         )
 
