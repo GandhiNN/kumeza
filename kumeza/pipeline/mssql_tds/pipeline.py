@@ -56,7 +56,7 @@ class Pipeline:
                 self.ingestion_objects.append(
                     {
                         "table_name": asset.asset_name,
-                        "db_name": asset.database_name,
+                        "db_name": asset_id.database_name,
                         "sql_statement_schema": sql_statement_schema,
                         "sql_statement_raw": sql_statement_raw,
                     }
