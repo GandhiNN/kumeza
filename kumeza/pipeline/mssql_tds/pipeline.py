@@ -47,7 +47,7 @@ class Pipeline:
         for asset_id in self.data_assets.id:
             for asset in asset_id.assets:
                 mssql_query_templater = MSSQLQueryTemplater(
-                    self.ingestion_config.source_system, asset
+                    self.ingestion_config.source_system, asset_id
                 )
                 sql_statement_schema = mssql_query_templater.get_sql_query(
                     mode="schema"
