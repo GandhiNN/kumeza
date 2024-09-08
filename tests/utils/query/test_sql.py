@@ -60,7 +60,7 @@ data_assets = AssetsId(
             incremental=True,
             incremental_column="updated_at",
             reload=False,
-            partition_columns=[],
+            partition_columns=["created_at"],
             columns_to_anonymize=[],
             custom_query="SELECT col1, col2 FROM master.dbo.CUSTOMER_ID where col3 = 'testVal'",
             custom_schema={},
@@ -68,21 +68,6 @@ data_assets = AssetsId(
         )
     ],
 )
-
-# assets = Assets(
-#     asset_name="CUSTOMER_ID",
-#     asset_type="table",
-#     database_schema="dbo",
-#     query_type="standard",
-#     incremental=True,
-#     incremental_column="updated_at",
-#     reload=False,
-#     partition_columns=[],
-#     columns_to_anonymize=[],
-#     custom_query="SELECT col1, col2 FROM master.dbo.CUSTOMER_ID where col3 = 'testVal'",
-#     custom_schema={},
-#     cast_timestamp_columns_to_string=False,
-# )
 
 
 class MSSQLQueryManagerTest(unittest.TestCase):
@@ -127,6 +112,24 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
             )
             == expected
         )
+
+    def test_generate_row_count_query(self):
+        expected = """SELECT COUNT(*) FROM master.dbo.CUSTOMER_ID"""
+        assert self.mssql_query_templater.get_sql_query(mode="row_count") == expected
+
+    # def test_generate_partitioned_query(self):
+    #     expected = [
+    #         "SELECT * FROM master.dbo.CUSTOMER_ID WHERE chunk_1",
+    #         "SELECT * FROM master.dbo.CUSTOMER_ID WHERE chunk_2",
+    #         "SELECT * FROM master.dbo.CUSTOMER_ID WHERE chunk_3",
+    #     ]
+    #     partition_columns = ["created_at"]
+    #     assert (
+    #         self.mssql_query_templater.get_partitioned_sql_query(
+    #             partition_columns=partition_columns, num_chunks=3
+    #         )
+    #         == expected
+    #     )
 
     def test_fail_to_generate_custom_query_due_to_faulty_mode(self):
         with pytest.raises(ValueError):

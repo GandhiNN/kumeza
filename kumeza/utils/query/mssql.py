@@ -53,11 +53,19 @@ class MSSQLQueryTemplater(MSSQLQueryManager):
             source=f"{self.assets_id.database_name}.{self.assets_id.assets[0].database_schema}.{self.assets_id.assets[0].asset_name}"
         )
 
+    def _render_row_count_query(self):
+        template = pkgutil.get_data(__package__, "models/mssql/row_count.sql")
+        return Template(template.decode("utf-8")).render(
+            source=f"{self.assets_id.database_name}.{self.assets_id.assets[0].database_schema}.{self.assets_id.assets[0].asset_name}"
+        )
+
     def get_sql_query(self, mode: str = "standard", **render_opt) -> str:
         if mode == "schema":
             return self._render_schema_query()
         if mode == "standard":
             return self._render_standard_query()
+        if mode == "row_count":
+            return self._render_row_count_query()
         if mode == "custom":
             return self._render_custom_query()
         if mode == "incremental":
