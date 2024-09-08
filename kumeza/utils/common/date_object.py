@@ -1,8 +1,6 @@
 import datetime
 from typing import Any
 
-import pandas as pd
-
 
 class DateObject:
     def __init__(
@@ -39,18 +37,20 @@ class DateObject:
         )
         return ts_now.year - ts_start.year
 
-    def get_timestamp_range(
-        self,
-        datestart: str = "",
-        dateend: str = "",
-        freqalias: str = "MS",
-    ) -> list:
-        # for freqalias -> https://pandas.pydata.org/docs/user_guide/timeseries.html#timeseries-offset-aliases
-        tslist = [
-            i.strftime(self.ts_format)
-            for i in pd.date_range(start=datestart, end=dateend, freq=freqalias)
-        ]
-        return tslist
+    def get_timestamp_range(self, start: str, end: str, num_intervals: int) -> list:
+        """
+        Given a date range, break it up into N contiguous sub-intervals.
+        Argument to `start` and `end` must adhere to "YYYY-MM-DD HH:MM:ss" format
+        """
+        sub_int: list = []
+        ts_start = datetime.datetime.strptime(start, self.ts_format)
+        ts_end = datetime.datetime.strptime(end, self.ts_format)
+        diff = (ts_end - ts_start) / num_intervals
+        for i in range(num_intervals):
+            subdate = (ts_start + (diff * i)).strftime(self.ts_format)
+            sub_int.append(subdate)
+        sub_int.append(end)  # inclusive of end date
+        return sub_int
 
     def get_current_timestamp(self, ts_format: str = "epoch") -> Any:
         """

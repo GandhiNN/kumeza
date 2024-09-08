@@ -4,9 +4,6 @@ import unittest
 from kumeza.utils.common.date_object import DateObject
 
 
-# raise unittest.SkipTest("##TODO")
-
-
 class DateObjectTest(unittest.TestCase):
 
     def setUp(self):
@@ -29,23 +26,20 @@ class DateObjectTest(unittest.TestCase):
         ts_end = "2024-08-26 00:00:00"
         assert self.dateobject.get_year_diff(ts_start, ts_end) == 9
 
-    def test_get_timestamp_range(self):
-        ts_start = "2024-01-01 00:00:00"
-        ts_end = "2024-08-26 00:00:00"
-        freqalias = "MS"
+    def test_get_timestamp_range_even_split(self):
+        ts_start = "2020-01-01 00:00:00"
+        ts_end = "2024-01-01 00:00:00"
+        num_intervals = 4
         tslist = [
+            "2020-01-01 00:00:00",
+            "2020-12-31 06:00:00",
+            "2021-12-31 12:00:00",
+            "2022-12-31 18:00:00",
             "2024-01-01 00:00:00",
-            "2024-02-01 00:00:00",
-            "2024-03-01 00:00:00",
-            "2024-04-01 00:00:00",
-            "2024-05-01 00:00:00",
-            "2024-06-01 00:00:00",
-            "2024-07-01 00:00:00",
-            "2024-08-01 00:00:00",
         ]
         assert (
             self.dateobject.get_timestamp_range(
-                datestart=ts_start, dateend=ts_end, freqalias=freqalias
+                start=ts_start, end=ts_end, num_intervals=num_intervals
             )
             == tslist
         )
