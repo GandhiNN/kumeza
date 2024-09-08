@@ -200,6 +200,9 @@ class Runner:
             # il_flag = obj["initial_load_flag"]
 
             # ingest raw data
+            # TODO: check last ingestion status of the table and determine
+            # if delta load must be executed
+            # last_ing_status = self.pipeline.get_last_ingestion_status(object_name)
             rs = self.ingest_raw_data(db_name, sql)
             rc = self.get_row_count(rs)
             if rc > 0:
