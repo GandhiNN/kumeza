@@ -210,9 +210,11 @@ class Runner:
             # 1. if il_flag is set to true, then skip checking the last ingestion status
             # because it will be considered as the first ingestion anyway
             if il_flag:
-                rc = self.get_row_count_from_query(db_name, sql_row_count)
+                rc = self.get_row_count_from_query(
+                    db_name, sql_row_count
+                )  # output: [{'rowCount': <rowcount_int>}]
                 print(rc, type(rc))
-                if rc > 0:
+                if rc[0]["rowCount"] > 0:
                     # check last ingestion status of the table and determine
                     last_ing_status = self.pipeline.get_last_ingestion_status(
                         self.pipeline.raw_data_metadata_table,
