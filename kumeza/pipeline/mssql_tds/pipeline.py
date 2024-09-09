@@ -52,12 +52,14 @@ class Pipeline:
                     mode="schema"
                 )
                 sql_statement_raw = mssql_query_templater.get_sql_query(mode="standard")
+                sql_row_count = mssql_query_templater.get_sql_query(mode="row_count")
                 ingestion_objects.append(
                     {
                         "table_name": asset.asset_name,
                         "db_name": asset_id.database_name,
                         "sql_statement_schema": sql_statement_schema,
                         "sql_statement_raw": sql_statement_raw,
+                        "sql_row_count": sql_row_count,
                     }
                 )
         return ingestion_objects
@@ -106,16 +108,22 @@ class Pipeline:
             ).sort_key
         )
 
-    def get_last_ingestion_status(self, table_name: str):
+    def get_last_ingestion_status(
+        self,
+        metadata_table_name: str,
+        partition_key: str,
+        sort_key: str,
+        object_name: str,
+    ):
         # Partition key = {source_system_id}-{physical_location}-{table_name}
         # Sort key = execution time in epoch
-        item_name = f"{self.source_system_id}-{self.source_system_physical_location}-{table_name}"
+        item_name = f"{self.source_system_id}-{self.source_system_physical_location}-{object_name}"
         cur_epoch = self.dateobj.get_current_timestamp(ts_format="epoch")
         result = self.dynamodb.get_last_item_from_table(
-            self.schema_metadata_table,
+            metadata_table_name,
             item_name,
-            self.schema_metadata_table_partition_key,
-            self.schema_metadata_table_sort_key,
+            partition_key,
+            sort_key,
             cur_epoch,
         )
         return result

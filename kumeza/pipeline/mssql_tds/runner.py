@@ -30,15 +30,6 @@ class Runner:
             self.pipeline.password,
         )
         return self.arrow_converter.from_python_list(rs_schema)
-        # rc = self.get_row_count(arrow_rs_schema)
-        # if rc == 0:
-        #     # return early
-        #     logger.info("Table: %s contains 0 records! Skipping...")
-        #     return
-        # # Get schema of the table
-        # # Convert Arrow schema to Hive
-        # schema: list[dict] = ArrowManager.get_schema(arrow_rs_schema, hive=True)
-        # return schema
 
     def write_schema_to_s3(self, schema, object_name):
 
@@ -70,6 +61,17 @@ class Runner:
             self.pipeline.dynamodb.put_item(item, self.pipeline.schema_metadata_table)
         )
 
+    def get_row_count_from_query(self, db_name, sql):
+        logger.info("Executing query: %s", sql)
+        rs = self.extractor.read(
+            db_name,
+            sql,
+            self.pipeline.domain,
+            self.pipeline.username,
+            self.pipeline.password,
+        )
+        return rs
+
     def ingest_raw_data(self, db_name, sql):
 
         logger.info("Executing query: %s", sql)
@@ -83,7 +85,7 @@ class Runner:
         arrow_result_sets_raw = self.arrow_converter.from_python_list(rs_raw)
         return arrow_result_sets_raw
 
-    def get_row_count(self, result_set):
+    def get_row_count_from_result_set(self, result_set):
         return result_set.num_rows
 
     def write_raw_data_to_s3(self, result_set, object_name):
@@ -138,29 +140,35 @@ class Runner:
 
             # ingest schema from source
             rs = self.ingest_schema(db_name, sql)
-            rc = self.get_row_count(rs)
+            rc = self.get_row_count_from_result_set(rs)
             if rc > 0:
                 # Get schema of the table
                 # Convert Arrow schema to Hive
                 schema: list[dict] = ArrowManager.get_schema(rs, hive=True)
+
                 # Get schema hash
                 current_schema_hash: str = get_schema_hash(schema)
                 logger.info("Schema hash is %s", current_schema_hash)
 
-                last_ing_status = self.pipeline.get_last_ingestion_status(object_name)
-                if len(last_ing_status["Items"]) == 0:
+                # Get the latest schema registered in metadata table
+                last_schema = self.pipeline.get_last_ingestion_status(
+                    self.pipeline.schema_metadata_table,
+                    self.pipeline.schema_metadata_table_partition_key,
+                    self.pipeline.schema_metadata_table_sort_key,
+                    object_name,
+                )
+                if len(last_schema["Items"]) == 0:
                     logger.info("Object: %s has never been ingested", object_name)
                     obj["initial_load_flag"] = True
                     self.write_schema_to_s3(schema, object_name)
                     self.register_schema_to_metadata(
                         object_name, schema, current_schema_hash
                     )
-
                 else:
                     logger.info("Object %s has been ingested before", object_name)
                     # compare schema hash
                     logger.info("Comparing schema hash for object: %s", object_name)
-                    prev_schema_hash = last_ing_status["Items"][0]["schema_hash"]["S"]
+                    prev_schema_hash = last_schema["Items"][0]["schema_hash"]["S"]
                     if current_schema_hash != prev_schema_hash:
                         logger.info(
                             "Table: %s structure has changed",
@@ -176,7 +184,6 @@ class Runner:
                             "Table: %s structure has not changed, continuing...",
                             object_name,
                         )
-
                 ingestion_objects_raw.append(obj)
             else:
                 logger.info("Table: %s contains 0 records! Skipping...")
@@ -186,7 +193,6 @@ class Runner:
     def ingest_raw_data_sequential_wrapper(
         self, ingestion_objects_raw, raw_data_sink_id, raw_data_metadata_sink_id
     ):
-
         # Setup metadata attributes
         self.pipeline.setup_raw_data_metadata_attributes(
             raw_data_sink_id, raw_data_metadata_sink_id
@@ -197,20 +203,36 @@ class Runner:
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
             sql = obj["sql_statement_raw"]
-            # il_flag = obj["initial_load_flag"]
+            sql_row_count = obj["sql_row_count"]
+            il_flag = obj["initial_load_flag"]
 
             # ingest raw data
-            # TODO: check last ingestion status of the table and determine
-            # if delta load must be executed
-            # last_ing_status = self.pipeline.get_last_ingestion_status(object_name)
-            rs = self.ingest_raw_data(db_name, sql)
-            rc = self.get_row_count(rs)
-            if rc > 0:
-                self.write_raw_data_to_s3(rs, object_name)
-                self.register_ingestion_status_to_metadata(object_name, rc)
+            # 1. if il_flag is set to true, then skip checking the last ingestion status
+            # because it will be considered as the first ingestion anyway
+            if il_flag:
+                rc = self.get_row_count_from_query(db_name, sql_row_count)
+                print(rc, type(rc))
+                if rc > 0:
+                    # check last ingestion status of the table and determine
+                    last_ing_status = self.pipeline.get_last_ingestion_status(
+                        self.pipeline.raw_data_metadata_table,
+                        self.pipeline.raw_data_metadata_table_partition_key,
+                        self.pipeline.raw_data_metadata_table_sort_key,
+                        object_name,
+                    )
+                    if len(last_ing_status["Items"]) == 0:
+                        logger.info("Object: %s has never been ingested", object_name)
+                        rs = self.ingest_raw_data(db_name, sql)
+                        self.write_raw_data_to_s3(rs, object_name)
+                        self.register_ingestion_status_to_metadata(object_name, rc)
+                else:
+                    logger.info(
+                        "Query to table: %s generates 0 records! Skipping...",
+                        object_name,
+                    )
+                    continue
             else:
-                logger.info("Table: %s has no records! Skipping...", object_name)
-                continue
+                logger.info("Executing delta load logic for table: %s", object_name)
 
     def run(
         self,
