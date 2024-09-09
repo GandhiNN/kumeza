@@ -48,11 +48,16 @@ class Runner:
             f"""{self.pipeline.source_system_id}-"""
             f"""{self.pipeline.source_system_physical_location}-{object_name}"""
         )
+        execution_time_epoch = self.pipeline.dateobj.get_current_timestamp(
+            ts_format="epoch"
+        )
+        execution_time_date = self.pipeline.dateobj.get_timestamp_with_milliseconds(
+            execution_time_epoch
+        )
         item = {
             f"{self.pipeline.schema_metadata_table_partition_key}": partition_key_value,
-            f"{self.pipeline.schema_metadata_table_sort_key}": self.pipeline.dateobj.get_current_timestamp(
-                ts_format="epoch"
-            ),
+            f"{self.pipeline.schema_metadata_table_sort_key}": execution_time_epoch,
+            "execution_time_as_date": execution_time_date,
             "schema": object_schema,
             "schema_hash": object_schema_hash,
         }
@@ -104,11 +109,16 @@ class Runner:
             f"""{self.pipeline.source_system_id}-"""
             f"""{self.pipeline.source_system_physical_location}-{object_name}"""
         )
+        execution_time_epoch = self.pipeline.dateobj.get_current_timestamp(
+            ts_format="epoch"
+        )
+        execution_time_date = self.pipeline.dateobj.get_timestamp_with_milliseconds(
+            execution_time_epoch
+        )
         item = {
             f"{self.pipeline.raw_data_metadata_table_partition_key}": partition_key_value,
-            f"{self.pipeline.raw_data_metadata_table_sort_key}": self.pipeline.dateobj.get_current_timestamp(
-                ts_format="epoch"
-            ),
+            f"{self.pipeline.raw_data_metadata_table_sort_key}": execution_time_epoch,
+            "execution_time_as_date": execution_time_date,
             "table": object_name,
             "row_count": row_count,
         }
@@ -226,7 +236,9 @@ class Runner:
                         logger.info("Object: %s has never been ingested", object_name)
                         rs = self.ingest_raw_data(db_name, sql)
                         self.write_raw_data_to_s3(rs, object_name)
-                        self.register_ingestion_status_to_metadata(object_name, rc)
+                        self.register_ingestion_status_to_metadata(
+                            object_name, rc[0]["rowCount"]
+                        )
                 else:
                     logger.info(
                         "Query to table: %s generates 0 records! Skipping...",
