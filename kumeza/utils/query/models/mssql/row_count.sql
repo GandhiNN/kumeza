@@ -1,1 +1,1 @@
-SELECT COUNT(*) FROM {{source}}
+SELECT COUNT(*) FROM {{source}} as 'rowCount'
