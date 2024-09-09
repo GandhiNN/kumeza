@@ -9,12 +9,10 @@ class DateObject:
     ):
         self.ts_format = ts_format
 
-    def get_timestamp_with_milliseconds(self, epoch: str) -> str:
+    def get_human_readable_timestamp(self, epoch: str) -> str:
         timestamp: str = "0"
-        millisecond: int = 0
         epoch_int = int(epoch)
         if len(epoch) == 13:
-            millisecond = epoch_int % 1000
             timestamp = datetime.datetime.fromtimestamp(
                 epoch_int / 1000, tz=datetime.timezone.utc
             ).strftime(self.ts_format)
@@ -22,7 +20,7 @@ class DateObject:
             timestamp = datetime.datetime.fromtimestamp(
                 epoch_int, tz=datetime.timezone.utc
             ).strftime(self.ts_format)
-        return f"{timestamp}.{millisecond}"
+        return f"{timestamp}"
 
     def get_year_diff(
         self,

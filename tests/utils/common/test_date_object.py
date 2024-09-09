@@ -9,17 +9,17 @@ class DateObjectTest(unittest.TestCase):
     def setUp(self):
         self.dateobject = DateObject()
 
-    def test_get_timestamp_milliseconds(self):
+    def test_get_human_readable_timestamp(self):
         test_epoch_10_digits = "1724664819"
-        result_10_digits_utc = self.dateobject.get_timestamp_with_milliseconds(
+        result_10_digits_utc = self.dateobject.get_human_readable_timestamp(
             test_epoch_10_digits
         )
-        assert result_10_digits_utc == "2024-08-26 09:33:39.0"
+        assert result_10_digits_utc == "2024-08-26 09:33:39"
         test_epoch_13_digits = "1724664819123"
-        result_13_digits_utc = self.dateobject.get_timestamp_with_milliseconds(
+        result_13_digits_utc = self.dateobject.get_human_readable_timestamp(
             test_epoch_13_digits
         )
-        assert result_13_digits_utc == "2024-08-26 09:33:39.123"
+        assert result_13_digits_utc == "2024-08-26 09:33:39"
 
     def test_get_year_diff(self):
         ts_start = "2015-01-01 00:00:00"
