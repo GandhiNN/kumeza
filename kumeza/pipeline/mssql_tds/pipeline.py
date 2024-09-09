@@ -5,10 +5,10 @@ import logging
 from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.config.sinks.sinks_config import Sinks
 from kumeza.core.arrow import ArrowConverter
+from kumeza.query.mssql import MSSQLQueryTemplater
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
 from kumeza.utils.aws.s3.s3 import S3
 from kumeza.utils.common.date_object import DateObject
-from kumeza.utils.query.mssql import MSSQLQueryTemplater
 
 
 logger = logging.getLogger(__name__)
@@ -70,6 +70,8 @@ class Pipeline:
                     {
                         "table_name": asset.asset_name,
                         "db_name": asset_id.database_name,
+                        "db_schema": asset.database_schema,
+                        "incremental_col": asset.incremental_column,
                         "sql_statement_schema": sql_statement_schema,
                         "sql_statement_raw": sql_statement_raw,
                         "sql_row_count": sql_row_count,

@@ -7,6 +7,7 @@ from kumeza.core.arrow import ArrowConverter, ArrowManager
 from kumeza.core.data import get_schema_hash
 from kumeza.extractors.mssql import MSSQLExtractor
 from kumeza.pipeline.mssql_tds.pipeline import Pipeline
+from kumeza.query.mssql import MSSQLQueryTemplater
 from kumeza.utils.common.perftrace import PerfTrace
 
 
@@ -55,7 +56,7 @@ class Runner:
         execution_time_epoch = self.pipeline.dateobj.get_current_timestamp(
             ts_format="epoch"
         )
-        execution_time_date = self.pipeline.dateobj.get_timestamp_with_milliseconds(
+        execution_time_date = self.pipeline.dateobj.get_human_readable_timestamp(
             execution_time_epoch
         )
         item = {
@@ -121,7 +122,7 @@ class Runner:
         execution_time_epoch = self.pipeline.dateobj.get_current_timestamp(
             ts_format="epoch"
         )
-        execution_time_date = self.pipeline.dateobj.get_timestamp_with_milliseconds(
+        execution_time_date = self.pipeline.dateobj.get_human_readable_timestamp(
             execution_time_epoch
         )
         item = {
@@ -223,6 +224,8 @@ class Runner:
         for obj in ingestion_objects_raw:
             object_name = obj["table_name"].lower()
             db_name = obj["db_name"]
+            db_schema = obj["db_schema"]
+            incremental_col = obj["incremental_col"]
             sql = obj["sql_statement_raw"]
             sql_row_count = obj["sql_row_count"]
             il_flag = obj["initial_load_flag"]
@@ -250,26 +253,37 @@ class Runner:
                     continue
             else:
                 logger.info("Executing delta load logic for table: %s", object_name)
-                # check last ingestion status of the table and determine
-                # last_ing_status = self.pipeline.get_last_ingestion_status(
-                #     self.pipeline.raw_data_metadata_table,
-                #     self.pipeline.raw_data_metadata_table_partition_key,
-                #     self.pipeline.raw_data_metadata_table_sort_key,
-                #     object_name,
-                # )
-                # # we assume that incremental load should have at least one entry in
-                # # the ingestion metadata table
-                # logger.info("Triggering incremental load for table: %s", object_name)
-                # last_ingestion_date = last_ing_status["execution_time_as_date"]
-                # # generate query for incremental load
-                # mssql_query_templater = MSSQLQueryTemplater(
-                #     self.pipeline.ingestion_config.source_system, asset_id
-                # )
-                # rs = self.ingest_raw_data(db_name, sql)
-                # self.write_raw_data_to_s3(rs, object_name)
-                # self.register_ingestion_status_to_metadata(
-                #     object_name, rc[0]["rowCount"]
-                # )
+                # check last ingestion status of the table and determine the incremental query bounds
+                last_ing_status = self.pipeline.get_last_ingestion_status(
+                    self.pipeline.raw_data_metadata_table,
+                    self.pipeline.raw_data_metadata_table_partition_key,
+                    self.pipeline.raw_data_metadata_table_sort_key,
+                    object_name,
+                )
+                # we assume that incremental load should have at least one entry in
+                # the ingestion metadata table
+                logger.info("Triggering incremental load for table: %s", object_name)
+                last_ingestion_date = last_ing_status["execution_time_as_date"]
+                # generate query for incremental load
+                mssql_query_templater = MSSQLQueryTemplater(
+                    self.pipeline.ingestion_config.source_system
+                )
+                sql_incremental_load = mssql_query_templater.get_sql_query(
+                    mode="incremental",
+                    database_name=db_name,
+                    database_schema=db_schema,
+                    object_name=object_name,
+                    incremental_column=incremental_col,
+                    start_time=last_ingestion_date,
+                    end_time=self.pipeline.dateobj.get_current_timestamp(
+                        ts_format="timenow_string"
+                    ),
+                )
+                rs = self.ingest_raw_data(db_name, sql_incremental_load)
+                self.write_raw_data_to_s3(rs, object_name)
+                self.register_ingestion_status_to_metadata(
+                    object_name, rc[0]["rowCount"]
+                )
 
     def run(
         self,
