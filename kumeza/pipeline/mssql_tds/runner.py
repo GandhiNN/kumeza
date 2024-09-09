@@ -234,22 +234,14 @@ class Runner:
                 rc = self.get_row_count_from_query(
                     db_name, sql_row_count
                 )  # output: [{'rowCount': <rowcount_int>}]
-                print(rc, type(rc))
                 if rc[0]["rowCount"] > 0:
-                    # check last ingestion status of the table and determine
-                    last_ing_status = self.pipeline.get_last_ingestion_status(
-                        self.pipeline.raw_data_metadata_table,
-                        self.pipeline.raw_data_metadata_table_partition_key,
-                        self.pipeline.raw_data_metadata_table_sort_key,
-                        object_name,
+                    # we don't neeed to check last ingestion status of the table because it's initial load
+                    logger.info("Triggering initial load for table: %s", object_name)
+                    rs = self.ingest_raw_data(db_name, sql)
+                    self.write_raw_data_to_s3(rs, object_name)
+                    self.register_ingestion_status_to_metadata(
+                        object_name, rc[0]["rowCount"]
                     )
-                    if len(last_ing_status["Items"]) == 0:
-                        logger.info("Object: %s has never been ingested", object_name)
-                        rs = self.ingest_raw_data(db_name, sql)
-                        self.write_raw_data_to_s3(rs, object_name)
-                        self.register_ingestion_status_to_metadata(
-                            object_name, rc[0]["rowCount"]
-                        )
                 else:
                     logger.info(
                         "Query to table: %s generates 0 records! Skipping...",
@@ -258,6 +250,26 @@ class Runner:
                     continue
             else:
                 logger.info("Executing delta load logic for table: %s", object_name)
+                # check last ingestion status of the table and determine
+                # last_ing_status = self.pipeline.get_last_ingestion_status(
+                #     self.pipeline.raw_data_metadata_table,
+                #     self.pipeline.raw_data_metadata_table_partition_key,
+                #     self.pipeline.raw_data_metadata_table_sort_key,
+                #     object_name,
+                # )
+                # # we assume that incremental load should have at least one entry in
+                # # the ingestion metadata table
+                # logger.info("Triggering incremental load for table: %s", object_name)
+                # last_ingestion_date = last_ing_status["execution_time_as_date"]
+                # # generate query for incremental load
+                # mssql_query_templater = MSSQLQueryTemplater(
+                #     self.pipeline.ingestion_config.source_system, asset_id
+                # )
+                # rs = self.ingest_raw_data(db_name, sql)
+                # self.write_raw_data_to_s3(rs, object_name)
+                # self.register_ingestion_status_to_metadata(
+                #     object_name, rc[0]["rowCount"]
+                # )
 
     def run(
         self,

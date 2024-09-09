@@ -6,7 +6,7 @@ import pytest
 
 from kumeza.config.data_assets.data_assets_config import Assets, AssetsId
 from kumeza.config.source_system.source_system_config import SourceSystemConfig
-from kumeza.utils.query.mssql import MSSQLQueryManager, MSSQLQueryTemplater
+from kumeza.query.mssql import MSSQLQueryManager, MSSQLQueryTemplater
 
 
 # raise unittest.SkipTest("##TODO")
@@ -69,6 +69,12 @@ data_assets = AssetsId(
     ],
 )
 
+CUSTOM_QUERY = data_assets.assets[0].custom_query
+DATABASE_NAME = data_assets.database_name
+DATABASE_SCHEMA = data_assets.assets[0].database_schema
+OBJECT_NAME = data_assets.assets[0].asset_name
+INCREMENTAL_COLUMN = data_assets.assets[0].incremental_column
+
 
 class MSSQLQueryManagerTest(unittest.TestCase):
 
@@ -86,27 +92,52 @@ class MSSQLQueryManagerTest(unittest.TestCase):
 class MSSQLQueryTemplaterTest(unittest.TestCase):
 
     def setUp(self):
-        self.mssql_query_templater = MSSQLQueryTemplater(src_sys_cfg, data_assets)
+        self.mssql_query_templater = MSSQLQueryTemplater(src_sys_cfg)
 
     def test_generate_schema_query(self):
         expected = "SELECT TOP 1000 * FROM master.dbo.CUSTOMER_ID"
-        assert self.mssql_query_templater.get_sql_query(mode="schema") == expected
+        assert (
+            self.mssql_query_templater.get_sql_query(
+                mode="schema",
+                database_name=DATABASE_NAME,
+                database_schema=DATABASE_SCHEMA,
+                object_name=OBJECT_NAME,
+            )
+            == expected
+        )
 
     def test_generate_custom_query(self):
         expected = (
             "SELECT col1, col2 FROM master.dbo.CUSTOMER_ID where col3 = 'testVal'"
         )
-        assert self.mssql_query_templater.get_sql_query(mode="custom") == expected
+        assert (
+            self.mssql_query_templater.get_sql_query(
+                mode="custom", custom_query=CUSTOM_QUERY
+            )
+            == expected
+        )
 
     def test_generate_standard_query(self):
         expected = "SELECT * FROM master.dbo.CUSTOMER_ID"
-        assert self.mssql_query_templater.get_sql_query(mode="standard") == expected
+        assert (
+            self.mssql_query_templater.get_sql_query(
+                mode="standard",
+                database_name=DATABASE_NAME,
+                database_schema=DATABASE_SCHEMA,
+                object_name=OBJECT_NAME,
+            )
+            == expected
+        )
 
     def test_generate_incremental_query(self):
         expected = """SELECT * FROM master.dbo.CUSTOMER_ID WHERE updated_at >= '2024-09-07 10:00:00' AND updated_at <= '2024-09-07 12:00:00'"""
         assert (
             self.mssql_query_templater.get_sql_query(
                 mode="incremental",
+                database_name=DATABASE_NAME,
+                database_schema=DATABASE_SCHEMA,
+                incremental_column=INCREMENTAL_COLUMN,
+                object_name=OBJECT_NAME,
                 start_time="2024-09-07 10:00:00",
                 end_time="2024-09-07 12:00:00",
             )
@@ -115,7 +146,15 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
 
     def test_generate_row_count_query(self):
         expected = """SELECT COUNT(*) as 'rowCount' FROM master.dbo.CUSTOMER_ID"""
-        assert self.mssql_query_templater.get_sql_query(mode="row_count") == expected
+        assert (
+            self.mssql_query_templater.get_sql_query(
+                mode="row_count",
+                database_name=DATABASE_NAME,
+                database_schema=DATABASE_SCHEMA,
+                object_name=OBJECT_NAME,
+            )
+            == expected
+        )
 
     # def test_generate_partitioned_query(self):
     #     expected = [

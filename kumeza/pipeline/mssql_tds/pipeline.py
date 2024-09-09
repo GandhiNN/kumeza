@@ -46,13 +46,26 @@ class Pipeline:
         for asset_id in self.data_assets.id:
             for asset in asset_id.assets:
                 mssql_query_templater = MSSQLQueryTemplater(
-                    self.ingestion_config.source_system, asset_id
+                    self.ingestion_config.source_system
                 )
                 sql_statement_schema = mssql_query_templater.get_sql_query(
-                    mode="schema"
+                    mode="schema",
+                    database_name=asset_id.database_name,
+                    database_schema=asset.database_schema,
+                    object_name=asset.asset_name,
                 )
-                sql_statement_raw = mssql_query_templater.get_sql_query(mode="standard")
-                sql_row_count = mssql_query_templater.get_sql_query(mode="row_count")
+                sql_statement_raw = mssql_query_templater.get_sql_query(
+                    mode="standard",
+                    database_name=asset_id.database_name,
+                    database_schema=asset.database_schema,
+                    object_name=asset.asset_name,
+                )
+                sql_row_count = mssql_query_templater.get_sql_query(
+                    mode="row_count",
+                    database_name=asset_id.database_name,
+                    database_schema=asset.database_schema,
+                    object_name=asset.asset_name,
+                )
                 ingestion_objects.append(
                     {
                         "table_name": asset.asset_name,
