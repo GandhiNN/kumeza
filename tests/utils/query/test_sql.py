@@ -114,7 +114,7 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
         )
 
     def test_generate_row_count_query(self):
-        expected = """SELECT COUNT(*) FROM master.dbo.CUSTOMER_ID as 'rowCount'"""
+        expected = """SELECT COUNT(*) as 'rowCount' FROM master.dbo.CUSTOMER_ID"""
         assert self.mssql_query_templater.get_sql_query(mode="row_count") == expected
 
     # def test_generate_partitioned_query(self):
