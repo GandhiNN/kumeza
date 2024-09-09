@@ -53,6 +53,7 @@ omit = [
     "kumeza/extractors/arrow_odbc.py",
     "kumeza/pipeline/*",
     "kumeza/extractors/mssql.py",
+    "kumeza/utils/common/perftrace.py",
     "kumeza/core/data.py",
     "kumeza/core/sqlalchemy.py",
     "kumeza/integrations/deltalake/delta.py",
