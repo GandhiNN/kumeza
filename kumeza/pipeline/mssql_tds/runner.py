@@ -7,6 +7,7 @@ from kumeza.core.arrow import ArrowConverter, ArrowManager
 from kumeza.core.data import get_schema_hash
 from kumeza.extractors.mssql import MSSQLExtractor
 from kumeza.pipeline.mssql_tds.pipeline import Pipeline
+from kumeza.utils.common.perftrace import PerfTrace
 
 
 logger = logging.getLogger(__name__)
@@ -19,6 +20,7 @@ class Runner:
         self.extractor: MSSQLExtractor = MSSQLExtractor(self.tds_manager)
         self.arrow_converter: ArrowConverter = ArrowConverter()
 
+    @PerfTrace.timeit
     def ingest_schema(self, db_name, sql):
         # ingest schema from source
         logger.info("Executing query: %s", sql)
@@ -31,6 +33,7 @@ class Runner:
         )
         return self.arrow_converter.from_python_list(rs_schema)
 
+    @PerfTrace.timeit
     def write_schema_to_s3(self, schema, object_name):
 
         schema_key = (
@@ -41,6 +44,7 @@ class Runner:
             content=schema, bucket_name=self.pipeline.schema_bucket, key_name=schema_key
         )
 
+    @PerfTrace.timeit
     def register_schema_to_metadata(
         self, object_name, object_schema, object_schema_hash
     ):
@@ -66,6 +70,7 @@ class Runner:
             self.pipeline.dynamodb.put_item(item, self.pipeline.schema_metadata_table)
         )
 
+    @PerfTrace.timeit
     def get_row_count_from_query(self, db_name, sql):
         logger.info("Executing query: %s", sql)
         rs = self.extractor.read(
@@ -77,6 +82,7 @@ class Runner:
         )
         return rs
 
+    @PerfTrace.timeit
     def ingest_raw_data(self, db_name, sql):
 
         logger.info("Executing query: %s", sql)
@@ -90,9 +96,11 @@ class Runner:
         arrow_result_sets_raw = self.arrow_converter.from_python_list(rs_raw)
         return arrow_result_sets_raw
 
+    @PerfTrace.timeit
     def get_row_count_from_result_set(self, result_set):
         return result_set.num_rows
 
+    @PerfTrace.timeit
     def write_raw_data_to_s3(self, result_set, object_name):
 
         # Write raw to raw bucket
@@ -104,6 +112,7 @@ class Runner:
             result_set, f"s3://{self.pipeline.raw_data_bucket}/{raw_key}"
         )
 
+    @PerfTrace.timeit
     def register_ingestion_status_to_metadata(self, object_name, row_count):
         partition_key_value = (
             f"""{self.pipeline.source_system_id}-"""
@@ -129,6 +138,7 @@ class Runner:
             self.pipeline.dynamodb.put_item(item, self.pipeline.raw_data_metadata_table)
         )
 
+    @PerfTrace.timeit
     def ingest_schema_sequential_wrapper(
         self, ingestion_objects, schema_sink_id, schema_metadata_sink_id
     ) -> list:
@@ -200,6 +210,7 @@ class Runner:
                 continue
         return ingestion_objects_raw
 
+    @PerfTrace.timeit
     def ingest_raw_data_sequential_wrapper(
         self, ingestion_objects_raw, raw_data_sink_id, raw_data_metadata_sink_id
     ):
