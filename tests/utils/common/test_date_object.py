@@ -56,11 +56,11 @@ class DateObjectTest(unittest.TestCase):
 
         # Check if date_with_clock format adheres to "%Y-%m-%d-%H-%M-%S-%f" format
         assert datetime.datetime.strptime(
-            self.dateobject.get_current_timestamp(ts_format="date_with_clock"),
+            self.dateobject.get_current_timestamp(ts_format="date_filename"),
             "%Y-%m-%d-%H-%M-%S-%f",
         )
         assert (
-            len(self.dateobject.get_current_timestamp(ts_format="date_with_clock"))
+            len(self.dateobject.get_current_timestamp(ts_format="date_filename"))
             == 23
         )
 
