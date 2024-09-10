@@ -1,5 +1,5 @@
 import logging
-from typing import Any
+from typing import Any, Union
 
 import pyarrow as pa
 import pyarrow.parquet as pq
@@ -43,15 +43,30 @@ class ArrowManager:  # pragma: no cover
 
     @classmethod
     def write_to_s3(
-        cls, table: pa.Table, s3uri: str, table_name: str, ingestion_flag: str
+        cls,
+        table: Union[pa.Table | list[pa.Table]],
+        s3uri: str,
+        table_name: str,
+        ingestion_flag: str,
     ):
         logger.info("Writing Arrow table to %s", s3uri)
         cur_date = dateobj.get_current_timestamp(ts_format="date_filename")
-        pq.write_to_dataset(
-            table,
-            root_path=s3uri,
-            basename_template=f"{table_name}-{{i}}-{cur_date}_utc_{ingestion_flag}.parquet",
-        )
+        if isinstance(table, pa.Table):
+            pq.write_to_dataset(
+                table,
+                root_path=s3uri,
+                basename_template=f"{table_name}-00{{i}}-{cur_date}_utc_{ingestion_flag}.parquet",
+            )
+        # input is list of pyarrow tables
+        elif isinstance(table, list):  # noqa
+            for idx, t in enumerate(table):
+                idx += 1
+                seqnum = f"{idx:03}"
+                pq.write_to_dataset(
+                    t,
+                    root_path=s3uri,
+                    basename_template=f"{table_name}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet",
+                )
 
     @classmethod
     def read_from_s3(cls, s3uri: str) -> pq.ParquetDataset:
