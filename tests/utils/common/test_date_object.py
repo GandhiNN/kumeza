@@ -60,8 +60,7 @@ class DateObjectTest(unittest.TestCase):
             "%Y-%m-%d-%H-%M-%S-%f",
         )
         assert (
-            len(self.dateobject.get_current_timestamp(ts_format="date_filename"))
-            == 23
+            len(self.dateobject.get_current_timestamp(ts_format="date_filename")) == 23
         )
 
         # Check if timenow_string format adheres to "%Y-%m-%d %H:%M:%S" format
