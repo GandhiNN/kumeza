@@ -60,8 +60,7 @@ class ArrowManager:  # pragma: no cover
         # input is list of pyarrow tables
         elif isinstance(table, list):  # noqa
             for idx, t in enumerate(table):
-                idx += 1
-                seqnum = f"{idx:03}"
+                seqnum = f"{idx:03}" # 000, 001, 002...
                 pq.write_to_dataset(
                     t,
                     root_path=s3uri,
