@@ -102,7 +102,7 @@ class Runner:
         return result_set.num_rows
 
     @PerfTrace.timeit
-    def write_raw_data_to_s3(self, result_set, object_name):
+    def write_raw_data_to_s3(self, result_set, object_name, ingestion_flag):
 
         # Write raw to raw bucket
         raw_key = (
@@ -110,7 +110,10 @@ class Runner:
             f"""{object_name}/{self.pipeline.dateobj.get_current_timestamp(ts_format="date_only")}/"""
         )
         ArrowManager.write_to_s3(
-            result_set, f"s3://{self.pipeline.raw_data_bucket}/{raw_key}", object_name
+            result_set,
+            f"s3://{self.pipeline.raw_data_bucket}/{raw_key}",
+            object_name,
+            ingestion_flag,
         )
 
     @PerfTrace.timeit
@@ -237,11 +240,12 @@ class Runner:
                 rc = self.get_row_count_from_query(
                     db_name, sql_row_count
                 )  # output: [{'rowCount': <rowcount_int>}]
+                ingestion_flag = "il"
                 if rc[0]["rowCount"] > 0:
                     # we don't neeed to check last ingestion status of the table because it's initial load
                     logger.info("Triggering initial load for table: %s", object_name)
                     rs = self.ingest_raw_data(db_name, sql)
-                    self.write_raw_data_to_s3(rs, object_name)
+                    self.write_raw_data_to_s3(rs, object_name, ingestion_flag)
                     self.register_ingestion_status_to_metadata(
                         object_name, rc[0]["rowCount"]
                     )
@@ -253,6 +257,7 @@ class Runner:
                     continue
             else:
                 logger.info("Executing delta load logic for table: %s", object_name)
+                ingestion_flag = "dl"
                 # check last ingestion status of the table and determine the incremental query bounds
                 last_ing_status = self.pipeline.get_last_ingestion_status(
                     self.pipeline.raw_data_metadata_table,
@@ -280,7 +285,7 @@ class Runner:
                     ),
                 )
                 rs = self.ingest_raw_data(db_name, sql_incremental_load)
-                self.write_raw_data_to_s3(rs, object_name)
+                self.write_raw_data_to_s3(rs, object_name, ingestion_flag)
                 self.register_ingestion_status_to_metadata(
                     object_name, rc[0]["rowCount"]
                 )

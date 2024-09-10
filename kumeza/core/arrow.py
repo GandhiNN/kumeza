@@ -42,13 +42,15 @@ class ArrowManager:  # pragma: no cover
         return schema
 
     @classmethod
-    def write_to_s3(cls, table: pa.Table, s3uri: str, table_name: str):
+    def write_to_s3(
+        cls, table: pa.Table, s3uri: str, table_name: str, ingestion_flag: str
+    ):
         logger.info("Writing Arrow table to %s", s3uri)
         cur_date = dateobj.get_current_timestamp(ts_format="date_filename")
         pq.write_to_dataset(
             table,
             root_path=s3uri,
-            basename_template=f"{table_name}-{{i}}-{cur_date}.parquet",
+            basename_template=f"{table_name}-{{i}}-{cur_date}_utc_{ingestion_flag}.parquet",
         )
 
     @classmethod
