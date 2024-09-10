@@ -44,7 +44,7 @@ class ArrowManager:  # pragma: no cover
     @classmethod
     def write_to_s3(
         cls,
-        table: Union[pa.Table | list[pa.Table]],
+        table: Union[pa.Table, list[pa.Table]],
         s3uri: str,
         table_name: str,
         ingestion_flag: str,
