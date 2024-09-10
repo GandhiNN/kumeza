@@ -110,7 +110,7 @@ class Runner:
             f"""{object_name}/{self.pipeline.dateobj.get_current_timestamp(ts_format="date_only")}/"""
         )
         ArrowManager.write_to_s3(
-            result_set, f"s3://{self.pipeline.raw_data_bucket}/{raw_key}"
+            result_set, f"s3://{self.pipeline.raw_data_bucket}/{raw_key}", object_name
         )
 
     @PerfTrace.timeit
