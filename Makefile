@@ -58,3 +58,9 @@ test:
 
 build:
 		$(POETRY) build
+
+lambda-layer:
+		$(POETRY) install --only main --sync
+		$(POETRY) build
+		$(POETRY) run pip install --upgrade -t package dist/*.whl
+		mkdir -p out; zip -r -q out/kumeza.zip package/* -i 'package/kumeza*' -x 'package/*.pyc'

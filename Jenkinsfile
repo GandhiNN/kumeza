@@ -80,8 +80,9 @@ def buildWheelAndSyncArtifact() {
 // single quotes enclosure is necessary to solve dynamic variable assignment
 def buildLambdaLayerZipAndSyncArtifact(package_semver) {
     sh(script: """
+    make lambda-layer
     echo 'Transferring wheel file to S3 as a Lambda Layer zip'
-    cd dist; aws s3 cp kumeza-${package_semver}-py3-none-any.whl s3://${S3_BUCKET_NAME}/lambda-layers/kumeza-${package_semver}-none-any.zip
+    cd out; aws s3 cp kumeza.zip s3://${S3_BUCKET_NAME}/lambda-layers/kumeza-${package_semver}-none-any.zip
     """)
 }
 
