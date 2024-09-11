@@ -83,6 +83,7 @@ def buildLambdaLayerZipAndSyncArtifact(package_semver) {
     make lambda-layer
     echo 'Transferring wheel file to S3 as a Lambda Layer zip'
     aws s3 cp out/kumeza.zip s3://${S3_BUCKET_NAME}/lambda-layers/kumeza-${package_semver}-none-any.zip
+    aws s3 cp out/pyarrow.zip s3://${S3_BUCKET_NAME}/lambda-layers/pyarrow.zip
     """)
 }
 

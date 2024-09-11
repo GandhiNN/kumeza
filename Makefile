@@ -64,3 +64,5 @@ lambda-layer:
 		$(POETRY) build
 		$(POETRY) run pip install --upgrade -t python dist/*.whl
 		mkdir -p out; zip -r -q out/kumeza.zip python/* -i 'python/kumeza*' -x 'python/*.pyc'
+		zip -r -q out/pyarrow.zip python/* -i 'python/*arrow*' -x 'python/*.pyc'
+
