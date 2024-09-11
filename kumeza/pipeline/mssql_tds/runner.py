@@ -18,14 +18,14 @@ class Runner:
 
     def __init__(self, hostname, port, db_instance):
         self.tds_manager = TDSManager(hostname, port, db_instance)
-        self.extractor: MSSQLExtractor = MSSQLExtractor(self.tds_manager)
-        self.arrow_converter: ArrowConverter = ArrowConverter()
+        self.extractor = MSSQLExtractor(self.tds_manager)
+        self.arrow_converter = ArrowConverter()
 
     @PerfTrace.timeit
     def ingest_schema(self, db_name, sql):
         # ingest schema from source
         logger.info("Executing query: %s", sql)
-        rs_schema: list = self.extractor.read(
+        rs_schema = self.extractor.read(
             db_name,
             sql,
             self.pipeline.domain,
@@ -87,7 +87,7 @@ class Runner:
     def ingest_raw_data(self, db_name, sql):
 
         logger.info("Executing query: %s", sql)
-        rs_raw: list = self.extractor.read(
+        rs_raw = self.extractor.read(
             db_name,
             sql,
             self.pipeline.domain,

@@ -3,7 +3,6 @@
 import logging
 
 from kumeza.config.ingestor_config import IngestionConfig
-from kumeza.config.sinks.sinks_config import Sinks
 from kumeza.core.arrow import ArrowConverter
 from kumeza.query.mssql import MSSQLQueryTemplater
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
@@ -22,10 +21,10 @@ class Pipeline:
 
     def setup(self):
         # Setup helper methods
-        self.s3: S3 = S3()
+        self.s3 = S3()
         self.dynamodb = DynamoDB()
-        self.arrow_converter: ArrowConverter = ArrowConverter()
-        self.dateobj: DateObject = DateObject()
+        self.arrow_converter = ArrowConverter()
+        self.dateobj = DateObject()
 
         # Setup attributes
         self.domain = self.ingestion_config.source_system.domain
@@ -81,8 +80,8 @@ class Pipeline:
 
     def setup_schema_metadata_attributes(self, schema_sink_id, schema_metadata_sink_id):
         # Metadata section
-        self.schema_sink: Sinks = self.ingestion_config.sinks.get_sink("schema")
-        self.schema_bucket: str = self.schema_sink.get_sink_target(schema_sink_id).path
+        self.schema_sink = self.ingestion_config.sinks.get_sink("schema")
+        self.schema_bucket = self.schema_sink.get_sink_target(schema_sink_id).path
 
         # Schema metadata section
         self.schema_metadata_table = self.ingestion_config.metadata.get_sink_target(
@@ -103,10 +102,8 @@ class Pipeline:
         self, raw_data_sink_id, raw_data_metadata_sink_id
     ):
         # Metadata section
-        self.raw_data_sink: Sinks = self.ingestion_config.sinks.get_sink("raw")
-        self.raw_data_bucket: str = self.raw_data_sink.get_sink_target(
-            raw_data_sink_id
-        ).path
+        self.raw_data_sink = self.ingestion_config.sinks.get_sink("raw")
+        self.raw_data_bucket = self.raw_data_sink.get_sink_target(raw_data_sink_id).path
 
         # raw data metadata section
         self.raw_data_metadata_table = self.ingestion_config.metadata.get_sink_target(
