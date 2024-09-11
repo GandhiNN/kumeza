@@ -19,8 +19,8 @@ class InvalidDynamoDBPutItemOperation(Exception):
 
 class DynamoDB(BaseAwsUtil):
 
-    def __init__(self):
-        super().__init__(service_name="dynamodb", region_name="eu-west-1")
+    def __init__(self, region_name: str = "eu-west-1"):
+        super().__init__(service_name="dynamodb", region_name=region_name)
 
     @boto_error_handler(logger)
     def put_item(self, item: dict, table_name: str):
@@ -32,7 +32,7 @@ class DynamoDB(BaseAwsUtil):
             )
             return resp["ResponseMetadata"]["HTTPStatusCode"]
         except ClientError as e:
-            logger.error(
+            logger.info(
                 "Operation failed with code: %s",
                 e.response["Error"]["Code"],
             )
@@ -77,7 +77,7 @@ class DynamoDB(BaseAwsUtil):
             )
             return resp
         except ClientError as e:
-            logger.error(
+            logger.info(
                 "Error when getting last execution: %s",
                 {e.response["Error"]["Message"]},
             )

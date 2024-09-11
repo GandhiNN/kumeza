@@ -12,7 +12,7 @@ log = logging.getLogger(__name__)
 
 class BaseAwsUtil:
 
-    def __init__(self, service_name: str = "", region_name: str = ""):
+    def __init__(self, service_name: str = "", region_name: str = "eu-west-1"):
         self.service_name = service_name
         self.region_name = region_name
 

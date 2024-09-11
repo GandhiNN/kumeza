@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 
 
 class Glue(BaseAwsUtil):
-    def __init__(self):
-        super().__init__(service_name="glue", region_name="eu-west-1")
+    def __init__(self, region_name: str = "eu-west-1"):
+        super().__init__(service_name="glue", region_name=region_name)
 
     @boto_error_handler(logger)
     def start_glue_job(self, glue_job_name: str, args: dict):
