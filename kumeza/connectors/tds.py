@@ -13,4 +13,5 @@ class TDSManager:
 
     def get_connection_string(self) -> str:
         logger.info("Getting connection string")
+        logger.info("Connection string: %s:%s\\%s", self.hostname, self.port, self.db_instance)
         return f"{self.hostname}:{self.port}\\{self.db_instance}"
