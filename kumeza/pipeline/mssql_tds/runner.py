@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 class Runner:
 
-    def __init__(self, hostname, port, db_instance):
-        self.tds_manager = TDSManager(hostname, port, db_instance)
+    def __init__(self, hostname, port, db_instance, authentication_type):
+        self.tds_manager = TDSManager(hostname, port, db_instance, authentication_type)
         self.extractor = MSSQLExtractor(self.tds_manager)
         self.arrow_converter = ArrowConverter()
 
