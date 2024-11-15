@@ -32,7 +32,6 @@ class MSSQLExtractor(Engine):
         domain: str,
         username: str,
         password: str,
-        port: str,
     ) -> list[dict[str, Any]]:
         try:
             logger.info("Connecting to the database")
@@ -46,7 +45,7 @@ class MSSQLExtractor(Engine):
             else:
                 conn = pymssql.connect(
                     host=self.tdsmanager.get_connection_string(),
-                    port=port,
+                    port=self.tdsmanager.port,
                     user=f"{domain}\\{username}",
                     password=password
                 )
