@@ -32,15 +32,24 @@ class MSSQLExtractor(Engine):
         domain: str,
         username: str,
         password: str,
+        port: str,
     ) -> list[dict[str, Any]]:
         try:
             logger.info("Connecting to the database")
-            conn = pymssql.connect(
-                server=self.tdsmanager.get_connection_string(),  # pragma: allowlist-secret
-                user=f"{domain}\\{username}",
-                password=password,  # pragma: allowlist-secret
-                database=db_name,
-            )
+            if self.tdsmanager.auth != "windows_authentication":
+                conn = pymssql.connect(
+                    server=self.tdsmanager.get_connection_string(),  # pragma: allowlist-secret
+                    user=f"{domain}\\{username}",
+                    password=password,  # pragma: allowlist-secret
+                    database=db_name,
+                )
+            else:
+                conn = pymssql.connect(
+                    host=self.tdsmanager.get_connection_string(),
+                    port=port,
+                    user=f"{domain}\\{username}",
+                    password=password
+                )
             cursor = conn.cursor()
             cursor.execute(sqlquery)
 
