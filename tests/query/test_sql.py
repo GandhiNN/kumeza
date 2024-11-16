@@ -156,6 +156,20 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
             == expected
         )
 
+    def test_generate_stored_procedures(self):
+        expected = """EXECUTE master.dbo.CUSTOMER_ID '2024-10-01'"""
+        assert (
+            self.mssql_query_templater.get_sql_query(
+                mode="stored_procedures",
+                database_name=DATABASE_NAME,
+                database_schema=DATABASE_SCHEMA,
+                object_name=OBJECT_NAME,
+                start_time='2024-10-01',
+            )
+            == expected
+        )
+
+
     # def test_generate_partitioned_query(self):
     #     expected = [
     #         "SELECT * FROM master.dbo.CUSTOMER_ID WHERE chunk_1",

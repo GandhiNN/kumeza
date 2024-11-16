@@ -29,6 +29,13 @@ class MSSQLQueryTemplater(MSSQLQueryManager):
     def _render_custom_query(self, **render_opt):
         return render_opt["custom_query"]
 
+    def _render_stored_procedures(self, **render_opt):
+        template = pkgutil.get_data(__package__, "models/mssql/stored_procedures.sql")
+        return Template(template.decode("utf-8")).render(
+            source=f"{render_opt['database_name']}.{render_opt['database_schema']}.{render_opt['object_name']}",
+            start_time=render_opt["start_time"],
+        )
+
     def _render_standard_query(self, **render_opt):
         template = pkgutil.get_data(__package__, "models/mssql/standard.sql")
         return Template(template.decode("utf-8")).render(
@@ -67,4 +74,6 @@ class MSSQLQueryTemplater(MSSQLQueryManager):
             return self._render_custom_query(**render_opt)
         if mode == "incremental":
             return self._render_incremental_query(**render_opt)
+        if mode == "stored_procedures":
+            return self._render_stored_procedures(**render_opt)
         raise ValueError("Query logic not implemented yet!")
