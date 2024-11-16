@@ -35,6 +35,7 @@ class MSSQLExtractor(Engine):
     ) -> list[dict[str, Any]]:
         try:
             logger.info("Connecting to the database")
+            logger.info("Using authentication type: %s", self.tdsmanager.auth)
             if self.tdsmanager.auth != "windows_authentication":
                 conn = pymssql.connect(
                     server=self.tdsmanager.get_connection_string(),  # pragma: allowlist-secret
@@ -44,7 +45,7 @@ class MSSQLExtractor(Engine):
                 )
             else:
                 conn = pymssql.connect(
-                    host=self.tdsmanager.get_connection_string(),
+                    host=fr'{self.tdsmanager.get_connection_string()}', # turn f-string into raw string to handle backslash
                     port=self.tdsmanager.port,
                     user=f"{domain}\\{username}",
                     password=password
