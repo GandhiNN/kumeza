@@ -77,23 +77,26 @@ class ArrowManager:  # pragma: no cover
         table_name: str,
         ingestion_flag: str,
     ):
-        logger.info("Writing Arrow table to %s", path)
         cur_date = dateobj.get_current_timestamp(ts_format="date_filename")
         # input is a single pyarrow table object
         if isinstance(table, pa.Table):
+            obj_name = f"{table_name}-00{{i}}-{cur_date}_utc_{ingestion_flag}.parquet"
+            logger.info("Writing Arrow table to %s, as %s", path, obj_name)
             pq.write_to_dataset(
                 table,
                 root_path=path,
-                basename_template=f"{table_name}-00{{i}}-{cur_date}_utc_{ingestion_flag}.parquet",
+                basename_template=obj_name,
             )
         # input is list of pyarrow tables
         elif isinstance(table, list):  # noqa
             for idx, t in enumerate(table):
                 seqnum = f"{idx:03}"  # 000, 001, 002...
+                obj_name = f"{table_name}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet"
+                logger.info("Writing Arrow table to %s/%s", path, obj_name)
                 pq.write_to_dataset(
                     t,
                     root_path=path,
-                    basename_template=f"{table_name}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet",
+                    basename_template=obj_name,
                 )
 
     @classmethod
