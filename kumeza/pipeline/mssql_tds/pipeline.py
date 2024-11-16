@@ -47,18 +47,21 @@ class Pipeline:
                 mssql_query_templater = MSSQLQueryTemplater(
                     self.ingestion_config.source_system
                 )
+                # Schema ingestion
                 sql_statement_schema = mssql_query_templater.get_sql_query(
                     mode="schema",
                     database_name=asset_id.database_name,
                     database_schema=asset.database_schema,
                     object_name=asset.asset_name,
                 )
+                # Raw data ingestion
                 sql_statement_raw = mssql_query_templater.get_sql_query(
                     mode="standard",
                     database_name=asset_id.database_name,
                     database_schema=asset.database_schema,
                     object_name=asset.asset_name,
                 )
+                # Row count ingestion
                 sql_row_count = mssql_query_templater.get_sql_query(
                     mode="row_count",
                     database_name=asset_id.database_name,
