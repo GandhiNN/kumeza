@@ -169,7 +169,6 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
             == expected
         )
 
-
     # def test_generate_partitioned_query(self):
     #     expected = [
     #         "SELECT * FROM master.dbo.CUSTOMER_ID WHERE chunk_1",
