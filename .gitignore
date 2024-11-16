@@ -148,3 +148,6 @@ templates/eventbridge.template
 
 # Temporary text file
 note.txt
+
+# Any py file in root folder
+*.py
