@@ -152,6 +152,7 @@ note.txt
 # Any py file in root folder
 examples/
 primat.py
+app60.py
 
 # output path
 output/
