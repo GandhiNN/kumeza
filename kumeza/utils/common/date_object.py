@@ -1,4 +1,5 @@
 import datetime
+from typing import Any
 
 
 class DateObject:
@@ -59,7 +60,7 @@ class DateObject:
         date_n = datetime.datetime.strptime(ts, date_format) + datetime.timedelta(n)
         return date_n.strftime(date_format)
 
-    def get_timestamp_as_str(self, ts_format: str = "epoch") -> str:
+    def get_timestamp_as_str(self, ts_format: str = "epoch") -> Any:
         """
         Get current timestamp according to desired input format.
 
