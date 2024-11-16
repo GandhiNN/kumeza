@@ -15,7 +15,6 @@ dateobj = DateObject()
 
 
 class ArrowConverter:
-
     @classmethod
     def from_python_list(cls, result_sets: list[dict[str, Any]]) -> pa.Table:
         logger.info("Converting input to PyArrow table")
@@ -23,7 +22,6 @@ class ArrowConverter:
 
 
 class ArrowManager:  # pragma: no cover
-
     @classmethod
     def get_schema(cls, table: pa.Table, hive: bool = False) -> list[dict]:
         schema = []
@@ -81,7 +79,7 @@ class ArrowManager:  # pragma: no cover
         # input is a single pyarrow table object
         if isinstance(table, pa.Table):
             obj_name = f"{table_name}-00{{i}}-{cur_date}_utc_{ingestion_flag}.parquet"
-            logger.info("Writing Arrow table to %s, as %s", path, obj_name)
+            logger.info("Writing Arrow table to %s/%s", path, obj_name)
             pq.write_to_dataset(
                 table,
                 root_path=path,
@@ -91,7 +89,9 @@ class ArrowManager:  # pragma: no cover
         elif isinstance(table, list):  # noqa
             for idx, t in enumerate(table):
                 seqnum = f"{idx:03}"  # 000, 001, 002...
-                obj_name = f"{table_name}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet"
+                obj_name = (
+                    f"{table_name}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet"
+                )
                 logger.info("Writing Arrow table to %s/%s", path, obj_name)
                 pq.write_to_dataset(
                     t,
