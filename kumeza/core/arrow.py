@@ -16,7 +16,8 @@ dateobj = DateObject()
 
 class ArrowConverter:
 
-    def from_python_list(self, result_sets: list[dict[str, Any]]) -> pa.Table:
+    @classmethod
+    def from_python_list(cls, result_sets: list[dict[str, Any]]) -> pa.Table:
         logger.info("Converting input to PyArrow table")
         return pa.Table.from_pylist(result_sets)
 
