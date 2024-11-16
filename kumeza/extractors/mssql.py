@@ -12,7 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class MSSQLExtractor(Engine):
-
     def __init__(self, tdsmanager: TDSManager):
         super().__init__(dialect="mssql", driver="pymssql")
         self.tdsmanager = tdsmanager
@@ -53,6 +52,7 @@ class MSSQLExtractor(Engine):
                     host=host, port=port, user=user, password=password
                 )
             cursor = conn.cursor()
+            logger.info("Executing query: %s", sqlquery)
             cursor.execute(sqlquery)
 
             return_list = []
@@ -76,6 +76,11 @@ class MSSQLExtractor(Engine):
         password: str,
     ):
         engine = self.create_engine(
-            domain, username, password, host, port, db_name  # pragma: allowlist-secret
+            domain,
+            username,
+            password,
+            host,
+            port,
+            db_name,  # pragma: allowlist-secret
         )
         print(engine, sqlquery)
