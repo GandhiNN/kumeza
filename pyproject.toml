@@ -32,6 +32,7 @@ pymssql = "2.3.0"
 jinja2 = "3.1.4"
 s3fs = "2024.6.1"
 sqlalchemy = "2.0.34"
+influxdb = "^5.3.2"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
@@ -47,10 +48,12 @@ omit = [
     "kumeza/kumeza_integration/*",
     "kumeza/connectors/spark.py",
     "kumeza/connectors/tds.py",
+    "kumeza/connectors/influx.py",
     "kumeza/extractors/spark.py",
     "kumeza/utils/aws/__init__.py",
     "kumeza/integrations/rdbms/mssql/*",
     "kumeza/extractors/arrow_odbc.py",
+    "kumeza/extractors/influx.py",
     "kumeza/pipeline/*",
     "kumeza/extractors/mssql.py",
     "kumeza/core/data.py",
