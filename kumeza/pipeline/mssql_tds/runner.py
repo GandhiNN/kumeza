@@ -109,7 +109,7 @@ class Runner:
             f"""{self.pipeline.source_system_id}/{self.pipeline.source_system_physical_location}/"""
             f"""{object_name}/{self.pipeline.dateobj.get_current_timestamp(ts_format="date_only")}/"""
         )
-        ArrowManager.write_to_s3(
+        ArrowManager.write_parquet(
             result_set,
             f"s3://{self.pipeline.raw_data_bucket}/{raw_key}",
             object_name,
