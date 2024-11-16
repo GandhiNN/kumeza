@@ -43,6 +43,16 @@ class DateObjectTest(unittest.TestCase):
             == tslist
         )
 
+    def test_get_timestamp_n_days_ago(self):
+        ts = "2024-10-01"
+        print(self.dateobject.get_timestamp_n_days_ago(ts, 1))
+        assert self.dateobject.get_timestamp_n_days_ago(ts, 1) == "2024-09-30"
+
+    def test_get_timestamp_n_days_from(self):
+        ts = "2024-10-01"
+        print(self.dateobject.get_timestamp_n_days_from(ts, 1))
+        assert self.dateobject.get_timestamp_n_days_from(ts, 1) == "2024-10-02"
+
     def test_get_timestamp_as_str(self):
         # Check if epoch is producing length of 13 chars
         assert len(self.dateobject.get_timestamp_as_str(ts_format="epoch")) == 13

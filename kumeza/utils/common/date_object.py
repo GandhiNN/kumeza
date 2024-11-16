@@ -50,6 +50,16 @@ class DateObject:
         sub_int.append(end)  # inclusive of end date
         return sub_int
 
+    def get_timestamp_n_days_ago(self, ts: str, n: int) -> str:
+        date_format = "%Y-%m-%d"
+        date_n = datetime.datetime.strptime(ts, date_format) - datetime.timedelta(n)
+        return date_n.strftime(date_format)
+
+    def get_timestamp_n_days_from(self, ts: str, n: int) -> str:
+        date_format = "%Y-%m-%d"
+        date_n = datetime.datetime.strptime(ts, date_format) + datetime.timedelta(n)
+        return date_n.strftime(date_format)
+
     def get_timestamp_as_str(self, ts_format: str = "epoch") -> str:
         """
         Get current timestamp according to desired input format.
