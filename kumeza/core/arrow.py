@@ -49,7 +49,7 @@ class ArrowManager:  # pragma: no cover
     #     ingestion_flag: str,
     # ):
     #     logger.info("Writing Arrow table to %s", s3uri)
-    #     cur_date = dateobj.get_current_timestamp(ts_format="date_filename")
+    #     cur_date = dateobj.get_timestamp_as_str(ts_format="date_filename")
     #     # input is a single pyarrow table object
     #     if isinstance(table, pa.Table):
     #         pq.write_to_dataset(
@@ -75,7 +75,7 @@ class ArrowManager:  # pragma: no cover
         table_name: str,
         ingestion_flag: str,
     ):
-        cur_date = dateobj.get_current_timestamp(ts_format="date_filename")
+        cur_date = dateobj.get_timestamp_as_str(ts_format="date_filename")
         # input is a single pyarrow table object
         if isinstance(table, pa.Table):
             obj_name = f"{table_name}-00{{i}}-{cur_date}_utc_{ingestion_flag}.parquet"

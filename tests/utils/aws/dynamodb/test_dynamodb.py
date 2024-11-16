@@ -34,7 +34,6 @@ date_obj = DateObject()
 
 
 class DynamoDBTestIntegration(unittest.TestCase):
-
     @mock_aws
     def setUp(self):
         # Setup the mock connection
@@ -44,7 +43,6 @@ class DynamoDBTestIntegration(unittest.TestCase):
 
     @mock_aws
     def test_put_and_get_item(self):
-
         # Create the mock table
         self.dynamodb_client.create_table(**PARAMS)
 
@@ -92,7 +90,6 @@ class DynamoDBTestIntegration(unittest.TestCase):
 
     @mock_aws
     def test_get_last_item_from_table(self):
-
         # Create the mock table
         self.dynamodb_client.create_table(**PARAMS)
 
@@ -113,7 +110,7 @@ class DynamoDBTestIntegration(unittest.TestCase):
             "pipe-doadi-cvqa-product_family",
             PARTITION_KEY,
             SORT_KEY,
-            date_obj.get_current_timestamp(ts_format="epoch"),
+            date_obj.get_timestamp_as_str(ts_format="epoch"),
         )["Items"][0]
 
         expected: dict = {
@@ -140,12 +137,11 @@ class DynamoDBTestIntegration(unittest.TestCase):
                 "unknown_item",
                 "unknown_partition_key",
                 "unknown_sort_key",
-                date_obj.get_current_timestamp(ts_format="epoch"),
+                date_obj.get_timestamp_as_str(ts_format="epoch"),
             )
 
     @mock_aws
     def test_dynamo_to_python_json(self):
-
         # Run test on the function
         dynamodb_client = DynamoDB()
 

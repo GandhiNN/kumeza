@@ -5,7 +5,6 @@ from kumeza.utils.common.date_object import DateObject
 
 
 class DateObjectTest(unittest.TestCase):
-
     def setUp(self):
         self.dateobject = DateObject()
 
@@ -44,36 +43,36 @@ class DateObjectTest(unittest.TestCase):
             == tslist
         )
 
-    def test_get_current_timestamp(self):
+    def test_get_timestamp_as_str(self):
         # Check if epoch is producing length of 13 chars
-        assert len(self.dateobject.get_current_timestamp(ts_format="epoch")) == 13
+        assert len(self.dateobject.get_timestamp_as_str(ts_format="epoch")) == 13
 
         # Check if date_only format adheres to "%Y-%m-%d" format
         assert datetime.datetime.strptime(
-            self.dateobject.get_current_timestamp(ts_format="date_only"), "%Y-%m-%d"
+            self.dateobject.get_timestamp_as_str(ts_format="date_only"), "%Y-%m-%d"
         )
-        assert len(self.dateobject.get_current_timestamp(ts_format="date_only")) == 10
+        assert len(self.dateobject.get_timestamp_as_str(ts_format="date_only")) == 10
 
         # Check if date_with_clock format adheres to "%Y-%m-%d-%H-%M-%S-%f" format
         assert datetime.datetime.strptime(
-            self.dateobject.get_current_timestamp(ts_format="date_filename"),
+            self.dateobject.get_timestamp_as_str(ts_format="date_filename"),
             "%Y-%m-%d-%H-%M-%S-%f",
         )
         assert (
-            len(self.dateobject.get_current_timestamp(ts_format="date_filename")) == 23
+            len(self.dateobject.get_timestamp_as_str(ts_format="date_filename")) == 23
         )
 
         # Check if timenow_string format adheres to "%Y-%m-%d %H:%M:%S" format
         assert datetime.datetime.strptime(
-            self.dateobject.get_current_timestamp(ts_format="timenow_string"),
+            self.dateobject.get_timestamp_as_str(ts_format="timenow_string"),
             "%Y-%m-%d %H:%M:%S",
         )
         assert (
-            len(self.dateobject.get_current_timestamp(ts_format="timenow_string")) == 19
+            len(self.dateobject.get_timestamp_as_str(ts_format="timenow_string")) == 19
         )
 
         # Test if raw datetime object is returned
         assert isinstance(
-            self.dateobject.get_current_timestamp(ts_format="datetime_object"),
+            self.dateobject.get_timestamp_as_str(ts_format="datetime_object"),
             datetime.datetime,
         )

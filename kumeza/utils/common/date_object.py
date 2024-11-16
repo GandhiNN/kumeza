@@ -50,7 +50,7 @@ class DateObject:
         sub_int.append(end)  # inclusive of end date
         return sub_int
 
-    def get_current_timestamp(self, ts_format: str = "epoch") -> Any:
+    def get_timestamp_as_str(self, ts_format: str = "epoch") -> str:
         """
         Get current timestamp according to desired input format.
 

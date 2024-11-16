@@ -15,7 +15,6 @@ logger = logging.getLogger(__name__)
 
 
 class Runner:
-
     def __init__(self, hostname, port, db_instance, authentication_type):
         self.tds_manager = TDSManager(hostname, port, db_instance, authentication_type)
         self.extractor = MSSQLExtractor(self.tds_manager)
@@ -36,10 +35,9 @@ class Runner:
 
     @PerfTrace.timeit
     def write_schema_to_s3(self, schema, object_name):
-
         schema_key = (
             f"""{self.pipeline.source_system_id}/{self.pipeline.source_system_physical_location}/"""
-            f"""{object_name}/{object_name}-{self.pipeline.dateobj.get_current_timestamp(ts_format="date_only")}.json"""
+            f"""{object_name}/{object_name}-{self.pipeline.dateobj.get_timestamp_as_str(ts_format="date_only")}.json"""
         )
         self.pipeline.s3.write_to_bucket(
             content=schema, bucket_name=self.pipeline.schema_bucket, key_name=schema_key
@@ -53,7 +51,7 @@ class Runner:
             f"""{self.pipeline.source_system_id}-"""
             f"""{self.pipeline.source_system_physical_location}-{object_name}"""
         )
-        execution_time_epoch = self.pipeline.dateobj.get_current_timestamp(
+        execution_time_epoch = self.pipeline.dateobj.get_timestamp_as_str(
             ts_format="epoch"
         )
         execution_time_date = self.pipeline.dateobj.get_human_readable_timestamp(
@@ -85,7 +83,6 @@ class Runner:
 
     @PerfTrace.timeit
     def ingest_raw_data(self, db_name, sql):
-
         logger.info("Executing query: %s", sql)
         rs_raw = self.extractor.read(
             db_name,
@@ -103,11 +100,10 @@ class Runner:
 
     @PerfTrace.timeit
     def write_raw_data_to_s3(self, result_set, object_name, ingestion_flag):
-
         # Write raw to raw bucket
         raw_key = (
             f"""{self.pipeline.source_system_id}/{self.pipeline.source_system_physical_location}/"""
-            f"""{object_name}/{self.pipeline.dateobj.get_current_timestamp(ts_format="date_only")}/"""
+            f"""{object_name}/{self.pipeline.dateobj.get_timestamp_as_str(ts_format="date_only")}/"""
         )
         ArrowManager.write_parquet(
             result_set,
@@ -122,7 +118,7 @@ class Runner:
             f"""{self.pipeline.source_system_id}-"""
             f"""{self.pipeline.source_system_physical_location}-{object_name}"""
         )
-        execution_time_epoch = self.pipeline.dateobj.get_current_timestamp(
+        execution_time_epoch = self.pipeline.dateobj.get_timestamp_as_str(
             ts_format="epoch"
         )
         execution_time_date = self.pipeline.dateobj.get_human_readable_timestamp(
@@ -146,7 +142,6 @@ class Runner:
     def ingest_schema_sequential_wrapper(
         self, ingestion_objects, schema_sink_id, schema_metadata_sink_id
     ) -> list:
-
         # Setup metadata attributes
         self.pipeline.setup_schema_metadata_attributes(
             schema_sink_id, schema_metadata_sink_id
@@ -280,7 +275,7 @@ class Runner:
                     object_name=object_name,
                     incremental_column=incremental_col,
                     start_time=last_ingestion_date,
-                    end_time=self.pipeline.dateobj.get_current_timestamp(
+                    end_time=self.pipeline.dateobj.get_timestamp_as_str(
                         ts_format="timenow_string"
                     ),
                 )
