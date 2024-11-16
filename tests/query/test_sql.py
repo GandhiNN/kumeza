@@ -164,7 +164,7 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
                 database_name=DATABASE_NAME,
                 database_schema=DATABASE_SCHEMA,
                 object_name=OBJECT_NAME,
-                start_time='2024-10-01',
+                start_time="2024-10-01",
             )
             == expected
         )

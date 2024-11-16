@@ -45,15 +45,12 @@ class MSSQLExtractor(Engine):
                 )
             else:
                 # turn f-string into raw string to handle backslash / special chars
-                host = fr'{self.tdsmanager.get_connection_string()}'
-                port = fr'{self.tdsmanager.port}'
-                user = fr'{domain}\{username}'
-                password = fr'{password}'
+                host = rf"{self.tdsmanager.get_connection_string()}"
+                port = rf"{self.tdsmanager.port}"
+                user = rf"{domain}\{username}"
+                password = rf"{password}"
                 conn = pymssql.connect(
-                    host=host,
-                    port=port,
-                    user=user,
-                    password=password
+                    host=host, port=port, user=user, password=password
                 )
             cursor = conn.cursor()
             cursor.execute(sqlquery)

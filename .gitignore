@@ -150,5 +150,4 @@ templates/eventbridge.template
 note.txt
 
 # Any py file in root folder
-*.py
-examples/*
+examples/
