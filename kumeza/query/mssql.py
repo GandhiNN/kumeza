@@ -6,7 +6,6 @@ from kumeza.config.source_system.source_system_config import SourceSystemConfig
 
 
 class MSSQLQueryManager:
-
     def __init__(self, source_system_config: SourceSystemConfig):
         if source_system_config.type != "rdbms":
             raise TypeError("MS-SQL Query Manager only accepts RDBMS Database Type!")
@@ -19,7 +18,6 @@ class MSSQLQueryManager:
 
 
 class MSSQLQueryTemplater(MSSQLQueryManager):
-
     def __init__(
         self,
         source_system_config: SourceSystemConfig,
@@ -63,7 +61,7 @@ class MSSQLQueryTemplater(MSSQLQueryManager):
             source=f"{render_opt['database_name']}.{render_opt['database_schema']}.{render_opt['object_name']}"
         )
 
-    def get_sql_query(self, mode: str = "standard", **render_opt) -> str:
+    def get_query(self, mode: str = "standard", **render_opt) -> str:
         if mode == "schema":
             return self._render_schema_query(**render_opt)
         if mode == "standard":
