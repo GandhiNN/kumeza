@@ -77,27 +77,23 @@ INCREMENTAL_COLUMN = data_assets.assets[0].incremental_column
 
 
 class MSSQLQueryManagerTest(unittest.TestCase):
-
-    def test_fail_to_init_mssql_query_manager_due_to_faulty_type(self):
+    def test_fail_to_init_query_manager_due_to_faulty_type(self):
         with pytest.raises(TypeError):
-            self.mssql_query_manager_faulty = MSSQLQueryManager(src_sys_cfg_faulty_type)
+            self.query_manager_faulty = MSSQLQueryManager(src_sys_cfg_faulty_type)
 
-    def test_fail_to_init_mssql_query_manager_due_to_faulty_db_engine(self):
+    def test_fail_to_init_query_manager_due_to_faulty_db_engine(self):
         with pytest.raises(ValueError):
-            self.mssql_query_manager_faulty = MSSQLQueryManager(
-                src_sys_cfg_faulty_db_engine
-            )
+            self.query_manager_faulty = MSSQLQueryManager(src_sys_cfg_faulty_db_engine)
 
 
 class MSSQLQueryTemplaterTest(unittest.TestCase):
-
     def setUp(self):
-        self.mssql_query_templater = MSSQLQueryTemplater(src_sys_cfg)
+        self.query_templater = MSSQLQueryTemplater(src_sys_cfg)
 
     def test_generate_schema_query(self):
         expected = "SELECT TOP 1000 * FROM master.dbo.CUSTOMER_ID"
         assert (
-            self.mssql_query_templater.get_sql_query(
+            self.query_templater.get_query(
                 mode="schema",
                 database_name=DATABASE_NAME,
                 database_schema=DATABASE_SCHEMA,
@@ -111,16 +107,14 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
             "SELECT col1, col2 FROM master.dbo.CUSTOMER_ID where col3 = 'testVal'"
         )
         assert (
-            self.mssql_query_templater.get_sql_query(
-                mode="custom", custom_query=CUSTOM_QUERY
-            )
+            self.query_templater.get_query(mode="custom", custom_query=CUSTOM_QUERY)
             == expected
         )
 
     def test_generate_standard_query(self):
         expected = "SELECT * FROM master.dbo.CUSTOMER_ID"
         assert (
-            self.mssql_query_templater.get_sql_query(
+            self.query_templater.get_query(
                 mode="standard",
                 database_name=DATABASE_NAME,
                 database_schema=DATABASE_SCHEMA,
@@ -132,7 +126,7 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
     def test_generate_incremental_query(self):
         expected = """SELECT * FROM master.dbo.CUSTOMER_ID WHERE updated_at >= '2024-09-07 10:00:00' AND updated_at <= '2024-09-07 12:00:00'"""
         assert (
-            self.mssql_query_templater.get_sql_query(
+            self.query_templater.get_query(
                 mode="incremental",
                 database_name=DATABASE_NAME,
                 database_schema=DATABASE_SCHEMA,
@@ -147,7 +141,7 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
     def test_generate_row_count_query(self):
         expected = """SELECT COUNT(*) as 'rowCount' FROM master.dbo.CUSTOMER_ID"""
         assert (
-            self.mssql_query_templater.get_sql_query(
+            self.query_templater.get_query(
                 mode="row_count",
                 database_name=DATABASE_NAME,
                 database_schema=DATABASE_SCHEMA,
@@ -159,7 +153,7 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
     def test_generate_stored_procedures(self):
         expected = """EXECUTE master.dbo.CUSTOMER_ID '2024-10-01'"""
         assert (
-            self.mssql_query_templater.get_sql_query(
+            self.query_templater.get_query(
                 mode="stored_procedures",
                 database_name=DATABASE_NAME,
                 database_schema=DATABASE_SCHEMA,
@@ -185,4 +179,4 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
 
     def test_fail_to_generate_custom_query_due_to_faulty_mode(self):
         with pytest.raises(ValueError):
-            self.mssql_query_templater.get_sql_query(mode="aggregation")
+            self.query_templater.get_query(mode="aggregation")
