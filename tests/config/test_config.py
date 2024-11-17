@@ -9,6 +9,7 @@ from kumeza.config.data_assets.data_assets_config import (
 )
 from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.config.integration.integration_config import IntegrationConfig
+from kumeza.config.integration.rest import RestConfig
 from kumeza.config.loader import ConfigLoader
 from kumeza.config.metadata.metadata_config import Metadata, MetadataConfig
 from kumeza.config.runtime_environment.runtime_environment_config import (
@@ -47,6 +48,10 @@ class ConfigInstance:
         )
         self.integration = IntegrationConfig(
             engine="spark", driver="jdbc", fetchsize=1000, chunksize=1000000
+        )
+        self.rest = RestConfig(
+            header={"Accept": "application/csv", "Content-Type": "multipart/form-data"},
+            params={"chunked": True, "chunk_size": 2000},
         )
         self.credentials = CredentialsConfig(
             username="some_username",
@@ -170,6 +175,7 @@ class ConfigInstance:
             self.runtime_environment,
             self.source_system,
             self.integration,
+            self.rest,
             self.credentials,
             self.metadata,
             self.sinks,

@@ -5,6 +5,7 @@ from kumeza.config import BaseConfig
 from kumeza.config.credentials.credentials_config import CredentialsConfig
 from kumeza.config.data_assets.data_assets_config import DataAssetsConfig
 from kumeza.config.integration.integration_config import IntegrationConfig
+from kumeza.config.integration.rest import RestConfig
 from kumeza.config.metadata.metadata_config import MetadataConfig
 from kumeza.config.runtime_environment.runtime_environment_config import (
     RuntimeEnvironmentConfig,
@@ -18,6 +19,7 @@ class IngestionConfig(BaseConfig):
     runtime_environment: RuntimeEnvironmentConfig
     source_system: SourceSystemConfig
     integration: IntegrationConfig
+    rest: RestConfig
     credentials: CredentialsConfig
     metadata: MetadataConfig
     sinks: SinksConfig
@@ -31,6 +33,7 @@ class IngestionConfig(BaseConfig):
             ),
             source_system=SourceSystemConfig.marshal(obj["source_system"]),
             integration=IntegrationConfig.marshal(obj["integration"]),
+            rest=RestConfig.marshal(obj["rest"]),
             credentials=CredentialsConfig.marshal(obj["credentials"]),
             metadata=MetadataConfig.marshal(obj["metadata"]),
             sinks=SinksConfig.marshal(obj["sinks"]),
