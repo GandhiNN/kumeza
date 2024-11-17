@@ -55,7 +55,7 @@ data_assets = AssetsId(
         Assets(
             asset_name="HVAC",
             asset_type="table",
-            database_schema=None,
+            database_schema="",
             query_type="custom",
             incremental=True,
             incremental_column="Timestamp",
