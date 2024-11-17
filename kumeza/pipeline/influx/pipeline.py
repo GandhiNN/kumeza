@@ -21,6 +21,7 @@ class Pipeline:
         self.credentials = credentials
 
     def setup(self):
+        logger.info("Setting up Pipeline object")
         # Setup helper methods
         self.s3 = S3()
         self.dynamodb = DynamoDB()
@@ -47,6 +48,9 @@ class Pipeline:
         self.password = self.credentials["password"]
 
     def setup_query_engine(self):
+        logger.info(
+            "Setting up query engine for source system: %s", self.source_system_id
+        )
         # Setup query templater
         self.query_templater = InfluxQLQueryTemplater(
             self.ingestion_config.source_system
