@@ -37,14 +37,14 @@ class Pipeline:
         self.authentication_type = (
             self.ingestion_config.source_system.authentication_type
         )
-        self.username = self.credentials["username"]
-        self.password = self.credentials["password"]
         self.source_system_id = self.ingestion_config.source_system.id
         self.source_system_physical_location = (
             self.ingestion_config.source_system.physical_location
         )
         self.metadata = self.ingestion_config.metadata
         self.data_assets = self.ingestion_config.data_assets
+        self.username = self.credentials["username"]
+        self.password = self.credentials["password"]
 
     def setup_query_engine(self):
         # Setup query templater
