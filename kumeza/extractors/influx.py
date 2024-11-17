@@ -39,7 +39,7 @@ class InfluxExtractor:
         verify_ssl_flag = self.influx_mgr.verify_ssl
 
         self.influx_client = DataFrameClient(
-            host=self.influx_mgr.url,
+            host=self.influx_mgr.hostname,
             port=self.influx_mgr.port,
             username=username,
             password=password,
