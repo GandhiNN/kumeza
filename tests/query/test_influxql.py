@@ -101,9 +101,7 @@ class InfluxQLQueryTemplaterTest(unittest.TestCase):
         self.query_templater = InfluxQLQueryTemplater(src_sys_cfg)
 
     def test_generate_custom_query(self):
-        expected = (
-            "SELECT col1, col2 FROM master.dbo.CUSTOMER_ID where col3 = 'testVal'"
-        )
+        expected = "select id as MeterName, time as Timestamp, value as Value from Gemt.136-59-L4-CA-CPA_13.PVValue.59-L4-CA-CPA_13 where topic =~ /GEMT/ and time > now() - 15m order by time desc"
         assert (
             self.query_templater.get_query(mode="custom", custom_query=CUSTOM_QUERY)
             == expected
