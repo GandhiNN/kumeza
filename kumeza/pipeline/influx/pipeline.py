@@ -5,7 +5,7 @@ import logging
 from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.connectors.influx import InfluxManager
 from kumeza.core.arrow import ArrowConverter, ArrowManager
-from kumeza.extractors.influx import InfluxExtractor
+from kumeza.extractors.influx import APIExtractor, RESTExtractor
 from kumeza.query.influxql import InfluxQLQueryTemplater
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
 from kumeza.utils.aws.s3.s3 import S3
@@ -16,9 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 class Pipeline:
-    def __init__(self, ingestion_config: IngestionConfig, credentials: dict):
+    def __init__(
+        self, ingestion_config: IngestionConfig, credentials: dict, extractor_type: str
+    ):
         self.ingestion_config = ingestion_config
         self.credentials = credentials
+        self.extractor_type = extractor_type
 
     def setup(self):
         logger.info("Setting up Pipeline object")
@@ -62,7 +65,11 @@ class Pipeline:
             db_instance=self.db_instance,
             authentication_type=self.authentication_type,
         )
-        self.extractor = InfluxExtractor(self.influx_manager)
+        self.extractor = (
+            APIExtractor(self.influx_manager)
+            if self.extractor_type == "api"
+            else RESTExtractor(self.influx_manager)
+        )
 
     def setup_ingestion_objects(self) -> list:
         ingestion_objects = []
