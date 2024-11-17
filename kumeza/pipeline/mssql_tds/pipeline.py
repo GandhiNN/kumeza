@@ -3,7 +3,9 @@
 import logging
 
 from kumeza.config.ingestor_config import IngestionConfig
-from kumeza.core.arrow import ArrowConverter
+from kumeza.connectors.tds import TDSManager
+from kumeza.core.arrow import ArrowConverter, ArrowManager
+from kumeza.extractors.mssql import MSSQLExtractor
 from kumeza.query.mssql import MSSQLQueryTemplater
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
 from kumeza.utils.aws.s3.s3 import S3
@@ -23,13 +25,18 @@ class Pipeline:
         self.s3 = S3()
         self.dynamodb = DynamoDB()
         self.arrow_converter = ArrowConverter()
+        self.arrow_manager = ArrowManager
         self.dateobj = DateObject()
 
         # Setup attributes
+        self.env = self.ingestion_config.runtime_environment.env
         self.domain = self.ingestion_config.source_system.domain
+        self.hostname = self.ingestion_config.source_system.hostname
         self.port = self.ingestion_config.source_system.port
         self.db_instance = self.ingestion_config.source_system.database_instance
-        self.hostname = self.ingestion_config.source_system.hostname
+        self.authentication_type = (
+            self.ingestion_config.source_system.authentication_type
+        )
         self.username = self.credentials["username"]
         self.password = self.credentials["password"]
         self.source_system_id = self.ingestion_config.source_system.id
@@ -37,31 +44,42 @@ class Pipeline:
             self.ingestion_config.source_system.physical_location
         )
         self.metadata = self.ingestion_config.metadata
+        self.data_assets = self.ingestion_config.data_assets
+
+    def setup_query_engine(self):
+        # Setup query templater
+        self.mssql_query_templater = MSSQLQueryTemplater(
+            self.ingestion_config.source_system
+        )
+        # Initiate connector and extractor object
+        self.tds_manager = TDSManager(
+            hostname=self.hostname,
+            port=self.port,
+            db_instance=self.db_instance,
+            authentication_type=self.authentication_type,
+        )
+        self.extractor = MSSQLExtractor(self.tds_manager)
 
     def setup_ingestion_objects(self) -> list:
-        self.data_assets = self.ingestion_config.data_assets
         ingestion_objects = []
         for asset_id in self.data_assets.id:
             for asset in asset_id.assets:
-                mssql_query_templater = MSSQLQueryTemplater(
-                    self.ingestion_config.source_system
-                )
                 # Schema ingestion
-                sql_statement_schema = mssql_query_templater.get_sql_query(
+                sql_statement_schema = self.mssql_query_templater.get_sql_query(
                     mode="schema",
                     database_name=asset_id.database_name,
                     database_schema=asset.database_schema,
                     object_name=asset.asset_name,
                 )
                 # Raw data ingestion
-                sql_statement_raw = mssql_query_templater.get_sql_query(
+                sql_statement_raw = self.mssql_query_templater.get_sql_query(
                     mode="standard",
                     database_name=asset_id.database_name,
                     database_schema=asset.database_schema,
                     object_name=asset.asset_name,
                 )
                 # Row count ingestion
-                sql_row_count = mssql_query_templater.get_sql_query(
+                sql_row_count = self.mssql_query_templater.get_sql_query(
                     mode="row_count",
                     database_name=asset_id.database_name,
                     database_schema=asset.database_schema,

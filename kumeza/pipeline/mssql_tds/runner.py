@@ -2,10 +2,8 @@
 
 import logging
 
-from kumeza.connectors.tds import TDSManager
-from kumeza.core.arrow import ArrowConverter, ArrowManager
+from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.core.data import get_schema_hash
-from kumeza.extractors.mssql import MSSQLExtractor
 from kumeza.pipeline.mssql_tds.pipeline import Pipeline
 from kumeza.query.mssql import MSSQLQueryTemplater
 from kumeza.utils.common.perftrace import PerfTrace
@@ -14,11 +12,10 @@ from kumeza.utils.common.perftrace import PerfTrace
 logger = logging.getLogger(__name__)
 
 
-class Runner:
-    def __init__(self, hostname, port, db_instance, authentication_type):
-        self.tds_manager = TDSManager(hostname, port, db_instance, authentication_type)
-        self.extractor = MSSQLExtractor(self.tds_manager)
-        self.arrow_converter = ArrowConverter()
+class Runner(Pipeline):
+    def __init__(self, ingestion_config: IngestionConfig, credentials: dict):
+        if hasattr(Pipeline, "__init__"):
+            super().__init__(ingestion_config, credentials)
 
     @PerfTrace.timeit
     def ingest_schema(self, db_name, sql):
@@ -105,7 +102,7 @@ class Runner:
             f"""{self.pipeline.source_system_id}/{self.pipeline.source_system_physical_location}/"""
             f"""{object_name}/{self.pipeline.dateobj.get_timestamp_as_str(ts_format="date_only")}/"""
         )
-        ArrowManager.write_parquet(
+        self.arrow_manager.write_parquet(
             result_set,
             f"s3://{self.pipeline.raw_data_bucket}/{raw_key}",
             object_name,
@@ -163,7 +160,7 @@ class Runner:
             if rc > 0:
                 # Get schema of the table
                 # Convert Arrow schema to Hive
-                schema: list[dict] = ArrowManager.get_schema(rs, hive=True)
+                schema: list[dict] = self.arrow_manager.get_schema(rs, hive=True)
 
                 # Get schema hash
                 current_schema_hash: str = get_schema_hash(schema)
