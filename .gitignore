@@ -153,6 +153,7 @@ note.txt
 examples/
 primat.py
 app60.py
+influx.py
 
 # output path
 output/
