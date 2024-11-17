@@ -8,18 +8,18 @@
     },
     "source_system": {
         "id": "custdb",
-        "type": "rdbms",
-        "database_engine": "mssql",
+        "type": "timeseries",
+        "database_engine": "influx",
         "database_instance": "dev",
         "authentication_type": "ntlm",
         "hostname": "custdb.mssql.example",
         "domain": "example.com",
-        "port": 1433,
+        "port": 443,
         "physical_location": "jkt"
     },
     "integration": {
-        "engine": "spark",
-        "driver": "jdbc",
+        "engine": "rest",
+        "driver": null,
         "fetchsize": 1000,
         "chunksize": 1000000
     },
