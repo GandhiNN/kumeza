@@ -50,6 +50,7 @@ class ConfigInstance:
             engine="spark", driver="jdbc", fetchsize=1000, chunksize=1000000
         )
         self.rest = RestConfig(
+            base_url="http://example.com",
             header={"Accept": "application/csv", "Content-Type": "multipart/form-data"},
             params={"chunked": True, "chunk_size": 2000},
         )

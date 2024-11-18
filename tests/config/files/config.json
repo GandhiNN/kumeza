@@ -24,6 +24,7 @@
         "chunksize": 1000000
     },
     "rest": {
+        "base_url": "http://example.com",
         "header": {"Accept": "application/csv", "Content-Type": "multipart/form-data"},
         "params": {"chunked": true, "chunk_size": 2000}
     },

@@ -7,8 +7,8 @@ from kumeza.config.loader import ConfigLoader
 
 # Config files to be referenced
 ABS_PATH = os.path.dirname(__file__)
-JSON_CONFIG = os.path.join(ABS_PATH, "..", "files", "config_rest.json")
-YAML_CONFIG = os.path.join(ABS_PATH, "..", "files", "config_rest.yaml")
+JSON_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.json")
+YAML_CONFIG = os.path.join(ABS_PATH, "..", "files", "config.yaml")
 
 
 class SetUp:
