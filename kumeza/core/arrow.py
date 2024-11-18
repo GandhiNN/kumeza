@@ -2,6 +2,7 @@ import logging
 from typing import Any, Union
 
 import pyarrow as pa
+import pyarrow.csv
 import pyarrow.parquet as pq
 import s3fs
 
@@ -19,6 +20,11 @@ class ArrowConverter:
     def from_python_list(cls, result_sets: list[dict[str, Any]]) -> pa.Table:
         logger.info("Converting input to PyArrow table")
         return pa.Table.from_pylist(result_sets)
+
+    @classmethod
+    def from_csv(cls, f: str) -> pa.Table:
+        logger.info("Converting CSV input to PyArrow table")
+        return pyarrow.csv.read_csv(f)
 
 
 class ArrowManager:  # pragma: no cover

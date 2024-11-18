@@ -67,6 +67,7 @@ class RESTExtractor:
         header: dict,
         params: dict,
         verbose: bool = False,
+        stream: bool = True,
     ) -> requests.Response:
         """Sends a GET request"""
         if verbose:
@@ -75,11 +76,9 @@ class RESTExtractor:
                 headers=header,
                 params=params,
                 verify=False,
+                stream=stream,
                 hooks={"response": print_roundtrip},
             )
         return self.sess.get(
-            url=base_url,
-            headers=header,
-            params=params,
-            verify=False,
+            url=base_url, headers=header, params=params, verify=False, stream=stream
         )
