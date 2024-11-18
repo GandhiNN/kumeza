@@ -5,7 +5,7 @@ import logging
 from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.connectors.influx import InfluxManager
 from kumeza.core.arrow import ArrowConverter, ArrowManager
-from kumeza.extractors.influx import APIExtractor, RESTExtractor
+from kumeza.extractors.influx import RESTExtractor
 from kumeza.query.influxql import InfluxQLQueryTemplater
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
 from kumeza.utils.aws.s3.s3 import S3
@@ -16,12 +16,9 @@ logger = logging.getLogger(__name__)
 
 
 class Pipeline:
-    def __init__(
-        self, ingestion_config: IngestionConfig, credentials: dict, extractor_type: str
-    ):
+    def __init__(self, ingestion_config: IngestionConfig, credentials: dict):
         self.ingestion_config = ingestion_config
         self.credentials = credentials
-        self.extractor_type = extractor_type
 
     def setup(self):
         logger.info("Setting up Pipeline object")
@@ -45,6 +42,9 @@ class Pipeline:
         self.source_system_physical_location = (
             self.ingestion_config.source_system.physical_location
         )
+        self.base_url = self.ingestion_config.rest.base_url
+        self.header = self.ingestion_config.rest.header
+        self.params = self.ingestion_config.rest.params
         self.metadata = self.ingestion_config.metadata
         self.data_assets = self.ingestion_config.data_assets
         self.username = self.credentials["username"]
@@ -65,11 +65,7 @@ class Pipeline:
             db_instance=self.db_instance,
             authentication_type=self.authentication_type,
         )
-        self.extractor = (
-            APIExtractor(self.influx_manager)
-            if self.extractor_type == "api"
-            else RESTExtractor(self.influx_manager)
-        )
+        self.extractor = RESTExtractor(self.influx_manager)
 
     def setup_ingestion_objects(self) -> list:
         ingestion_objects = []
