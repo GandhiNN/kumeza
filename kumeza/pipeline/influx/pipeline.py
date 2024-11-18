@@ -66,6 +66,7 @@ class Pipeline:
             authentication_type=self.authentication_type,
         )
         self.extractor = RESTExtractor(self.influx_manager)
+        self.extractor.create_session(self.username, self.password)
 
     def setup_ingestion_objects(self) -> list:
         ingestion_objects = []
