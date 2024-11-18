@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 disable_warnings(InsecureRequestWarning)
 
 
-def print_roundtrip(response):
+def print_roundtrip(response, *args, **kwargs):
     def format_headers(d: dict):
         return "\n".join(f"{k}: {v}" for k, v in d.items())
 
@@ -66,12 +66,20 @@ class RESTExtractor:
         base_url: str,
         header: dict,
         params: dict,
+        verbose: bool = False,
     ) -> requests.Response:
         """Sends a GET request"""
+        if verbose:
+            return self.sess.get(
+                url=base_url,
+                headers=header,
+                params=params,
+                verify=False,
+                hooks={"response": print_roundtrip},
+            )
         return self.sess.get(
             url=base_url,
             headers=header,
             params=params,
             verify=False,
-            hooks={"response": print_roundtrip},
         )
