@@ -65,21 +65,21 @@ class Pipeline:
         for asset_id in self.data_assets.id:
             for asset in asset_id.assets:
                 # Schema ingestion
-                sql_statement_schema = self.mssql_query_templater.get_sql_query(
+                sql_statement_schema = self.mssql_query_templater.get_query(
                     mode="schema",
                     database_name=asset_id.database_name,
                     database_schema=asset.database_schema,
                     object_name=asset.asset_name,
                 )
                 # Raw data ingestion
-                sql_statement_raw = self.mssql_query_templater.get_sql_query(
+                sql_statement_raw = self.mssql_query_templater.get_query(
                     mode="standard",
                     database_name=asset_id.database_name,
                     database_schema=asset.database_schema,
                     object_name=asset.asset_name,
                 )
                 # Row count ingestion
-                sql_row_count = self.mssql_query_templater.get_sql_query(
+                sql_row_count = self.mssql_query_templater.get_query(
                     mode="row_count",
                     database_name=asset_id.database_name,
                     database_schema=asset.database_schema,
