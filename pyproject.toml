@@ -57,7 +57,7 @@ omit = [
     "kumeza/extractors/influx.py",
     "kumeza/pipeline/*",
     "kumeza/extractors/mssql.py",
-    "kumeza/core/data.py",
+    "kumeza/core/transformer.py",
     "kumeza/core/sqlalchemy.py",
     "kumeza/integrations/deltalake/delta.py",
 ]
