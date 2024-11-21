@@ -6,7 +6,7 @@ import pyarrow.csv
 import pyarrow.parquet as pq
 import s3fs
 
-from kumeza.core.data import ArrowToHiveMapping
+from kumeza.core.transformer import ArrowToHiveMapping
 from kumeza.utils.common.date_object import DateObject
 
 
@@ -45,33 +45,6 @@ class ArrowManager:  # pragma: no cover
             }
             schema.append(s)
         return schema
-
-    # @classmethod
-    # def write_to_s3(
-    #     cls,
-    #     table: Union[pa.Table, list[pa.Table]],
-    #     s3uri: str,
-    #     table_name: str,
-    #     ingestion_flag: str,
-    # ):
-    #     logger.info("Writing Arrow table to %s", s3uri)
-    #     cur_date = dateobj.get_timestamp_as_str(ts_format="date_filename")
-    #     # input is a single pyarrow table object
-    #     if isinstance(table, pa.Table):
-    #         pq.write_to_dataset(
-    #             table,
-    #             root_path=s3uri,
-    #             basename_template=f"{table_name}-00{{i}}-{cur_date}_utc_{ingestion_flag}.parquet",
-    #         )
-    #     # input is list of pyarrow tables
-    #     elif isinstance(table, list):  # noqa
-    #         for idx, t in enumerate(table):
-    #             seqnum = f"{idx:03}"  # 000, 001, 002...
-    #             pq.write_to_dataset(
-    #                 t,
-    #                 root_path=s3uri,
-    #                 basename_template=f"{table_name}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet",
-    #             )
 
     @classmethod
     def write_parquet(
