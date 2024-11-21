@@ -1,3 +1,4 @@
+import datetime
 import logging
 from typing import Any, Union
 
@@ -89,7 +90,7 @@ class ArrowManager:  # pragma: no cover
         cur_date = dateobj.get_timestamp_as_str(ts_format="date_filename")
         # input is a single pyarrow table object
         if isinstance(table, pa.Table):
-            obj_name = f"{table_name}-00{{i}}-{cur_date}_utc_{ingestion_flag}.csv"
+            obj_name = f"{table_name}-000-{cur_date}_utc_{ingestion_flag}.csv"
             output_path = f"{path}/{obj_name}"
             logger.info("Writing Arrow table to %s", output_path)
             csv.write_csv(table, output_file=output_path)
@@ -109,3 +110,13 @@ class ArrowManager:  # pragma: no cover
         logger.info("Reading parquet file into PyArrow table")
         fs = s3fs.S3FileSystem(anon=False, use_ssl=True)
         return pq.ParquetDataset(s3uri, filesystem=fs)
+
+    @classmethod
+    def convert_int64_to_timestamp(cls, col: pa.Table.column) -> pa.Array:
+        """Convert to datetime object with second precision (floored, not rounded)"""
+        ts_list = col.to_pylist()
+        ts = [
+            datetime.datetime.fromtimestamp(x // 1e9).astimezone(datetime.timezone.utc)
+            for x in ts_list
+        ]
+        return pa.array(ts)
