@@ -52,13 +52,13 @@ class ArrowManager:  # pragma: no cover
         cls,
         table: Union[pa.Table, list[pa.Table]],
         path: str,  # path in local or can be S3 URI
-        table_name: str,
+        prefix: str,
         ingestion_flag: str,
     ):
         cur_date = dateobj.get_timestamp_as_str(ts_format="date_filename")
         # input is a single pyarrow table object
         if isinstance(table, pa.Table):
-            obj_name = f"{table_name}-00{{i}}-{cur_date}_utc_{ingestion_flag}.parquet"
+            obj_name = f"{prefix}-000-{cur_date}_utc_{ingestion_flag}.parquet"
             logger.info("Writing Arrow table to %s/%s", path, obj_name)
             pq.write_to_dataset(
                 table,
@@ -69,9 +69,7 @@ class ArrowManager:  # pragma: no cover
         elif isinstance(table, list):  # noqa
             for idx, t in enumerate(table):
                 seqnum = f"{idx:03}"  # 000, 001, 002...
-                obj_name = (
-                    f"{table_name}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet"
-                )
+                obj_name = f"{prefix}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet"
                 logger.info("Writing Arrow table to %s/%s", path, obj_name)
                 pq.write_to_dataset(
                     t,
@@ -84,13 +82,13 @@ class ArrowManager:  # pragma: no cover
         cls,
         table: Union[pa.Table, list[pa.Table]],
         path: str,  # path in local or can be S3 URI
-        table_name: str,
+        prefix: str,
         ingestion_flag: str,
     ):
         cur_date = dateobj.get_timestamp_as_str(ts_format="date_filename")
         # input is a single pyarrow table object
         if isinstance(table, pa.Table):
-            obj_name = f"{table_name}-000-{cur_date}_utc_{ingestion_flag}.csv"
+            obj_name = f"{prefix}-000-{cur_date}_utc_{ingestion_flag}.csv"
             output_path = f"{path}/{obj_name}"
             logger.info("Writing Arrow table to %s", output_path)
             csv.write_csv(table, output_file=output_path)
@@ -98,9 +96,7 @@ class ArrowManager:  # pragma: no cover
         elif isinstance(table, list):  # noqa
             for idx, t in enumerate(table):
                 seqnum = f"{idx:03}"  # 000, 001, 002...
-                obj_name = (
-                    f"{table_name}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet"
-                )
+                obj_name = f"{prefix}-{seqnum}-{cur_date}_utc_{ingestion_flag}.parquet"
                 output_path = f"{path}/{obj_name}"
                 logger.info("Writing Arrow table to %s", output_path)
                 csv.write_csv(t, output_file=output_path)
