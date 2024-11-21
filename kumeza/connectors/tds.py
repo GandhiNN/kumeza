@@ -5,7 +5,6 @@ logger = logging.getLogger(__name__)
 
 
 class TDSManager:
-
     def __init__(
         self, hostname: str, port: int, db_instance: str, authentication_type: str
     ):

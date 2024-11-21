@@ -3,7 +3,7 @@
 import logging
 
 from kumeza.config.ingestor_config import IngestionConfig
-from kumeza.core.data import get_schema_hash
+from kumeza.core.transformer import get_schema_hash
 from kumeza.pipeline.mssql_tds.pipeline import Pipeline
 from kumeza.query.mssql import MSSQLQueryTemplater
 from kumeza.utils.common.perftrace import PerfTrace
