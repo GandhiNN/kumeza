@@ -5,7 +5,7 @@ import logging
 from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.connectors.influx import InfluxManager
 from kumeza.core.arrow import ArrowConverter, ArrowManager
-from kumeza.extractors.influx import RESTExtractor
+from kumeza.extractors.rest import RESTExtractor
 from kumeza.query.influxql import InfluxQLQueryTemplater
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
 from kumeza.utils.aws.s3.s3 import S3
@@ -77,7 +77,10 @@ class Pipeline:
     ):
         # Partition key = {source_system_id}-{physical_location}-{table_name}
         # Sort key = execution time in epoch
-        item_name = f"{self.source_system_id}-{self.source_system_physical_location}-{object_name}"
+        item_name = (
+            f"""{self.source_system_id}-{self.source_system_physical_location}"""
+            f"""-{object_name}"""
+        )
         cur_epoch = self.dateobj.get_timestamp_as_str(ts_format="epoch")
         result = self.dynamodb.get_last_item_from_table(
             metadata_table_name,
