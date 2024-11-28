@@ -1,11 +1,10 @@
 import urllib.parse
+from typing import Any
 
-import sqlalchemy
-from sqlalchemy import URL, create_engine
+from sqlalchemy.engine import URL, create_engine
 
 
 class Engine:
-
     def __init__(self, dialect: str, driver: str):
         self.dialect = dialect
         self.driver = driver
@@ -18,7 +17,7 @@ class Engine:
         host: str,
         port: int,
         database_name: str,
-    ) -> sqlalchemy.Engine:
+    ) -> Any:
         url = URL.create(
             f"{self.dialect}+{self.driver}",
             username=f"{domain}\\{username}",
