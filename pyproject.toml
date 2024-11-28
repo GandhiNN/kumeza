@@ -46,20 +46,19 @@ log_date_format = "%Y-%m-%d %H:%M:%S"
 [tool.coverage.run]
 omit = [
     "kumeza/config/ingestor_config.py",
-    "kumeza/kumeza_integration/*",
     "kumeza/connectors/spark.py",
     "kumeza/connectors/tds.py",
     "kumeza/connectors/influx.py",
     "kumeza/extractors/spark.py",
     "kumeza/utils/aws/__init__.py",
-    "kumeza/integrations/rdbms/mssql/*",
+    "kumeza/engine/rdbms/mssql/*",
     "kumeza/extractors/arrow_odbc.py",
     "kumeza/extractors/rest.py",
     "kumeza/pipeline/*",
     "kumeza/extractors/mssql.py",
     "kumeza/core/transformer.py",
     "kumeza/core/sqlalchemy.py",
-    "kumeza/integrations/deltalake/delta.py",
+    "kumeza/core/deltalake.py",
 ]
 
 [build-system]
