@@ -63,7 +63,8 @@ omit = [
     "kumeza/core/transformer.py",
     "kumeza/core/sqlalchemy.py",
     "kumeza/core/compacter.py",
-    "kumeza/core/arrow.py"
+    "kumeza/core/arrow.py",
+    "kumeza/compacter/*"
 ]
 
 [build-system]
