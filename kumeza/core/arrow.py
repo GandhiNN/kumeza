@@ -81,8 +81,8 @@ class ArrowIO:  # pragma: no-cover
                         root_path=path,
                         basename_template=obj_name,
                     )
-            else:
-                raise ValueError(f"{output_format} not implemented yet")
+        else:
+            raise ValueError(f"{output_format} not implemented yet")
 
 
 class ArrowUtils:  # pragma: no cover

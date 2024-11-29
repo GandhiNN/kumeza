@@ -149,7 +149,10 @@ class Pipeline:
     ):
         # Partition key = {source_system_id}-{physical_location}-{table_name}
         # Sort key = execution time in epoch
-        item_name = f"{self.source_system_id}-{self.source_system_physical_location}-{object_name}"
+        item_name = (
+            f"""{self.source_system_id}-{self.source_system_physical_location}"""
+            f"""logger-{object_name}"""
+        )
         cur_epoch = self.dateobj.get_timestamp_as_str(ts_format="epoch")
         result = self.dynamodb.get_last_item_from_table(
             metadata_table_name,
