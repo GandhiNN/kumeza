@@ -19,10 +19,16 @@ test_data = [
 
 # Config files to be referenced
 ABS_PATH = os.path.dirname(__file__)
-CFG_PATH = "files"
-TESTFILE_CSV = os.path.join(ABS_PATH, CFG_PATH, "test_arrow.csv")
-TESTFILE_PARQUET = os.path.join(ABS_PATH, CFG_PATH, "test_arrow.parquet")
-TESTFILE_TXT = os.path.join(ABS_PATH, CFG_PATH, "test_arrow.txt")
+CFG_PATH_CSV = "files/csv"
+CFG_PATH_PARQUET_SINGLE = "files/parquet/single"
+CFG_PATH_PARQUET_MULTIPLE = "files/parquet/multiple"
+CFG_PATH_TXT = "files/txt"
+TESTFILE_CSV = os.path.join(ABS_PATH, CFG_PATH_CSV, "test_arrow.csv")
+TESTFILE_PARQUET_SINGLE = os.path.join(
+    ABS_PATH, CFG_PATH_PARQUET_SINGLE, "test_arrow.parquet"
+)
+TESTFILE_TXT = os.path.join(ABS_PATH, CFG_PATH_TXT, "test_arrow.txt")
+TESTFILE_PARQUET_MULTIPLE = os.path.join(ABS_PATH, CFG_PATH_PARQUET_MULTIPLE)
 
 
 class ArrowUtilsTest(unittest.TestCase):
@@ -46,7 +52,14 @@ class ArrowIOTest(unittest.TestCase):
 
     def test_read_parquet_file_into_arrow(self):
         assert isinstance(
-            self.arrow_io.read(source_type="parquet", path=TESTFILE_PARQUET), pa.Table
+            self.arrow_io.read(source_type="parquet", path=TESTFILE_PARQUET_SINGLE),
+            pa.Table,
+        )
+
+    def test_read_parquet_files_from_directory(self):
+        assert isinstance(
+            self.arrow_io.read(source_type="parquet", path=TESTFILE_PARQUET_MULTIPLE),
+            pa.Table,
         )
 
     def test_read_unrecognized_format_into_arrow(self):
