@@ -40,6 +40,12 @@ class ArrowUtilsTest(unittest.TestCase):
             self.arrow_utils.convert_python_list_to_arrow(test_data), pa.Table
         )
 
+    def test_get_schema(self):
+        pass
+
+    def test_convert_int64_to_timestamp(self):
+        pass
+
 
 class ArrowIOTest(unittest.TestCase):
     def setUp(self):
