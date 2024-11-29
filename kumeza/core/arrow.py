@@ -58,12 +58,13 @@ class ArrowManager:  # pragma: no cover
         cur_date = dateobj.get_timestamp_as_str(ts_format="date_filename")
         # input is a single pyarrow table object
         if isinstance(table, pa.Table):
+            templ = f"{prefix}-00{{i}}-{cur_date}_utc_{ingestion_flag}.parquet"
             obj_name = f"{prefix}-000-{cur_date}_utc_{ingestion_flag}.parquet"
             logger.info("Writing Arrow table to %s/%s", path, obj_name)
             pq.write_to_dataset(
                 table,
                 root_path=path,
-                basename_template=obj_name,
+                basename_template=templ,
             )
         # input is list of pyarrow tables
         elif isinstance(table, list):  # noqa
