@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kumeza"
-version = "0.1.0"
+version = "0.2.0"
 description = "ETL SDK for data ingestion"
 authors = ["Ngakan Gandhi <ngandhi@pmintl.net>"]
 readme = "README.md"
