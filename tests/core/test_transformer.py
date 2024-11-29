@@ -76,6 +76,9 @@ class TestSparkToHiveTransformer(unittest.TestCase):
     def test_transform_decimaltype_to_double(self):
         assert self.mapping.transform_schema(spark_dtype="DecimalType") == "double"
 
+    def test_transform_decimal_to_float(self):
+        assert self.mapping.transform_schema(spark_dtype="decimal") == "float"
+
     def test_unimplemented_spark_type(self):
         with pytest.raises(ValueError):
             self.mapping.transform_schema(spark_dtype="blob")
