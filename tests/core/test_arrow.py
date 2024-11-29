@@ -2,6 +2,7 @@ import os
 import unittest
 
 import pyarrow as pa
+import pytest
 
 from kumeza.core.arrow import ArrowIO, ArrowUtils
 
@@ -19,7 +20,9 @@ test_data = [
 # Config files to be referenced
 ABS_PATH = os.path.dirname(__file__)
 CFG_PATH = "files"
-TESTFILE = os.path.join(ABS_PATH, CFG_PATH, "test_arrow.csv")
+TESTFILE_CSV = os.path.join(ABS_PATH, CFG_PATH, "test_arrow.csv")
+TESTFILE_PARQUET = os.path.join(ABS_PATH, CFG_PATH, "test_arrow.parquet")
+TESTFILE_TXT = os.path.join(ABS_PATH, CFG_PATH, "test_arrow.txt")
 
 
 class ArrowUtilsTest(unittest.TestCase):
@@ -38,5 +41,14 @@ class ArrowIOTest(unittest.TestCase):
 
     def test_read_csv_file_into_arrow(self):
         assert isinstance(
-            self.arrow_io.read(source_type="csv", path=TESTFILE), pa.Table
+            self.arrow_io.read(source_type="csv", path=TESTFILE_CSV), pa.Table
         )
+
+    def test_read_parquet_file_into_arrow(self):
+        assert isinstance(
+            self.arrow_io.read(source_type="parquet", path=TESTFILE_PARQUET), pa.Table
+        )
+
+    def test_read_unrecognized_format_into_arrow(self):
+        with pytest.raises(ValueError):
+            self.arrow_io.read(source_type="txt", path=TESTFILE_TXT)

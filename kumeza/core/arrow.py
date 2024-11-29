@@ -22,6 +22,9 @@ class ArrowIO:  # pragma: no-cover
             logger.info("Reading from S3 bucket into Arrow table")
             fs = s3fs.S3FileSystem(anon=False, use_ssl=True)
             return pq.ParquetDataset(path, filesystem=fs)
+        elif source_type == "parquet":
+            logger.info("Reading from parquet file")
+            return pq.read_table(path)
         elif source_type == "csv":
             logger.info("Reading from CSV into Arrow table")
             return pv.read_csv(path)
