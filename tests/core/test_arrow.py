@@ -3,7 +3,7 @@ import unittest
 
 import pyarrow as pa
 
-from kumeza.core.arrow import ArrowConverter
+from kumeza.core.arrow import ArrowIO, ArrowUtils
 
 
 # raise unittest.SkipTest("##TODO")
@@ -22,12 +22,21 @@ CFG_PATH = "files"
 TESTFILE = os.path.join(ABS_PATH, CFG_PATH, "test_arrow.csv")
 
 
-class ArrowConverterTest(unittest.TestCase):
+class ArrowUtilsTest(unittest.TestCase):
     def setUp(self):
-        self.arrow_converter = ArrowConverter()
+        self.arrow_utils = ArrowUtils()
 
     def test_convert_python_list_into_arrow(self):
-        assert isinstance(self.arrow_converter.from_python_list(test_data), pa.Table)
+        assert isinstance(
+            self.arrow_utils.convert_python_list_to_arrow(test_data), pa.Table
+        )
 
-    def test_convert_csv_file_into_arrow(self):
-        assert isinstance(self.arrow_converter.from_csv(TESTFILE), pa.Table)
+
+class ArrowIOTest(unittest.TestCase):
+    def setUp(self):
+        self.arrow_io = ArrowIO()
+
+    def test_read_csv_file_into_arrow(self):
+        assert isinstance(
+            self.arrow_io.read(source_type="csv", path=TESTFILE), pa.Table
+        )

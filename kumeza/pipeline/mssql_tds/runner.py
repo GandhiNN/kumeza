@@ -6,10 +6,13 @@ from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.core.transformer import get_schema_hash
 from kumeza.pipeline.mssql_tds.pipeline import Pipeline
 from kumeza.query.mssql import MSSQLQueryTemplater
+from kumeza.utils.common.date_object import DateObject
 from kumeza.utils.common.perftrace import PerfTrace
 
 
 logger = logging.getLogger(__name__)
+
+dateobj = DateObject()
 
 
 class Runner(Pipeline):
@@ -28,7 +31,7 @@ class Runner(Pipeline):
             self.pipeline.username,
             self.pipeline.password,
         )
-        return self.arrow_converter.from_python_list(rs_schema)
+        return self.arrow_utils.convert_python_list_to_arrow(rs_schema)
 
     @PerfTrace.timeit
     def write_schema_to_s3(self, schema, object_name):
@@ -88,7 +91,7 @@ class Runner(Pipeline):
             self.pipeline.username,
             self.pipeline.password,
         )
-        arrow_result_sets_raw = self.arrow_converter.from_python_list(rs_raw)
+        arrow_result_sets_raw = self.arrow_utils.convert_python_list_to_arrow(rs_raw)
         return arrow_result_sets_raw
 
     @PerfTrace.timeit
@@ -97,16 +100,20 @@ class Runner(Pipeline):
 
     @PerfTrace.timeit
     def write_raw_data_to_s3(self, result_set, object_name, ingestion_flag):
+        cur_date = dateobj.get_timestamp_as_str(ts_format="date_only")
         # Write raw to raw bucket
         raw_key = (
             f"""{self.pipeline.source_system_id}/{self.pipeline.source_system_physical_location}/"""
-            f"""{object_name}/{self.pipeline.dateobj.get_timestamp_as_str(ts_format="date_only")}/"""
+            f"""{object_name}/{cur_date}/"""
         )
-        self.arrow_manager.write_parquet(
+        path = f"s3://{self.pipeline.raw_data_bucket}/{raw_key}"
+        self.arrow_io.write(
             result_set,
-            f"s3://{self.pipeline.raw_data_bucket}/{raw_key}",
+            path,
             object_name,
             ingestion_flag,
+            cur_date,
+            output_format="parquet",
         )
 
     @PerfTrace.timeit
@@ -160,7 +167,7 @@ class Runner(Pipeline):
             if rc > 0:
                 # Get schema of the table
                 # Convert Arrow schema to Hive
-                schema: list[dict] = self.arrow_manager.get_schema(rs, hive=True)
+                schema: list[dict] = self.arrow_utils.get_schema(rs, hive=True)
 
                 # Get schema hash
                 current_schema_hash: str = get_schema_hash(schema)
@@ -265,7 +272,7 @@ class Runner(Pipeline):
                 mssql_query_templater = MSSQLQueryTemplater(
                     self.pipeline.ingestion_config.source_system
                 )
-                sql_incremental_load = mssql_query_templater.get_sql_query(
+                sql_incremental_load = mssql_query_templater.get_query(
                     mode="incremental",
                     database_name=db_name,
                     database_schema=db_schema,

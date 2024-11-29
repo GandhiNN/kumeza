@@ -4,7 +4,7 @@ import logging
 
 from kumeza.config.ingestor_config import IngestionConfig
 from kumeza.connectors.influx import InfluxManager
-from kumeza.core.arrow import ArrowConverter, ArrowManager
+from kumeza.core.arrow import ArrowIO, ArrowUtils
 from kumeza.extractors.rest import RESTExtractor
 from kumeza.query.influxql import InfluxQLQueryTemplater
 from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB
@@ -25,8 +25,8 @@ class Pipeline:
         # Setup helper methods
         self.s3 = S3()
         self.dynamodb = DynamoDB()
-        self.arrow_converter = ArrowConverter()
-        self.arrow_manager = ArrowManager
+        self.arrow_utils = ArrowUtils()
+        self.arrow_io = ArrowIO
         self.dateobj = DateObject()
 
         # Setup attributes
