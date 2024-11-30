@@ -139,6 +139,13 @@ pipeline {
                       command:
                       - cat
                       tty: true
+                      resources:
+                        requests:
+                            cpu: 1
+                            memory: 1Gi
+                        limits:
+                            cpu: 2
+                            memory: 2Gi
                     - name: sonarscanner
                       image: art.pmideep.com/dockerhub/sonarsource/sonar-scanner-cli:5
                       command:
