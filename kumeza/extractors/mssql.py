@@ -1,5 +1,6 @@
 # pylint: disable=attribute-defined-outside-init
 import logging
+import sys
 from typing import Any, Tuple
 
 import pymssql
@@ -31,7 +32,7 @@ class MSSQLExtractor(Engine):
         domain: str,
         username: str,
         password: str,
-    ) -> list[dict[str, Any]]:
+    ) -> Tuple[list[dict[str, Any]], int]:
         try:
             logger.info("Connecting to the database")
             logger.info("Using authentication type: %s", self.tdsmanager.auth)
@@ -60,27 +61,7 @@ class MSSQLExtractor(Engine):
                 row_item = self._return_dict_pair(cursor, row)
                 return_list.append(row_item)
 
-            return return_list
+            return return_list, sys.getsizeof(return_list)
         except Exception as e:
             logger.error(e)
             raise e
-
-    def read_using_sqlalchemy(
-        self,
-        db_name: str,
-        sqlquery: str,
-        domain: str,
-        host: str,
-        port: int,
-        username: str,
-        password: str,
-    ):
-        engine = self.create_engine(
-            domain,
-            username,
-            password,
-            host,
-            port,
-            db_name,  # pragma: allowlist-secret
-        )
-        print(engine, sqlquery)
