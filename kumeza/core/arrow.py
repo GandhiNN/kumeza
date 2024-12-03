@@ -120,3 +120,7 @@ class ArrowUtils:  # pragma: no cover
             for x in ts_list
         ]
         return pa.array(ts)
+
+    @classmethod
+    def get_num_rows(cls, table: pa.Table) -> int:
+        return table.num_rows

@@ -46,6 +46,11 @@ class ArrowUtilsTest(unittest.TestCase):
     def test_convert_int64_to_timestamp(self):
         pass
 
+    def test_get_row_count(self):
+        arrow_io = ArrowIO()
+        table = arrow_io.read(source_type="parquet", path=TESTFILE_PARQUET_SINGLE)
+        assert self.arrow_utils.get_num_rows(table) == 1000
+
 
 class ArrowIOTest(unittest.TestCase):
     def setUp(self):
