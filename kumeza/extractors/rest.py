@@ -1,6 +1,8 @@
 # pylint: disable=attribute-defined-outside-init
 import logging
+import sys
 import textwrap
+from typing import Tuple
 
 import requests  # type: ignore
 from requests.auth import HTTPBasicAuth  # type: ignore
@@ -61,6 +63,9 @@ class RESTExtractor:
         self.sess = requests.Session()
         self.sess.auth = HTTPBasicAuth(username, password)
 
+    def close_session(self):
+        self.sess.close()
+
     def read(
         self,
         base_url: str,
@@ -68,7 +73,7 @@ class RESTExtractor:
         params: dict,
         verbose: bool = False,
         stream: bool = True,
-    ) -> requests.Response:
+    ) -> Tuple[requests.Response, int]:
         """Sends a GET request"""
         if verbose:
             return self.sess.get(
@@ -79,6 +84,7 @@ class RESTExtractor:
                 stream=stream,
                 hooks={"response": print_roundtrip},
             )
-        return self.sess.get(
+        res = self.sess.get(
             url=base_url, headers=header, params=params, verify=False, stream=stream
         )
+        return res, sys.getsizeof(res)
