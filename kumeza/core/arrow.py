@@ -46,7 +46,7 @@ class ArrowIO:  # pragma: no-cover
                 obj_name = f"{prefix}-000-{cur_date}_utc_{ingestion_flag}.csv"
                 output = f"{path}/{obj_name}"
                 logger.info("Writing Arrow table as %s", f"{output}")
-                pv.write_csv(input, output_file=output)
+                pv.write_csv(table_obj, output_file=output)
             # Input is a list of PyArrow tables
             elif isinstance(table_obj, list):  # noqa
                 for idx, t in enumerate(table_obj):
