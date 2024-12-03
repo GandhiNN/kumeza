@@ -25,7 +25,7 @@ class Pipeline:
         self.s3 = S3()
         self.dynamodb = DynamoDB()
         self.arrow_utils = ArrowUtils()
-        self.arrow_io = ArrowIO
+        self.arrow_io = ArrowIO()
         self.dateobj = DateObject()
 
         # Setup attributes
