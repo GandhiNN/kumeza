@@ -34,6 +34,7 @@ class MSSQLExtractor(Engine):
         password: str,
     ) -> Tuple[list[dict[str, Any]], int]:
         try:
+            conn: pymssql.Connection = None
             logger.info("Connecting to the database")
             logger.info("Using authentication type: %s", self.tdsmanager.auth)
             if self.tdsmanager.auth != "windows_authentication":
@@ -65,3 +66,6 @@ class MSSQLExtractor(Engine):
         except Exception as e:
             logger.error(e)
             raise e
+        finally:
+            # Make sure to close the connection
+            conn.close()
