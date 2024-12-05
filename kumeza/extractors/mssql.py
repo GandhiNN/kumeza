@@ -68,4 +68,5 @@ class MSSQLExtractor(Engine):
             raise e
         finally:
             # Make sure to close the connection
+            logger.info("Closing the connection to the database")
             conn.close()
