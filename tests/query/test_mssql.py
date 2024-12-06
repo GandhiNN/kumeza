@@ -124,8 +124,7 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
         )
 
     def test_generate_incremental_query(self):
-        expected = """SELECT * FROM master.dbo.CUSTOMER_ID WHERE updated_at >= '2024-09-07 10:00:00' AND updated_at <= '2024-09-07 12:00:00'"""
-        print(INCREMENTAL_COLUMNS, type(INCREMENTAL_COLUMNS))
+        expected = """SELECT * FROM master.dbo.CUSTOMER_ID WHERE (updated_at >= '2024-09-07 10:00:00' AND updated_at <= '2024-09-07 12:00:00')"""
         assert (
             self.query_templater.get_query(
                 mode="incremental",
