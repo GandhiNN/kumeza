@@ -58,7 +58,7 @@ data_assets = AssetsId(
             database_schema="",
             query_type="custom",
             incremental=True,
-            incremental_column="Timestamp",
+            incremental_columns=["Timestamp"],
             reload=False,
             partition_columns=[],
             columns_to_anonymize=[],
@@ -81,7 +81,7 @@ CUSTOM_QUERY = data_assets.assets[0].custom_query
 DATABASE_NAME = data_assets.database_name
 DATABASE_SCHEMA = data_assets.assets[0].database_schema
 OBJECT_NAME = data_assets.assets[0].asset_name
-INCREMENTAL_COLUMN = data_assets.assets[0].incremental_column
+INCREMENTAL_COLUMNS = data_assets.assets[0].incremental_columns
 
 
 class InfluxQLQueryManagerTest(unittest.TestCase):

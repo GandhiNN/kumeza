@@ -1,1 +1,10 @@
-SELECT * FROM {{source}} WHERE {{incremental_col}} >= '{{start_time}}' AND {{incremental_col}} <= '{{end_time}}'
+SELECT * 
+FROM {{source}} 
+WHERE
+{% for col in incremental_cols -%}
+    {% if not loop.last -%}
+        {{col}} >= '{{start_time}}' AND {{col}} <= '{{end_time}}' OR
+    {% else -%}
+        {{col}} >= '{{start_time}}' AND {{col}} <= '{{end_time}}'
+    {% endif -%}
+{%- endfor %}

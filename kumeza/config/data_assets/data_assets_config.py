@@ -11,7 +11,7 @@ class Assets(BaseConfig):
     database_schema: str
     query_type: str
     incremental: bool
-    incremental_column: str
+    incremental_columns: list
     reload: bool
     partition_columns: list
     columns_to_anonymize: list
@@ -27,7 +27,7 @@ class Assets(BaseConfig):
             database_schema=obj["database_schema"],
             query_type=obj["query_type"],
             incremental=obj["incremental"],
-            incremental_column=obj["incremental_column"],
+            incremental_columns=obj["incremental_columns"],
             reload=obj["reload"],
             partition_columns=obj["partition_columns"],
             columns_to_anonymize=obj["columns_to_anonymize"],

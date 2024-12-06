@@ -58,7 +58,7 @@ data_assets = AssetsId(
             database_schema="dbo",
             query_type="standard",
             incremental=True,
-            incremental_column="updated_at",
+            incremental_columns=["updated_at"],
             reload=False,
             partition_columns=["created_at"],
             columns_to_anonymize=[],
@@ -73,7 +73,7 @@ CUSTOM_QUERY = data_assets.assets[0].custom_query
 DATABASE_NAME = data_assets.database_name
 DATABASE_SCHEMA = data_assets.assets[0].database_schema
 OBJECT_NAME = data_assets.assets[0].asset_name
-INCREMENTAL_COLUMN = data_assets.assets[0].incremental_column
+INCREMENTAL_COLUMNS = data_assets.assets[0].incremental_columns
 
 
 class MSSQLQueryManagerTest(unittest.TestCase):
@@ -125,12 +125,13 @@ class MSSQLQueryTemplaterTest(unittest.TestCase):
 
     def test_generate_incremental_query(self):
         expected = """SELECT * FROM master.dbo.CUSTOMER_ID WHERE updated_at >= '2024-09-07 10:00:00' AND updated_at <= '2024-09-07 12:00:00'"""
+        print(INCREMENTAL_COLUMNS, type(INCREMENTAL_COLUMNS))
         assert (
             self.query_templater.get_query(
                 mode="incremental",
                 database_name=DATABASE_NAME,
                 database_schema=DATABASE_SCHEMA,
-                incremental_column=INCREMENTAL_COLUMN,
+                incremental_columns=INCREMENTAL_COLUMNS,
                 object_name=OBJECT_NAME,
                 start_time="2024-09-07 10:00:00",
                 end_time="2024-09-07 12:00:00",

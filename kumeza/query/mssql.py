@@ -3,6 +3,7 @@ import pkgutil
 from jinja2 import Template
 
 from kumeza.config.source_system.source_system_config import SourceSystemConfig
+from kumeza.utils.common.sanitizers import Sanitizers
 
 
 class MSSQLQueryManager:
@@ -42,12 +43,15 @@ class MSSQLQueryTemplater(MSSQLQueryManager):
 
     def _render_incremental_query(self, **render_opt):
         template = pkgutil.get_data(__package__, "models/mssql/incremental.sql")
-        return Template(template.decode("utf-8")).render(
+        s = Template(template.decode("utf-8")).render(
             source=f"{render_opt['database_name']}.{render_opt['database_schema']}.{render_opt['object_name']}",
-            incremental_col=f"{render_opt['incremental_column']}",
+            incremental_cols=render_opt["incremental_columns"],
             start_time=render_opt["start_time"],
             end_time=render_opt["end_time"],
         )
+        st = Sanitizers.replace_multiple_whitespace_with_one_whitespace(s)
+        stmt = Sanitizers.remove_leading_and_trailing_whitespace(st)
+        return stmt
 
     def _render_schema_query(self, **render_opt):
         template = pkgutil.get_data(__package__, "models/mssql/schema.sql")
