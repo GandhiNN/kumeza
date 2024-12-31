@@ -8,7 +8,6 @@ logger = logging.getLogger(__name__)
 
 
 class MultithreadingManager:
-
     def __init__(self, worker_numbers: int = 10):
         logger.info("Setting up Multithreading manager with %s workers", worker_numbers)
         self.worker_numbers = worker_numbers
@@ -20,7 +19,8 @@ class MultithreadingManager:
                 executor.submit(func, arg, args[0]): arg for arg in func_args
             }
             logger.info(
-                "Submitted task with the arguments = %s & %s to executors - waiting for threads to finish",
+                """Submitted task with the arguments = %s 
+                & %s to executors - waiting for threads to finish""",
                 func_args,
                 args[0],
             )
