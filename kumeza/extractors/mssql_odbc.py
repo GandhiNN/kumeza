@@ -9,8 +9,7 @@ from kumeza.connectors.odbc import ODBCManager
 logger = logging.getLogger(__name__)
 
 
-class ArrowODBCExtractor:
-
+class Extractor:
     def __init__(self, odbcmanager: ODBCManager):
         self.odbcmanager = odbcmanager
 

@@ -15,17 +15,19 @@ class Engine:
         username: str,
         password: str,
         host: str,
-        port: str,
         database: str,
-        domain: str,
-    ):
+    ) -> URL:
         return URL.create(
             f"{sql_engine}+{driver}",
-            username=rf"{domain}\{username}",
+            username=rf"{username}",  # for MSSQL Windows Auth -> $domain\$username
             password=rf"{password}",  # pragma: allowlist-secret
-            host=rf"{host}:{port}",
+            host=rf"{host}",  # to use port number -> $host:$port
             database=rf"{database}",
         )
 
     def create_engine(self, url: str) -> Any:
         return create_engine(url)
+
+    def read(self, url: str, query_string: str) -> list:
+        with self.create_engine(url) as conn:
+            return conn.execute(query_string).fetchall()
