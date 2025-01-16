@@ -17,8 +17,8 @@ class Writer:
                 fout.write(json_string)
         elif file_format == "csv":
             with open(output_file, "w+", encoding="utf-8") as fout:
-                w = csv.writer(fout)
-                w.writerow(metadata.keys())
-                w.writerow(metadata.values())
+                w = csv.DictWriter(fout, fieldnames=metadata[0].keys())
+                w.writeheader()
+                w.writerows(metadata)
         else:
             raise ValueError(f"Format: {format} not known")
