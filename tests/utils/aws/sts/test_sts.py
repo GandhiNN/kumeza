@@ -6,7 +6,7 @@ import unittest
 import boto3
 from moto import mock_aws
 
-from kumeza.utils.aws.sts.sts import STS
+from kumeza.utils.aws.sts import STS
 
 
 ACCOUNT_ID = "icloud"
@@ -15,7 +15,6 @@ ROLE_ARN = f"arn:aws:iam::{ACCOUNT_ID}:role/{ROLE_NAME}"
 
 
 class STSTestIntegration(unittest.TestCase):
-
     @mock_aws
     def setUp(self):
         # Setup the mock connection for both sts and iam

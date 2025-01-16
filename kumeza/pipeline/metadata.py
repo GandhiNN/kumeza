@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class MetadataWriter:
+class Writer:
     def __init__(self):
         pass
 

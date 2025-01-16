@@ -3,7 +3,7 @@ import unittest
 import boto3
 from moto import mock_aws
 
-from kumeza.utils.aws.athena.athena import Athena
+from kumeza.utils.aws.athena import Athena
 
 
 # raise unittest.SkipTest("##TODO")
@@ -13,7 +13,6 @@ DATABASE_NAME = "TestDatabase"
 
 
 class AthenaTestIntegration(unittest.TestCase):
-
     @mock_aws
     def setUp(self):
         # Setup the base connection

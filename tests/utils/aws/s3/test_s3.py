@@ -11,7 +11,7 @@ import pyarrow as pa
 # import pyarrow.parquet as pq
 from moto import mock_aws
 
-from kumeza.utils.aws.s3.s3 import S3
+from kumeza.utils.aws.s3 import S3
 
 
 # Constants
@@ -22,7 +22,6 @@ METADATA = "testmetadata"
 
 
 class S3TestIntegration(unittest.TestCase):
-
     @mock_aws
     def setUp(self):
         # Setup the mock connection
@@ -32,7 +31,6 @@ class S3TestIntegration(unittest.TestCase):
 
     @mock_aws
     def test_write_pyarrow_table_to_bucket(self):
-
         # Create a mock bucket
         self.s3_client.create_bucket(
             Bucket=BUCKET_NAME,
@@ -68,7 +66,6 @@ class S3TestIntegration(unittest.TestCase):
 
     @mock_aws
     def test_write_bytes_io_to_bucket(self):
-
         # Create a mock bucket
         self.s3_client.create_bucket(
             Bucket=BUCKET_NAME,
@@ -90,7 +87,6 @@ class S3TestIntegration(unittest.TestCase):
 
     @mock_aws
     def test_write_bytes_buffer_to_bucket(self):
-
         # Create a mock bucket
         self.s3_client.create_bucket(
             Bucket=BUCKET_NAME,
@@ -112,7 +108,6 @@ class S3TestIntegration(unittest.TestCase):
 
     @mock_aws
     def test_write_list_of_dict_to_bucket(self):
-
         # Create a mock bucket
         self.s3_client.create_bucket(
             Bucket=BUCKET_NAME,
@@ -149,7 +144,6 @@ class S3TestIntegration(unittest.TestCase):
 
     @mock_aws
     def test_upload_file(self):
-
         # Create a mock bucket
         self.s3_client.create_bucket(
             Bucket=BUCKET_NAME,
@@ -170,7 +164,6 @@ class S3TestIntegration(unittest.TestCase):
 
     @mock_aws
     def test_download_file(self):
-
         # Create a mock bucket
         self.s3_client.create_bucket(
             Bucket=BUCKET_NAME,
@@ -179,7 +172,6 @@ class S3TestIntegration(unittest.TestCase):
         # Read local file content into memory
         local_file = os.path.join(os.path.dirname(__file__), "test.txt")
         with open(local_file, "r", encoding="utf8") as localfile:
-
             # Upload file to the mocked bukcet
             s3_client = S3()
             s3_client.upload_file(local_file, BUCKET_NAME, "test.txt")

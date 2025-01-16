@@ -2,12 +2,11 @@ import json
 import unittest
 from unittest.mock import MagicMock, patch
 
-from kumeza.utils.hashicorp.vault.vault_manager import VaultManager
+from kumeza.utils.hashicorp.hcvault import VaultManager
 
 
 class HashicorpVaultTest(unittest.TestCase):
-
-    @patch("kumeza.utils.hashicorp.vault.vault_manager.hvac.Client")
+    @patch("kumeza.utils.hashicorp.hcvault.hvac.Client")
     def test_auth_client_with_approle(self, hvac):
         client = MagicMock()
         fake_auth_object = {"auth": {"client_token": "awesome_token"}}
@@ -23,7 +22,7 @@ class HashicorpVaultTest(unittest.TestCase):
         vm.set_client_with_approle_auth(role_id="someroleid", secret_id="somesecretid")
         assert vm.client.auth.token == fake_auth_object["auth"]["client_token"]
 
-    @patch("kumeza.utils.hashicorp.vault.vault_manager.hvac.Client")
+    @patch("kumeza.utils.hashicorp.hcvault.hvac.Client")
     def test_get_credentials(self, hvac):
         client = MagicMock()
         cred = {"password": "somepassword", "username": "someusername"}

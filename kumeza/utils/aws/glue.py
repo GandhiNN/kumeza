@@ -1,7 +1,7 @@
 import logging
 
 from kumeza.utils.aws import BaseAwsUtil, boto_error_handler
-from kumeza.utils.aws.s3.s3 import S3
+from kumeza.utils.aws.s3 import S3
 
 
 logger = logging.getLogger(__name__)

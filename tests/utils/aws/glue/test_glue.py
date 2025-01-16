@@ -5,7 +5,7 @@ import unittest
 import boto3
 from moto import mock_aws
 
-from kumeza.utils.aws.glue.glue import Glue
+from kumeza.utils.aws.glue import Glue
 
 
 JOBNAME = "testGlueJob"
@@ -21,7 +21,6 @@ PIPELINE_ARGS = ["assume-role-arn", "vault-url", "table-name"]
 
 
 class GlueTestIntegration(unittest.TestCase):
-
     @mock_aws
     def setUp(self):
         # Setup the mock connection

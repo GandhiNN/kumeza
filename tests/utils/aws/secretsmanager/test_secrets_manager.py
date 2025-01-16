@@ -5,14 +5,13 @@ import unittest
 import boto3
 from moto import mock_aws
 
-from kumeza.utils.aws.secretsmanager.secretsmanager import SecretsManager
+from kumeza.utils.aws.secretsmanager import SecretsManager
 
 
 SECRET_NAME = "mock_secret"
 
 
 class SecretsManagerTestIntegration(unittest.TestCase):
-
     @mock_aws
     def setUp(self):
         # Setup the mock connection

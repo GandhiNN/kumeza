@@ -8,7 +8,7 @@ import pytest
 from botocore.exceptions import ClientError
 from moto import mock_aws
 
-from kumeza.utils.aws.dynamodb.dynamodb import DynamoDB, InvalidDynamoDBPutItemOperation
+from kumeza.utils.aws.dynamodb import DynamoDB, InvalidDynamoDBPutItemOperation
 from kumeza.utils.common.date_object import DateObject
 
 
