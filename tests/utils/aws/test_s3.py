@@ -151,7 +151,7 @@ class S3TestIntegration(unittest.TestCase):
         )
         # Upload file
         s3_client = S3()
-        local_file = os.path.join(os.path.dirname(__file__), "test.txt")
+        local_file = os.path.join(os.path.dirname(__file__), "files", "test.txt")
         s3_client.upload_file(local_file, BUCKET_NAME, "test.txt")
 
         # Read object from the mocked bucket
@@ -170,7 +170,7 @@ class S3TestIntegration(unittest.TestCase):
             CreateBucketConfiguration={"LocationConstraint": "eu-west-1"},
         )
         # Read local file content into memory
-        local_file = os.path.join(os.path.dirname(__file__), "test.txt")
+        local_file = os.path.join(os.path.dirname(__file__), "files", "test.txt")
         with open(local_file, "r", encoding="utf8") as localfile:
             # Upload file to the mocked bukcet
             s3_client = S3()

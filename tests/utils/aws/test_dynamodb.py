@@ -50,7 +50,7 @@ class DynamoDBTestIntegration(unittest.TestCase):
         dynamodb_client = DynamoDB()
 
         # Open the local test file
-        test_json_file = os.path.join(os.path.dirname(__file__), "item.json")
+        test_json_file = os.path.join(os.path.dirname(__file__), "files", "item.json")
         with open(test_json_file, "r", encoding="utf8") as json_file:
             python_json = json.load(json_file)
 
@@ -97,7 +97,9 @@ class DynamoDBTestIntegration(unittest.TestCase):
         dynamodb_client = DynamoDB()
 
         # Open the local test file
-        test_json_file = os.path.join(os.path.dirname(__file__), "multiple_items.json")
+        test_json_file = os.path.join(
+            os.path.dirname(__file__), "files", "multiple_items.json"
+        )
         with open(test_json_file, "r", encoding="utf8") as json_file:
             python_json = json.load(json_file)
 
@@ -146,12 +148,12 @@ class DynamoDBTestIntegration(unittest.TestCase):
         dynamodb_client = DynamoDB()
 
         # open the dynamodb json file
-        ddb_json = os.path.join(os.path.dirname(__file__), "dynamo.json")
+        ddb_json = os.path.join(os.path.dirname(__file__), "files", "dynamo.json")
         with open(ddb_json, "r", encoding="utf8") as json_file:
             ddbjson = json.load(json_file)
 
         # open the python json file
-        python_json = os.path.join(os.path.dirname(__file__), "python.json")
+        python_json = os.path.join(os.path.dirname(__file__), "files", "python.json")
         with open(python_json, "r", encoding="utf8") as json_file:
             pjson = json.load(json_file)
 
