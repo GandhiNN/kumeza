@@ -1,3 +1,4 @@
+import csv
 import json
 import logging
 
@@ -9,12 +10,15 @@ class Writer:
     def __init__(self):
         pass
 
-    def write(self, metadata: dict, file_format: str, output_file: str) -> None:
+    def write_to_file(self, metadata: dict, file_format: str, output_file: str) -> None:
         if file_format == "json":
             with open(output_file, "w+", encoding="utf-8") as fout:
                 json_string = json.dumps(metadata, indent=4)
                 fout.write(json_string)
         elif file_format == "csv":
-            pass
+            with open(output_file, "w+", encoding="utf-8") as fout:
+                w = csv.writer(fout)
+                w.writerow(metadata.keys())
+                w.writerow(metadata.values())
         else:
             raise ValueError(f"Format: {format} not known")
