@@ -3,14 +3,26 @@ import sys
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Callable
 
+import psutil
+
 
 logger = logging.getLogger(__name__)
 
 
 class MultithreadingManager:
-    def __init__(self, worker_numbers: int = 10):
-        logger.info("Setting up Multithreading manager with %s workers", worker_numbers)
-        self.worker_numbers = worker_numbers
+    def __init__(self, chunk_size: int, est_record_size: int):
+        # Get the internal properties
+        self.cpu_count = psutil.cpu_count(logical=True)
+        self.memory = psutil.virtual_memory().available
+        # Init number of workers to be used
+        self.worker_numbers = self.get_optimum_num_threads(chunk_size, est_record_size)
+        logger.info(
+            "Multithreader manager initiated with %d workers!", self.worker_numbers
+        )
+
+    def get_optimum_num_threads(self, chunk_size: int, est_record_size: int) -> int:
+        # For I/O bound tasks, start with 2 to 4 times the number of CPU cores
+        return min(4 * self.cpu_count, self.memory // (chunk_size * est_record_size))
 
     def execute(self, func: Callable, func_args: list, *args) -> list:
         result_sets: list = []
@@ -19,7 +31,7 @@ class MultithreadingManager:
                 executor.submit(func, arg, args[0]): arg for arg in func_args
             }
             logger.info(
-                """Submitted task with the arguments = %s 
+                """Submitted task with the arguments = %s
                 & %s to executors - waiting for threads to finish""",
                 func_args,
                 args[0],

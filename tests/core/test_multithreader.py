@@ -5,6 +5,10 @@ import pytest
 from kumeza.core.multithreader import MultithreadingManager
 
 
+CHUNK_SIZE = 10000
+EST_RECORD_SIZE = 1000
+
+
 def add_ten(n: int, *args):
     # Return the input integer + 10.
     print(*args)
@@ -12,9 +16,20 @@ def add_ten(n: int, *args):
 
 
 class MultithreadingManagerTest(unittest.TestCase):
-
     def setUp(self):
-        self.mt_manager = MultithreadingManager(worker_numbers=10)
+        self.mt_manager = MultithreadingManager(
+            chunk_size=CHUNK_SIZE, est_record_size=EST_RECORD_SIZE
+        )
+
+    def test_get_optimum_num_threads(self):
+        self.mt_manager.cpu_count = 8
+        self.mt_manager.memory = 10000000000
+        assert (
+            self.mt_manager.get_optimum_num_threads(
+                chunk_size=CHUNK_SIZE, est_record_size=EST_RECORD_SIZE
+            )
+            == 32
+        )
 
     def test_multithreaded_execution(self):
         iterables_input = [1, 2, 3, 4, 5]
