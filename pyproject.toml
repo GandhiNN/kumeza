@@ -55,12 +55,13 @@ omit = [
     "kumeza/connectors/tds.py",
     "kumeza/connectors/influx.py",
     "kumeza/utils/aws/__init__.py",
+    "kumeza/utils/common/stats_gen.py",
     "kumeza/engine/rdbms/mssql/*",
     "kumeza/extractors/*.py",
     "kumeza/core/sqlalchemy.py",
     "kumeza/core/compacter.py",
     "kumeza/core/arrow.py",
-    "kumeza/compacter/*"
+    "kumeza/compacter/*",
 ]
 
 [build-system]
