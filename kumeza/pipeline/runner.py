@@ -4,6 +4,7 @@ import logging
 
 from kumeza.config.ingestor_config import IngestionConfig
 
+
 logger = logging.getLogger(__name__)
 
 
