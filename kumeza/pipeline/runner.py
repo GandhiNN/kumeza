@@ -11,7 +11,7 @@ from kumeza.utils.common.date_object import DateObject
 logger = logging.getLogger(__name__)
 
 
-class Setup:
+class SetupIngestionObject:
     def __init__(
         self,
         ingestion_config: IngestionConfig,
