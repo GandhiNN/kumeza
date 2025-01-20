@@ -3,10 +3,6 @@
 import logging
 
 from kumeza.config.ingestor_config import IngestionConfig
-from kumeza.utils.aws.dynamodb import DynamoDB
-from kumeza.utils.aws.s3 import S3
-from kumeza.utils.common.date_object import DateObject
-
 
 logger = logging.getLogger(__name__)
 
@@ -31,9 +27,6 @@ class SetupIngestionObject:
         self.source_system_physical_location = (
             self.ingestion_config.source_system.physical_location
         )
-        self.s3: S3 = S3()
-        self.dynamodb = DynamoDB()
-        self.dateobj: DateObject = DateObject()
 
         # Metadata section
         self.metadata = ingestion_config.metadata
