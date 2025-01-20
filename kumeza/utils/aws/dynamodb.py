@@ -57,7 +57,7 @@ class DynamoDB(BaseAwsUtil):
         # the Table should be defined as String Type
         logger.info(
             "Table name: %s | Item name: %s | Primary key: %s \
-                  | Sort key: %s | Current epoch: %s",
+                | Sort key: %s | Current epoch: %s",
             table_name,
             item_name,
             partition_key,
@@ -68,7 +68,7 @@ class DynamoDB(BaseAwsUtil):
             resp = self._create_boto_client().query(
                 TableName=table_name,
                 KeyConditionExpression=(
-                    f"""{partition_key} = :{partition_key}"""
+                    f"""{partition_key} = :{partition_key} """
                     f"""AND {sort_key} <= :{sort_key}"""
                 ),
                 ExpressionAttributeValues={
