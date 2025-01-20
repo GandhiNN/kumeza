@@ -11,14 +11,12 @@ logger = logging.getLogger(__name__)
 
 
 class InvalidDynamoDBPutItemOperation(Exception):
-
     def __init__(self, message="Failure in DynamoDB PutItem Operation"):
         self.message = message
         super().__init__(self.message)
 
 
 class DynamoDB(BaseAwsUtil):
-
     def __init__(self, region_name: str = "eu-west-1"):
         super().__init__(service_name="dynamodb", region_name=region_name)
 
@@ -55,9 +53,11 @@ class DynamoDB(BaseAwsUtil):
         sort_key: str,
         current_epoch: str,
     ):
-        # Limitation: Primary Key and Sort Key of the Table should be defined as String Type
+        # Limitation: Primary Key and Sort Key of
+        # the Table should be defined as String Type
         logger.info(
-            "Table name: %s | Item name: %s | Primary key: %s | Sort key: %s | Current epoch: %s",
+            "Table name: %s | Item name: %s | Primary key: %s \
+                  | Sort key: %s | Current epoch: %s",
             table_name,
             item_name,
             partition_key,
@@ -67,7 +67,10 @@ class DynamoDB(BaseAwsUtil):
         try:
             resp = self._create_boto_client().query(
                 TableName=table_name,
-                KeyConditionExpression=f"{partition_key} = :{partition_key} AND {sort_key} <= :{sort_key}",
+                KeyConditionExpression=(
+                    f"""{partition_key} = :{partition_key}"""
+                    f"""AND {sort_key} <= :{sort_key}"""
+                ),
                 ExpressionAttributeValues={
                     f":{partition_key}": {"S": f"{item_name}"},
                     f":{sort_key}": {"S": f"{current_epoch}"},
