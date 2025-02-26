@@ -1,6 +1,7 @@
 NAME := kumeza
 # POETRY := $(shell command -v poetry 2> /dev/null)
 UV := $(shell command -v uv 2> /dev/null)
+RUFF := $(shell command -v ruff 2> /dev/null)
 
 .DEFAULT_GOAL := help
 
@@ -75,6 +76,10 @@ clean:
 # 		$(POETRY) run isort --profile=black --lines-after-imports=2 ./tests/ $(NAME)
 # 		$(POETRY) run black ./tests/ $(NAME)
 
+.PHONY: format
+format: 
+		$(RUFF) format --verbose
+
 # .PHONY: lint
 # lint: 
 # 		$(POETRY) run isort --profile=black --lines-after-imports=2 --check-only ./tests/ $(NAME)
@@ -83,13 +88,24 @@ clean:
 # 		$(POETRY) run mypy ./tests/ $(NAME) --ignore-missing-imports
 # 		$(POETRY) run bandit -r $(NAME) -s B608
 
+.PHONY: lint
+lint: 
+		$(RUFF) check
 
 # .PHONY: test
 # test: 
 # 		$(POETRY) run pytest ./tests/ --cov-report term-missing --cov-fail-under 100 --cov $(NAME) --cov-report html
 
+.PHONY: test
+test: 
+		$(UV) run pytest --cov $(NAME) --cov-report=term-missing --cov-report html --cov-fail-under 100 
+
+
 # build:
 # 		$(POETRY) build
+
+build:
+		$(UV) build
 
 # lambda-layer:
 # 		$(POETRY) install --only main --sync
@@ -97,3 +113,10 @@ clean:
 # 		$(POETRY) run pip install --upgrade -t python dist/*.whl
 # 		mkdir -p out; zip -r -q out/kumeza.zip python/* -i 'python/kumeza*' -x 'python/*.pyc'
 # 		zip -r -q out/pyarrow.zip python/* -i 'python/*arrow*' -x 'python/*.pyc'
+
+lambda-layer:
+		$(UV) install --only main --sync
+		$(UV) build
+		$(UV) run pip install --upgrade -t python dist/*.whl
+		mkdir -p out; zip -r -q out/kumeza.zip python/* -i 'python/kumeza*' -x 'python/*.pyc'
+		zip -r -q out/pyarrow.zip python/* -i 'python/*arrow*' -x 'python/*.pyc'
