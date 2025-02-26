@@ -18,7 +18,6 @@ PASSWORD = "somepassword"
 
 
 class ODBCManagerTest(unittest.TestCase):
-
     def setUp(self):
         self.hostname = HOSTNAME
         self.port = PORT

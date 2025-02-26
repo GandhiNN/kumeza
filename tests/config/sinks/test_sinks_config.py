@@ -99,7 +99,6 @@ class SinksConfigTest(unittest.TestCase, SetUp):
         assert self.sinks_config_json.get_sink("schema") == expected_schema
 
     def test_get_sink_target(self):
-
         assert (
             self.sinks_config_yaml.get_sink("raw").get_sink_target("staging").path
             == "staging-bucket-dev"

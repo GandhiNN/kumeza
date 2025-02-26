@@ -4,7 +4,6 @@ from kumeza.utils.common.sanitizers import Sanitizers
 
 
 class SanitizersTest(unittest.TestCase):
-
     def setUp(self):
         self.sanitizers = Sanitizers()
 

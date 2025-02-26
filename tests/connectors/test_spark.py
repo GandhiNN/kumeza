@@ -9,7 +9,6 @@ PIPELINE_NAME = "test_pipeline"
 
 
 class SparkManagerTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.spark_manager = SparkManager(PIPELINE_NAME)

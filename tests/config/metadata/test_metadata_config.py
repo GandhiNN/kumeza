@@ -39,7 +39,6 @@ class MetadataConfigTest(unittest.TestCase, SetUp):
         self.metadata_config_json = MetadataConfig.marshal(self.json_config["metadata"])
 
     def test_key_sameness(self):
-
         # Keys sameness assertion
         self.assertEqual(
             self.metadata_config_yaml.metadata_targets[0].get_field_name(),
@@ -62,7 +61,6 @@ class MetadataConfigTest(unittest.TestCase, SetUp):
         )
 
     def test_get_sink_target(self):
-
         # Set expected output
         expected = Metadata(
             metadata_type="ingestion_status",

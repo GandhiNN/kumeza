@@ -7,9 +7,7 @@ logger = logging.getLogger(__name__)
 
 
 class VaultManager:
-
     def __init__(self, vault_url, namespace, ssl_verify=False):
-
         self.url = vault_url
         self.namespace = namespace
         self.ssl_verify = ssl_verify

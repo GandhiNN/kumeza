@@ -3,7 +3,6 @@ from dataclasses import dataclass, fields
 
 @dataclass
 class BaseConfig:
-
     def get_length(self):
         return len(self.__dict__)
 

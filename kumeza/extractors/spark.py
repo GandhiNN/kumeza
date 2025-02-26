@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class SparkExtractor:
-
     def __init__(self, sparkmanager: SparkManager, jdbcmanager: JDBCManager):
         self.sparkmanager = sparkmanager
         self.jdbcmanager = jdbcmanager

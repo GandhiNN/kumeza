@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 
 
 class S3(BaseAwsUtil):
-
     def __init__(self, region_name: str = "eu-west-1"):
         super().__init__(service_name="s3", region_name=region_name)
 
