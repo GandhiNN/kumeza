@@ -36,7 +36,7 @@ repoVersion = ''
 lambdas = []
 
 // -----------------------------------------------------------------------------
-// Auxiliar functions
+// Auxiliary functions
 // -----------------------------------------------------------------------------
 
 // Use AWS CLI to discover the current AWS Account ID
@@ -51,10 +51,17 @@ def initSetup() {
     """)
 }
 
-def poetrySetup() {
+// def poetrySetup() {
+//     sh(script: """
+//     make install-poetry
+//     make install
+//     """)
+// }
+
+def uvSetup() {
     sh(script: """
-    make install-poetry
-    make install
+    make install-uv
+    make sync
     """)
 }
 
@@ -87,8 +94,12 @@ def buildLambdaLayerZipAndSyncArtifact(package_semver) {
     """)
 }
 
+// def discoverPackageSemver() {
+//     return sh(returnStdout: true, script: "poetry version | awk '{print \$2}'").trim()
+// }
+
 def discoverPackageSemver() {
-    return sh(returnStdout: true, script: "poetry version | awk '{print \$2}'").trim()
+    return sh(returnStdout: true, script: "uvx --from=toml-cli toml get --toml-path=pyproject.toml project.version").trim()
 }
 
 def copyArtifactsToS3Bucket() {
@@ -183,11 +194,20 @@ pipeline {
                 }
             }
         }
-        stage('Install and Setup Poetry') {
+        // stage('Install and Setup Poetry') {
+        //     steps {
+        //         container("python") {
+        //             script {
+        //                 poetrySetup()
+        //             }
+        //         }
+        //     }
+        // }
+        stage('Install and Setup uv package manager') {
             steps {
                 container("python") {
                     script {
-                        poetrySetup()
+                        uvSetup()
                     }
                 }
             }
