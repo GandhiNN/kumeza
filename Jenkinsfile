@@ -51,13 +51,6 @@ def initSetup() {
     """)
 }
 
-// def poetrySetup() {
-//     sh(script: """
-//     make install-poetry
-//     make install
-//     """)
-// }
-
 def uvSetup() {
     sh(script: """
     make install
@@ -94,10 +87,6 @@ def buildLambdaLayerZipAndSyncArtifact(package_semver) {
     """)
 }
 
-// def discoverPackageSemver() {
-//     return sh(returnStdout: true, script: "poetry version | awk '{print \$2}'").trim()
-// }
-
 def discoverPackageSemver() {
     return sh(returnStdout: true, script: "uvx --from=toml-cli toml get --toml-path=pyproject.toml project.version").trim()
 }
@@ -119,15 +108,15 @@ def copyOdbcLibToS3Bucket() {
 // DEEP-Jenkins IAM role permission need to be modified
 // by allowing lambda:PublishLayerVersion action
 // !!Not valid for now!!
-def deployLambdaLayer() {
-    sh(script: """
-    aws lambda publish-layer-version --layer-name ${ZIP_NAME} \
-        --description "DAAS Common Library V2 SDK Layer" \
-        --license-info "MIT" \
-        --content S3Bucket=${S3_BUCKET_NAME},S3Key=python/kumeza.zip \
-        --compatible-runtimes python3.9
-    """)
-}
+// def deployLambdaLayer() {
+//     sh(script: """
+//     aws lambda publish-layer-version --layer-name ${ZIP_NAME} \
+//         --description "DAAS Common Library V2 SDK Layer" \
+//         --license-info "MIT" \
+//         --content S3Bucket=${S3_BUCKET_NAME},S3Key=python/kumeza.zip \
+//         --compatible-runtimes python3.9
+//     """)
+// }
 
 pipeline {
     agent {
@@ -194,15 +183,6 @@ pipeline {
                 }
             }
         }
-        // stage('Install and Setup Poetry') {
-        //     steps {
-        //         container("python") {
-        //             script {
-        //                 poetrySetup()
-        //             }
-        //         }
-        //     }
-        // }
         stage('Install and Setup uv package manager') {
             steps {
                 container("python") {
