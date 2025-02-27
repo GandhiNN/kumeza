@@ -116,8 +116,15 @@ build:
 # 		mkdir -p out; zip -r -q out/kumeza.zip python/* -i 'python/kumeza*' -x 'python/*.pyc'
 # 		zip -r -q out/pyarrow.zip python/* -i 'python/*arrow*' -x 'python/*.pyc'
 
+# lambda-layer:
+# 		$(UV) install --only main --sync
+# 		$(UV) build
+# 		$(UV) run pip install --upgrade -t python dist/*.whl
+# 		mkdir -p out; zip -r -q out/kumeza.zip python/* -i 'python/kumeza*' -x 'python/*.pyc'
+# 		zip -r -q out/pyarrow.zip python/* -i 'python/*arrow*' -x 'python/*.pyc'
+
 lambda-layer:
-		$(UV) install --only main --sync
+		$(UV) sync
 		$(UV) build
 		$(UV) run pip install --upgrade -t python dist/*.whl
 		mkdir -p out; zip -r -q out/kumeza.zip python/* -i 'python/kumeza*' -x 'python/*.pyc'
