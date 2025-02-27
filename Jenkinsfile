@@ -60,7 +60,7 @@ def initSetup() {
 
 def uvSetup() {
     sh(script: """
-    make install-uv
+    make install
     make sync
     """)
 }
