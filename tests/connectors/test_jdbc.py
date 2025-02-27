@@ -15,7 +15,6 @@ DB_ENGINE = "mssql"
 
 
 class JDBCManagerTest(unittest.TestCase):
-
     def setUp(self):
         self.hostname = HOSTNAME
         self.port = PORT

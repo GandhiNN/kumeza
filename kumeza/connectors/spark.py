@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 class SparkManager:
-
     def __init__(self, pipeline_name: str):
         self.session = (
             SparkSession.builder.config("spark.logConf", "true")

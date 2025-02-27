@@ -4,7 +4,6 @@ import threading
 
 
 class ProgressPercentage(object):
-
     def __init__(self, filename):
         self._filename = filename
         self._size = float(os.path.getsize(filename))

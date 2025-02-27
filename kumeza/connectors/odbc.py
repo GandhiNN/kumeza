@@ -5,7 +5,6 @@ logger = logging.getLogger(__name__)
 
 
 class ODBCManager:
-
     def __init__(
         self, hostname: str, port: str, db_instance: str, domain: str, db_engine: str
     ):

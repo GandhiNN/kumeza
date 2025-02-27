@@ -2,7 +2,6 @@ import re
 
 
 class Sanitizers:
-
     @staticmethod
     def replace_multiple_whitespace_with_one_whitespace(s: str) -> str:
         return re.sub(r"\s+", " ", s)

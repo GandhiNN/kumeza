@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class Engine:
     def __init__(self, engine_type: str):
-        if type == "polars":
+        if engine_type == "polars":
             self.engine = pl
         else:
             raise ValueError(f"{engine_type} not implemented yet")

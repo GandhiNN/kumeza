@@ -5,7 +5,6 @@ logger = logging.getLogger(__name__)
 
 
 class JDBCManager:
-
     def __init__(self, hostname: str, port: str, db_instance: str, domain: str):
         self.hostname = hostname
         self.port = port

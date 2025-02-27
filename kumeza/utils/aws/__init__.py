@@ -11,7 +11,6 @@ log = logging.getLogger(__name__)
 
 
 class BaseAwsUtil:
-
     def __init__(self, service_name: str = "", region_name: str = "eu-west-1"):
         self.service_name = service_name
         self.region_name = region_name
@@ -47,8 +46,7 @@ def boto_error_handler(logger):
                 error_code = e.response["Error"]["Code"]
                 if error_code == "DecryptionFailureException":
                     logger.exception(
-                        "Secrets Manager can't decrypt the protected secret "
-                        "text using the provided KMS key."
+                        "Secrets Manager can't decrypt the protected secret text using the provided KMS key."
                     )
                     raise e
                 if error_code == "InternalServiceErrorException":
@@ -59,8 +57,7 @@ def boto_error_handler(logger):
                     raise e
                 if error_code == "InvalidRequestException":
                     logger.exception(
-                        "You provided a parameter value that is not valid "
-                        "for the current state of the resource."
+                        "You provided a parameter value that is not valid for the current state of the resource."
                     )
                     raise e
                 if error_code == "ResourceNotFoundException":
