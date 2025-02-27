@@ -45,11 +45,13 @@ init:
 # 		pip install poetry
 # 		@poetry --version
 
-.PHONY: install-uv
-install-uv:
+.PHONY: install
+install:
 		@echo "Installing uv..."
 		pip install uv
-		@uv --version
+		@echo "Installing ruff..."
+		pip install ruff
+		@ruff --version
 
 # .PHONY: install
 # install:
