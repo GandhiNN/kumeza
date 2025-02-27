@@ -43,26 +43,13 @@ clean:
 		find . -type d -name "__pycache__" | xargs rm -rf {};
 		rm -rf .coverage .mypy_cache .pytest_cache ./dist ./htmlcov ./package
 
-# .PHONY: format
-# format: 
-# 		$(RUFF) format --verbose
-
 .PHONY: format
 format: 
-		$(UV) run isort --profile=black --lines-after-imports=2 ./tests/ $(NAME)
-		$(UV) run black ./tests/ $(NAME)
-
-# .PHONY: lint
-# lint: 
-# 		$(RUFF) check
+		$(RUFF) format --verbose
 
 .PHONY: lint
 lint: 
-		$(UV) run isort --profile=black --lines-after-imports=2 --check-only ./tests/ $(NAME)
-		$(UV) run black --check ./tests/ $(NAME) --diff
-		$(UV) run flake8 --ignore=W503,E501 ./tests/ $(NAME)
-		$(UV) run mypy ./tests/ $(NAME) --ignore-missing-imports
-		$(UV) run bandit -r $(NAME) -s B608
+		$(RUFF) check
 
 .PHONY: test
 test: 
